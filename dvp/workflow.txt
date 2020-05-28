@@ -1,0 +1,8 @@
+1. 配置并生成dvp数据仿真所需的pattern：
+	（1）matlab切到config文件夹下，打开config_gen.m，设置whiteboard=1，根据需求修改需要产生的pattern类型和数目等，运行即生成白板标定数据
+	（2）设置whiteboard=0，根据需求修改需要产生的pattern类型和数目等，！注意此处的mask的pattern要使用和上一步骤相同的pattern，运行即生成场景标定数据
+	（3）生成的pattern配置数据会直接保存在当前文件夹
+2. 通过CACTI系统仿真程序进行仿真：
+	（1）matlab切到simulation目录下，打开cacti_imaging，设置whiteboard=1，配置好相关参数和路径，运行即生成白板cacti标定数据
+	（2）设置whiteboard=0，配置好相关参数和路径，运行即生成场景cacti成像数据
+	（3）默认从上述1中的config提取pattern数据，最终生成的仿真数据存在config同级的dataset中

@@ -1,0 +1,39 @@
+---
+# === Configure Main function === #
+category: data_simu/training_truth/
+category_valid: data_simu/valid_truth/
+category_test: data_simu/testing_truth/               
+category_mask: data_simu
+data_name: scene
+mask_name: mask
+model_name: Decoder
+result_dir: Result
+result_model: Model-Config
+result_data: Validation-Result
+model_filename: 
+GPU: 0
+
+# === Configure Model Handler === #
+# Data Assignment
+compressive_ratio: 8
+batch_size: 5
+segset_size: 8
+height_seg: 73
+height_occupy: 12
+# Model training Controler
+epochs: 500
+patience: 400
+learning_rate: 0.01
+lr_decay: 0.8
+lr_decay_epoch: 5
+lr_decay_interval: 5 
+loss_func: RMSE
+upbound: 1
+max_grad_norm: 5.0
+
+# === Configure in Decoder Model pipeline === #
+# Stride, Size
+atte_length_coe: 8
+# Filter SetUp
+drop_rate_forward: 0.1
+filter_encdec: dense

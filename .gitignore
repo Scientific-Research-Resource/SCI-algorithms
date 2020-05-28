@@ -1,0 +1,56 @@
+# self-define ignore
+# files
+
+*.fig
+*.asv
+*.vscode
+*.mat
+*.zip
+*.rar
+*.pyc
+
+
+# dirs
+bak/
+/DL-CACTI/
+
+_trash/
+_release/
+__pycache__/
+tmp/
+
+# E2E-CNN
+data_raw/
+**/Model-Config/**/*
+
+# keep
+!.gitkeep
+
+# DL-CACTI
+!mask_original.mat
+!meas_waterBalloon_cr_10.mat
+!traffic_512_10f.mat
+!recon_desci_waterBalloon_cr_10.mat
+
+# E2E-CNN
+!traffic_bayer.mat
+!traffic3.mat
+!binary_mask_256_8f_original_model/*
+
+#PnP-SCI
+!matconvnet-1.0-beta25/**/*
+!packages/**/*
+
+!traffic.mat
+!FFDNet_gray.mat
+!FFDNet_grayscale_retrained.mat
+!FFDNet_color.mat
+!FFDNet_Clip_color.mat
+!FFDNet_3D_RGB.mat
+
+!modeo_color.mat
+!model_gray.mat
+
+!000004_boxes.mat
+
+!helio.mat
