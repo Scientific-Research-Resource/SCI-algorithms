@@ -21,7 +21,7 @@ tmp/
 
 # E2E-CNN
 data_raw/
-**/Model-Config/**/*
+22/
 
 # keep
 !.gitkeep
@@ -35,7 +35,7 @@ data_raw/
 # E2E-CNN
 !traffic_bayer.mat
 !traffic3.mat
-!binary_mask_256_8f_original_model/*
+
 
 #PnP-SCI
 !matconvnet-1.0-beta25/**/*

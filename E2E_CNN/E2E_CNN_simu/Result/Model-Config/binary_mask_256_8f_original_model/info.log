@@ -1,0 +1,475 @@
+2020-04-27 18:42:30,199 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Log directory: Result/Model-Config/Decoder-T0427184230-D0.10L0.010-RMSE/
+2020-04-27 18:42:30,199 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - {'segset_size': 8, 'loss_func': 'RMSE', 'learning_rate': 0.01, 'data_name': 'scene', 'batch_size': 5, 'model_filename': None, 'epochs': 500, 'patience': 400, 'category_valid': 'data_simu/testing_truth/', 'height_occupy': 12, 'max_grad_norm': 5.0, 'GPU': 0, 'mask_name': 'mask', 'category': 'data_simu/training_truth/', 'filter_encdec': 'dense', 'height_seg': 73, 'upbound': 1, 'drop_rate_forward': 0.1, 'result_dir': 'Result', 'compressive_ratio': 8, 'atte_length_coe': 8, 'lr_decay_interval': 5, 'result_data': 'Validation-Result', 'model_name': 'Decoder', 'lr_decay_epoch': 5, 'category_test': 'data_simu/testing_truth/', 'result_model': 'Model-Config', 'lr_decay': 0.8, 'category_mask': 'data_simu'}
+2020-04-27 18:42:47,880 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Total number of trainable parameters: 822048
+2020-04-27 18:42:47,881 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - learning_rate:0, ()
+2020-04-27 18:42:47,881 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_0/weights:0, (3, 3, 8, 64)
+2020-04-27 18:42:47,881 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_0/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,881 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_0/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,881 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_0/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,881 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_0/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,881 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_1_1/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,881 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_1_1/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,882 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_1_1/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,882 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_1_1/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,882 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_1_1/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,882 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_1_2/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,882 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_1_2/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,882 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_1_2/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,882 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_1_2/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,882 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_1_2/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,882 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_2_1/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,883 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_2_1/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,883 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_2_1/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,883 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_2_1/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,883 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_2_1/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,883 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_2_2/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,883 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_2_2/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,883 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_2_2/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,883 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_2_2/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,884 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_2_2/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,884 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_3_1/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,884 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_3_1/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,884 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_3_1/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,884 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_3_1/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,884 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_3_1/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,884 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_3_2/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,884 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_3_2/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,885 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_3_2/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,885 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_3_2/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,885 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_3_2/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,885 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_4_1/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,885 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_4_1/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,885 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_4_1/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,885 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_4_1/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,885 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_4_1/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,885 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_4_2/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,886 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_4_2/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,886 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_4_2/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,886 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_4_2/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,886 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_4_2/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,886 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_5_1/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,886 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_5_1/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,886 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_5_1/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,886 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_5_1/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,886 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_5_1/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,887 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_5_2/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,887 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_5_2/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,887 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_5_2/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,887 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_5_2/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,887 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_5_2/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,887 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_7/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,887 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_7/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,887 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_7/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,887 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_7/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,888 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_7/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,888 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_8/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,888 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_8/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,888 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_8/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,888 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_8/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,888 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/en_8/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,888 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_5_1/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,888 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_5_1/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,888 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_5_1/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,889 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_5_1/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,889 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_5_1/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,889 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_5_2/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,889 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_5_2/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,889 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_5_2/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,889 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_5_2/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,889 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_5_2/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,889 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_4_1/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,889 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_4_1/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,890 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_4_1/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,890 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_4_1/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,890 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_4_1/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,890 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_4_2/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,890 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_4_2/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,890 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_4_2/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,890 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_4_2/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,890 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_4_2/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,890 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_3_1/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,891 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_3_1/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,891 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_3_1/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,891 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_3_1/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,891 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_3_1/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,891 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_3_2/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,891 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_3_2/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,891 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_3_2/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,891 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_3_2/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,892 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_3_2/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,892 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_2_1/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,892 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_2_1/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,892 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_2_1/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,892 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_2_1/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,892 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_2_1/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,892 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_2_2/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,892 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_2_2/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,893 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_2_2/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,893 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_2_2/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,893 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_2_2/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,893 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_1_1/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,893 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_1_1/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,893 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_1_1/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,893 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_1_1/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,894 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_1_1/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,894 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_1_2/weights:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,894 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_1_2/BatchNorm/beta:0, (64,)
+2020-04-27 18:42:47,894 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_1_2/BatchNorm/gamma:0, (64,)
+2020-04-27 18:42:47,894 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_1_2/BatchNorm/moving_mean:0, (64,)
+2020-04-27 18:42:47,894 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/de_1_2/BatchNorm/moving_variance:0, (64,)
+2020-04-27 18:42:47,894 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/Conv/weights:0, (1, 1, 64, 8)
+2020-04-27 18:42:47,894 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/Conv/BatchNorm/beta:0, (8,)
+2020-04-27 18:42:47,895 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/Conv/BatchNorm/gamma:0, (8,)
+2020-04-27 18:42:47,895 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/Conv/BatchNorm/moving_mean:0, (8,)
+2020-04-27 18:42:47,895 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/generator/Conv/BatchNorm/moving_variance:0, (8,)
+2020-04-27 18:42:47,895 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/global_step:0, ()
+2020-04-27 18:42:47,895 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Train/Depth_Decoder/beta1_power:0, ()
+2020-04-27 18:42:47,895 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Train/Depth_Decoder/beta2_power:0, ()
+2020-04-27 18:42:47,895 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_0/weights/Adam:0, (3, 3, 8, 64)
+2020-04-27 18:42:47,896 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_0/weights/Adam_1:0, (3, 3, 8, 64)
+2020-04-27 18:42:47,896 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_0/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,896 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_0/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,896 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_0/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,896 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_0/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,896 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_1_1/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,897 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_1_1/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,897 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_1_1/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,897 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_1_1/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,897 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_1_1/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,897 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_1_1/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,897 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_1_2/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,898 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_1_2/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,898 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_1_2/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,898 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_1_2/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,898 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_1_2/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,898 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_1_2/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,898 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_2_1/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,898 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_2_1/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,899 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_2_1/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,899 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_2_1/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,899 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_2_1/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,899 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_2_1/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,899 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_2_2/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,899 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_2_2/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,900 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_2_2/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,900 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_2_2/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,900 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_2_2/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,900 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_2_2/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,900 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_3_1/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,900 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_3_1/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,900 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_3_1/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,901 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_3_1/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,901 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_3_1/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,901 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_3_1/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,901 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_3_2/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,901 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_3_2/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,901 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_3_2/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,901 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_3_2/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,901 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_3_2/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,902 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_3_2/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,902 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_4_1/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,902 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_4_1/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,902 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_4_1/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,902 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_4_1/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,902 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_4_1/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,902 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_4_1/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,903 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_4_2/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,903 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_4_2/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,903 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_4_2/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,903 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_4_2/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,903 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_4_2/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,903 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_4_2/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,903 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_5_1/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,904 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_5_1/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,904 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_5_1/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,904 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_5_1/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,904 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_5_1/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,904 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_5_1/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,904 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_5_2/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,904 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_5_2/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,905 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_5_2/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,905 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_5_2/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,905 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_5_2/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,905 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_5_2/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,905 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_7/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,905 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_7/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,905 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_7/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,906 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_7/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,906 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_7/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,906 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_7/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,906 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_8/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,906 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_8/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,906 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_8/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,906 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_8/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,907 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_8/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,907 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/en_8/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,907 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_5_1/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,907 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_5_1/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,907 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_5_1/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,907 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_5_1/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,907 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_5_1/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,907 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_5_1/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,908 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_5_2/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,908 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_5_2/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,908 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_5_2/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,908 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_5_2/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,908 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_5_2/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,908 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_5_2/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,909 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_4_1/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,909 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_4_1/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,909 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_4_1/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,909 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_4_1/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,909 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_4_1/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,909 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_4_1/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,909 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_4_2/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,910 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_4_2/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,910 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_4_2/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,910 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_4_2/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,910 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_4_2/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,910 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_4_2/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,910 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_3_1/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,910 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_3_1/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,911 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_3_1/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,911 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_3_1/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,911 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_3_1/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,911 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_3_1/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,911 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_3_2/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,911 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_3_2/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,911 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_3_2/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,912 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_3_2/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,912 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_3_2/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,912 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_3_2/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,912 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_2_1/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,912 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_2_1/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,912 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_2_1/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,912 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_2_1/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,912 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_2_1/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,913 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_2_1/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,913 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_2_2/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,913 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_2_2/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,913 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_2_2/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,913 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_2_2/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,913 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_2_2/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,913 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_2_2/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,914 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_1_1/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,914 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_1_1/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,914 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_1_1/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,914 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_1_1/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,914 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_1_1/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,914 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_1_1/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,914 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_1_2/weights/Adam:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,915 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_1_2/weights/Adam_1:0, (3, 3, 64, 64)
+2020-04-27 18:42:47,915 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_1_2/BatchNorm/beta/Adam:0, (64,)
+2020-04-27 18:42:47,915 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_1_2/BatchNorm/beta/Adam_1:0, (64,)
+2020-04-27 18:42:47,915 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_1_2/BatchNorm/gamma/Adam:0, (64,)
+2020-04-27 18:42:47,915 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/de_1_2/BatchNorm/gamma/Adam_1:0, (64,)
+2020-04-27 18:42:47,915 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/Conv/weights/Adam:0, (1, 1, 64, 8)
+2020-04-27 18:42:47,915 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/Conv/weights/Adam_1:0, (1, 1, 64, 8)
+2020-04-27 18:42:47,916 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/Conv/BatchNorm/beta/Adam:0, (8,)
+2020-04-27 18:42:47,916 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/Conv/BatchNorm/beta/Adam_1:0, (8,)
+2020-04-27 18:42:47,916 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/Conv/BatchNorm/gamma/Adam:0, (8,)
+2020-04-27 18:42:47,916 - Decoder-T0427184230-D0.10L0.010-RMSE/ - DEBUG - Depth_Decoder/Depth_Decoder/generator/Conv/BatchNorm/gamma/Adam_1:0, (8,)
+2020-04-27 18:42:50,342 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.010000
+2020-04-27 19:20:14,572 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [  0/500] Train(Valid) loss: 0.1695(0.1436), PSNR: 23.204357(22.00085703531901), time 0.7768610119819641
+2020-04-27 19:20:14,588 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 22.321047, crash 20.334305, drop 21.55774, kobe 23.644716, runner 25.19069, traffic 18.956646
+2020-04-27 19:20:15,391 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Val loss decrease from inf to 0.1436, saving to Result/Model-Config/Decoder-T0427184230-D0.10L0.010-RMSE/models-0.1436-5574
+2020-04-27 19:20:15,392 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.010000
+2020-04-27 19:57:36,197 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [  1/500] Train(Valid) loss: 0.1192(0.1117), PSNR: 25.09995(25.582316080729168), time 0.13645648956298828
+2020-04-27 19:57:36,230 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 25.453127, crash 24.296991, drop 26.624428, kobe 25.750633, runner 30.149498, traffic 21.21923
+2020-04-27 19:57:36,266 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Val loss decrease from 0.1436 to 0.1117, saving to Result/Model-Config/Decoder-T0427184230-D0.10L0.010-RMSE/models-0.1117-11148
+2020-04-27 19:57:36,266 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.010000
+2020-04-27 20:34:54,374 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [  2/500] Train(Valid) loss: 0.1034(0.1309), PSNR: 26.02829(24.313321431477863), time 0.1246519684791565
+2020-04-27 20:34:54,436 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 23.640484, crash 23.431046, drop 26.027786, kobe 24.057392, runner 27.697353, traffic 21.025866
+2020-04-27 20:34:54,437 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.010000
+2020-04-27 21:12:13,671 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [  3/500] Train(Valid) loss: 0.0930(0.1223), PSNR: 26.735922(25.175074259440105), time 0.11987274885177612
+2020-04-27 21:12:13,752 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 24.22487, crash 23.549206, drop 28.10854, kobe 24.841236, runner 28.59478, traffic 21.731813
+2020-04-27 21:12:13,752 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.010000
+2020-04-27 21:49:31,160 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [  4/500] Train(Valid) loss: 0.0889(0.0999), PSNR: 27.049902(25.588307698567707), time 0.11911278963088989
+2020-04-27 21:49:31,228 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 25.096647, crash 24.156048, drop 27.238138, kobe 26.400879, runner 28.831373, traffic 21.80676
+2020-04-27 21:49:31,297 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Val loss decrease from 0.1117 to 0.0999, saving to Result/Model-Config/Decoder-T0427184230-D0.10L0.010-RMSE/models-0.0999-27870
+2020-04-27 21:49:31,298 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.010000
+2020-04-27 22:26:51,304 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [  5/500] Train(Valid) loss: 0.0853(0.1029), PSNR: 27.347136(26.04364013671875), time 0.11128449440002441
+2020-04-27 22:26:51,376 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 24.941132, crash 24.40762, drop 30.86015, kobe 25.818306, runner 27.994091, traffic 22.240534
+2020-04-27 22:26:51,377 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.008000
+2020-04-27 23:04:17,226 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [  6/500] Train(Valid) loss: 0.0818(0.1022), PSNR: 27.68494(26.124801635742188), time 0.1123095154762268
+2020-04-27 23:04:17,285 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 25.474464, crash 24.539091, drop 27.947939, kobe 25.94801, runner 30.576937, traffic 22.26238
+2020-04-27 23:04:17,285 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.008000
+2020-04-27 23:41:42,089 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [  7/500] Train(Valid) loss: 0.0807(0.0959), PSNR: 27.778288(27.364791870117188), time 0.11474525928497314
+2020-04-27 23:41:42,180 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.125303, crash 25.104378, drop 32.71537, kobe 26.718876, runner 30.968456, traffic 22.556366
+2020-04-27 23:41:42,210 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Val loss decrease from 0.0999 to 0.0959, saving to Result/Model-Config/Decoder-T0427184230-D0.10L0.010-RMSE/models-0.0959-44592
+2020-04-27 23:41:42,211 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.008000
+2020-04-28 00:19:00,838 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [  8/500] Train(Valid) loss: 0.0796(0.0958), PSNR: 27.900202(26.96448516845703), time 0.12108880281448364
+2020-04-28 00:19:00,922 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.212599, crash 25.445898, drop 29.228827, kobe 27.078178, runner 31.519379, traffic 22.30203
+2020-04-28 00:19:00,953 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Val loss decrease from 0.0959 to 0.0958, saving to Result/Model-Config/Decoder-T0427184230-D0.10L0.010-RMSE/models-0.0958-50166
+2020-04-28 00:19:00,953 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.008000
+2020-04-28 00:56:22,026 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [  9/500] Train(Valid) loss: 0.0786(0.0868), PSNR: 27.982185(26.876808166503906), time 0.11087250709533691
+2020-04-28 00:56:22,138 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.23862, crash 24.984055, drop 28.323383, kobe 27.719952, runner 31.215862, traffic 22.778976
+2020-04-28 00:56:22,190 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Val loss decrease from 0.0958 to 0.0868, saving to Result/Model-Config/Decoder-T0427184230-D0.10L0.010-RMSE/models-0.0868-55740
+2020-04-28 00:56:22,190 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.008000
+2020-04-28 01:33:46,686 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 10/500] Train(Valid) loss: 0.0778(0.1048), PSNR: 28.078602(26.745310465494793), time 0.10954749584197998
+2020-04-28 01:33:46,746 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 25.038834, crash 24.396822, drop 30.937788, kobe 25.73715, runner 31.418722, traffic 22.942556
+2020-04-28 01:33:46,746 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.006400
+2020-04-28 02:11:04,459 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 11/500] Train(Valid) loss: 0.0764(0.0843), PSNR: 28.222902(27.619420369466145), time 0.10837370157241821
+2020-04-28 02:11:04,557 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.271162, crash 25.56354, drop 32.695824, kobe 27.319572, runner 30.69305, traffic 23.173376
+2020-04-28 02:11:04,592 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Val loss decrease from 0.0868 to 0.0843, saving to Result/Model-Config/Decoder-T0427184230-D0.10L0.010-RMSE/models-0.0843-66888
+2020-04-28 02:11:04,592 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.006400
+2020-04-28 02:48:26,487 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 12/500] Train(Valid) loss: 0.0757(0.0902), PSNR: 28.318518(27.145408630371094), time 0.11318004131317139
+2020-04-28 02:48:26,583 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.75794, crash 25.802456, drop 27.59619, kobe 27.684357, runner 32.366188, traffic 22.665335
+2020-04-28 02:48:26,583 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.006400
+2020-04-28 03:25:50,173 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 13/500] Train(Valid) loss: 0.0754(0.0888), PSNR: 28.337725(26.818684895833332), time 0.13499367237091064
+2020-04-28 03:25:50,229 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 25.408424, crash 24.820868, drop 31.871471, kobe 27.083485, runner 29.178968, traffic 22.548882
+2020-04-28 03:25:50,229 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.006400
+2020-04-28 04:03:15,965 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 14/500] Train(Valid) loss: 0.0749(0.0876), PSNR: 28.401623(27.047564188639324), time 0.13700950145721436
+2020-04-28 04:03:16,042 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 25.660301, crash 24.937458, drop 31.75155, kobe 27.36654, runner 29.834866, traffic 22.734663
+2020-04-28 04:03:16,042 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.006400
+2020-04-28 04:40:41,819 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 15/500] Train(Valid) loss: 0.0743(0.0935), PSNR: 28.480392(27.235036214192707), time 0.1284698247909546
+2020-04-28 04:40:41,907 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.33385, crash 25.025497, drop 30.300705, kobe 27.297287, runner 31.762215, traffic 22.690681
+2020-04-28 04:40:41,907 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.005120
+2020-04-28 05:18:08,495 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 16/500] Train(Valid) loss: 0.0734(0.0863), PSNR: 28.596994(28.202743530273438), time 0.12306857109069824
+2020-04-28 05:18:15,165 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.672718, crash 25.603378, drop 33.4487, kobe 27.427189, runner 33.093994, traffic 22.970482
+2020-04-28 05:18:15,166 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.005120
+2020-04-28 05:55:38,290 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 17/500] Train(Valid) loss: 0.0732(0.0798), PSNR: 28.606586(28.754185994466145), time 0.14600467681884766
+2020-04-28 05:55:44,912 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.878363, crash 25.998665, drop 35.04283, kobe 28.085455, runner 33.292313, traffic 23.227478
+2020-04-28 05:55:44,948 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Val loss decrease from 0.0843 to 0.0798, saving to Result/Model-Config/Decoder-T0427184230-D0.10L0.010-RMSE/models-0.0798-100332
+2020-04-28 05:55:44,948 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.005120
+2020-04-28 06:33:04,071 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 18/500] Train(Valid) loss: 0.0727(0.0800), PSNR: 28.68324(28.636062622070312), time 0.10739028453826904
+2020-04-28 06:33:04,240 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.99667, crash 26.063244, drop 33.888973, kobe 28.355078, runner 33.2698, traffic 23.242615
+2020-04-28 06:33:04,243 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.005120
+2020-04-28 07:10:31,585 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 19/500] Train(Valid) loss: 0.0727(0.0839), PSNR: 28.65531(27.682215372721355), time 0.12115520238876343
+2020-04-28 07:10:31,685 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.334614, crash 25.53999, drop 32.42244, kobe 27.63657, runner 31.24279, traffic 22.916893
+2020-04-28 07:10:31,685 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.005120
+2020-04-28 07:47:59,008 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 20/500] Train(Valid) loss: 0.0723(0.0847), PSNR: 28.715536(28.175336201985676), time 0.1157122254371643
+2020-04-28 07:47:59,130 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.746298, crash 25.99356, drop 32.241997, kobe 27.698862, runner 33.42546, traffic 22.945848
+2020-04-28 07:47:59,130 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.004096
+2020-04-28 08:25:22,375 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 21/500] Train(Valid) loss: 0.0717(0.0814), PSNR: 28.7934(28.497222900390625), time 0.1099172830581665
+2020-04-28 08:25:22,489 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.814869, crash 25.986063, drop 33.50164, kobe 27.779047, runner 33.54448, traffic 23.357244
+2020-04-28 08:25:22,489 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.004096
+2020-04-28 09:02:46,188 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 22/500] Train(Valid) loss: 0.0713(0.0870), PSNR: 28.86753(27.55255126953125), time 0.11299753189086914
+2020-04-28 09:02:46,293 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.624645, crash 25.609009, drop 30.597118, kobe 27.521442, runner 32.221313, traffic 22.741781
+2020-04-28 09:02:46,293 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.004096
+2020-04-28 09:40:11,893 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 23/500] Train(Valid) loss: 0.0711(0.0861), PSNR: 28.879969(27.581273396809895), time 0.11678147315979004
+2020-04-28 09:40:12,046 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.698814, crash 25.718393, drop 30.128002, kobe 27.599846, runner 32.376728, traffic 22.965843
+2020-04-28 09:40:12,046 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.004096
+2020-04-28 10:17:36,435 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 24/500] Train(Valid) loss: 0.0713(0.0840), PSNR: 28.850283(28.46947733561198), time 0.11752748489379883
+2020-04-28 10:17:36,556 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.535316, crash 25.775486, drop 34.551033, kobe 27.94701, runner 32.881416, traffic 23.126623
+2020-04-28 10:17:36,556 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.004096
+2020-04-28 10:55:01,599 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 25/500] Train(Valid) loss: 0.0709(0.0864), PSNR: 28.899172(28.00554911295573), time 0.12248575687408447
+2020-04-28 10:55:01,710 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.592623, crash 25.716297, drop 32.755985, kobe 27.256037, runner 32.644707, traffic 23.067635
+2020-04-28 10:55:01,710 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.003277
+2020-04-28 11:32:30,664 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 26/500] Train(Valid) loss: 0.0704(0.0815), PSNR: 28.96471(28.567156473795574), time 0.10898447036743164
+2020-04-28 11:32:30,837 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.061611, crash 26.06433, drop 33.636444, kobe 27.747873, runner 33.70151, traffic 23.191177
+2020-04-28 11:32:30,838 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.003277
+2020-04-28 12:09:53,106 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 27/500] Train(Valid) loss: 0.0703(0.0805), PSNR: 28.99551(28.820899963378906), time 0.13400650024414062
+2020-04-28 12:09:59,684 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.99119, crash 26.038296, drop 35.308502, kobe 27.824675, runner 33.50302, traffic 23.25972
+2020-04-28 12:09:59,684 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.003277
+2020-04-28 12:47:26,725 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 28/500] Train(Valid) loss: 0.0700(0.0804), PSNR: 29.023178(28.438446044921875), time 0.10924500226974487
+2020-04-28 12:47:26,855 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.734995, crash 25.874207, drop 33.173683, kobe 28.625584, runner 32.966873, traffic 23.25534
+2020-04-28 12:47:26,856 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.003277
+2020-04-28 13:24:53,100 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 29/500] Train(Valid) loss: 0.0700(0.0802), PSNR: 29.028837(28.0415776570638), time 0.1232900619506836
+2020-04-28 13:24:53,253 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.737816, crash 25.632347, drop 31.193361, kobe 28.18328, runner 32.981728, traffic 23.52094
+2020-04-28 13:24:53,253 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.003277
+2020-04-28 14:02:16,170 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 30/500] Train(Valid) loss: 0.0699(0.0815), PSNR: 29.04376(28.783615112304688), time 0.11090326309204102
+2020-04-28 14:02:16,370 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.816345, crash 25.97747, drop 35.317375, kobe 27.688778, runner 33.465096, traffic 23.436613
+2020-04-28 14:02:16,370 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.002621
+2020-04-28 14:39:38,470 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 31/500] Train(Valid) loss: 0.0692(0.0805), PSNR: 29.147709(28.25408426920573), time 0.11267244815826416
+2020-04-28 14:39:38,656 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.99201, crash 26.123814, drop 31.767633, kobe 28.214718, runner 33.48413, traffic 22.942192
+2020-04-28 14:39:38,656 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.002621
+2020-04-28 15:17:03,622 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 32/500] Train(Valid) loss: 0.0693(0.0831), PSNR: 29.114424(28.258336385091145), time 0.11378568410873413
+2020-04-28 15:17:03,787 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.76015, crash 25.86576, drop 32.66671, kobe 28.271515, runner 32.857246, traffic 23.128632
+2020-04-28 15:17:03,787 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.002621
+2020-04-28 15:54:29,993 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 33/500] Train(Valid) loss: 0.0693(0.0839), PSNR: 29.12403(27.898165384928387), time 0.14157092571258545
+2020-04-28 15:54:30,124 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.932428, crash 25.957205, drop 29.940033, kobe 27.946411, runner 33.547314, traffic 23.065603
+2020-04-28 15:54:30,124 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.002621
+2020-04-28 16:31:55,451 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 34/500] Train(Valid) loss: 0.0692(0.0809), PSNR: 29.139559(28.44525146484375), time 0.12007051706314087
+2020-04-28 16:31:55,598 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.065634, crash 25.98742, drop 32.624348, kobe 28.30194, runner 33.58455, traffic 23.10762
+2020-04-28 16:31:55,599 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.002621
+2020-04-28 17:09:22,151 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 35/500] Train(Valid) loss: 0.0690(0.0756), PSNR: 29.160137(29.091880798339844), time 0.13056176900863647
+2020-04-28 17:09:28,993 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.070496, crash 26.31717, drop 35.684906, kobe 28.679651, runner 33.41101, traffic 23.388046
+2020-04-28 17:09:29,028 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Val loss decrease from 0.0798 to 0.0756, saving to Result/Model-Config/Decoder-T0427184230-D0.10L0.010-RMSE/models-0.0756-200664
+2020-04-28 17:09:29,029 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.002097
+2020-04-28 17:46:50,195 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 36/500] Train(Valid) loss: 0.0687(0.0797), PSNR: 29.216213(28.456934611002605), time 0.11531561613082886
+2020-04-28 17:46:50,391 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.053572, crash 26.038248, drop 32.68759, kobe 28.15279, runner 33.661625, traffic 23.147774
+2020-04-28 17:46:50,391 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.002097
+2020-04-28 18:24:16,111 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 37/500] Train(Valid) loss: 0.0685(0.0748), PSNR: 29.237627(29.217557271321613), time 0.1121254563331604
+2020-04-28 18:24:23,020 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.207302, crash 26.293228, drop 35.669083, kobe 28.87663, runner 33.83938, traffic 23.419722
+2020-04-28 18:24:23,059 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Val loss decrease from 0.0756 to 0.0748, saving to Result/Model-Config/Decoder-T0427184230-D0.10L0.010-RMSE/models-0.0748-211812
+2020-04-28 18:24:23,059 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.002097
+2020-04-28 19:01:47,491 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 38/500] Train(Valid) loss: 0.0685(0.0798), PSNR: 29.25428(28.592549641927082), time 0.12905782461166382
+2020-04-28 19:01:47,635 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.0349, crash 25.994158, drop 33.544483, kobe 27.888859, runner 33.683353, traffic 23.409546
+2020-04-28 19:01:47,636 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.002097
+2020-04-28 19:39:14,725 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 39/500] Train(Valid) loss: 0.0684(0.0805), PSNR: 29.258572(28.4316889444987), time 0.11810022592544556
+2020-04-28 19:39:14,913 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.064398, crash 26.071756, drop 32.65059, kobe 28.089682, runner 33.61536, traffic 23.098343
+2020-04-28 19:39:14,913 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.002097
+2020-04-28 20:16:40,479 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 40/500] Train(Valid) loss: 0.0684(0.0771), PSNR: 29.242973(28.79876708984375), time 0.12193804979324341
+2020-04-28 20:16:40,649 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.134409, crash 26.06305, drop 33.92811, kobe 28.321821, runner 33.794388, traffic 23.550821
+2020-04-28 20:16:40,649 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.001678
+2020-04-28 20:54:06,516 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 41/500] Train(Valid) loss: 0.0680(0.0745), PSNR: 29.328463(29.26575215657552), time 0.11406916379928589
+2020-04-28 20:54:13,526 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.182024, crash 26.22454, drop 35.961647, kobe 28.499325, runner 33.92023, traffic 23.806746
+2020-04-28 20:54:13,560 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Val loss decrease from 0.0748 to 0.0745, saving to Result/Model-Config/Decoder-T0427184230-D0.10L0.010-RMSE/models-0.0745-234108
+2020-04-28 20:54:13,560 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.001678
+2020-04-28 21:31:43,968 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 42/500] Train(Valid) loss: 0.0680(0.0769), PSNR: 29.31943(28.9935785929362), time 0.1321290135383606
+2020-04-28 21:31:44,208 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.054323, crash 26.230362, drop 34.606354, kobe 28.311422, runner 34.09563, traffic 23.663382
+2020-04-28 21:31:44,208 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.001678
+2020-04-28 22:09:15,645 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 43/500] Train(Valid) loss: 0.0679(0.0775), PSNR: 29.331566(29.2310053507487), time 0.11162447929382324
+2020-04-28 22:09:15,838 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.110844, crash 26.137955, drop 36.290672, kobe 28.213478, runner 34.100235, traffic 23.532854
+2020-04-28 22:09:15,838 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.001678
+2020-04-28 22:46:46,513 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 44/500] Train(Valid) loss: 0.0679(0.0807), PSNR: 29.325132(28.286771138509113), time 0.11298549175262451
+2020-04-28 22:46:46,725 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 26.788658, crash 25.822884, drop 32.941032, kobe 27.724947, runner 32.942696, traffic 23.500412
+2020-04-28 22:46:46,725 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.001678
+2020-04-28 23:24:14,494 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 45/500] Train(Valid) loss: 0.0677(0.0744), PSNR: 29.359621(29.356903076171875), time 0.10886669158935547
+2020-04-28 23:24:21,120 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.30729, crash 26.309357, drop 36.010223, kobe 28.60618, runner 34.173412, traffic 23.734953
+2020-04-28 23:24:21,156 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Val loss decrease from 0.0745 to 0.0744, saving to Result/Model-Config/Decoder-T0427184230-D0.10L0.010-RMSE/models-0.0744-256404
+2020-04-28 23:24:21,156 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.001342
+2020-04-29 00:01:44,137 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 46/500] Train(Valid) loss: 0.0676(0.0764), PSNR: 29.381441(29.033164978027344), time 0.11430376768112183
+2020-04-29 00:01:44,375 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.243406, crash 26.23658, drop 34.577393, kobe 28.328176, runner 34.220314, traffic 23.593124
+2020-04-29 00:01:44,375 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.001342
+2020-04-29 00:39:10,993 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 47/500] Train(Valid) loss: 0.0675(0.0774), PSNR: 29.398876(28.516688028971355), time 0.11822420358657837
+2020-04-29 00:39:11,215 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.139507, crash 26.137108, drop 32.092194, kobe 28.244019, runner 34.041756, traffic 23.445564
+2020-04-29 00:39:11,216 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.001342
+2020-04-29 01:16:36,063 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 48/500] Train(Valid) loss: 0.0675(0.0781), PSNR: 29.400166(29.06786855061849), time 0.11981332302093506
+2020-04-29 01:16:36,383 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.141087, crash 26.127743, drop 35.56627, kobe 27.975195, runner 34.06378, traffic 23.533125
+2020-04-29 01:16:36,383 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.001342
+2020-04-29 01:54:00,562 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 49/500] Train(Valid) loss: 0.0674(0.0773), PSNR: 29.412807(28.900169372558594), time 0.11224430799484253
+2020-04-29 01:54:00,840 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.20024, crash 26.160952, drop 34.16468, kobe 28.474953, runner 33.988926, traffic 23.411272
+2020-04-29 01:54:00,840 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.001342
+2020-04-29 02:31:25,575 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 50/500] Train(Valid) loss: 0.0674(0.0740), PSNR: 29.401546(29.240450541178387), time 0.13078147172927856
+2020-04-29 02:31:25,750 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.14236, crash 26.221033, drop 35.415207, kobe 28.614754, runner 34.237465, traffic 23.811874
+2020-04-29 02:31:25,778 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Val loss decrease from 0.0744 to 0.0740, saving to Result/Model-Config/Decoder-T0427184230-D0.10L0.010-RMSE/models-0.0740-284274
+2020-04-29 02:31:25,778 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.001074
+2020-04-29 03:08:52,625 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 51/500] Train(Valid) loss: 0.0672(0.0782), PSNR: 29.436628(28.780916849772137), time 0.12168484926223755
+2020-04-29 03:08:52,842 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.00087, crash 25.997894, drop 34.29409, kobe 27.89344, runner 33.917408, traffic 23.581802
+2020-04-29 03:08:52,842 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.001074
+2020-04-29 03:46:17,184 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 52/500] Train(Valid) loss: 0.0672(0.0735), PSNR: 29.42468(29.19542948404948), time 0.11818259954452515
+2020-04-29 03:46:17,414 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.257294, crash 26.354631, drop 34.73846, kobe 28.88145, runner 34.280766, traffic 23.659966
+2020-04-29 03:46:17,452 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Val loss decrease from 0.0740 to 0.0735, saving to Result/Model-Config/Decoder-T0427184230-D0.10L0.010-RMSE/models-0.0735-295422
+2020-04-29 03:46:17,452 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.001074
+2020-04-29 04:23:41,773 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 53/500] Train(Valid) loss: 0.0671(0.0751), PSNR: 29.458694(29.07543182373047), time 0.11275672912597656
+2020-04-29 04:23:41,994 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.188469, crash 26.195665, drop 34.907116, kobe 28.607376, runner 34.032364, traffic 23.521612
+2020-04-29 04:23:41,994 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.001074
+2020-04-29 05:01:06,443 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 54/500] Train(Valid) loss: 0.0671(0.0758), PSNR: 29.456324(28.956008911132812), time 0.11479705572128296
+2020-04-29 05:01:06,660 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.120487, crash 26.181581, drop 34.362793, kobe 28.399633, runner 34.048195, traffic 23.623358
+2020-04-29 05:01:06,660 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.001074
+2020-04-29 05:38:32,297 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 55/500] Train(Valid) loss: 0.0670(0.0763), PSNR: 29.45993(28.785067240397137), time 0.11111193895339966
+2020-04-29 05:38:32,543 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.118675, crash 26.109085, drop 33.744217, kobe 28.281096, runner 33.860874, traffic 23.596445
+2020-04-29 05:38:32,544 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.000859
+2020-04-29 06:15:57,193 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 56/500] Train(Valid) loss: 0.0668(0.0769), PSNR: 29.511068(29.003489176432293), time 0.11223775148391724
+2020-04-29 06:15:57,432 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.112045, crash 26.136635, drop 34.693542, kobe 28.133066, runner 34.34137, traffic 23.604279
+2020-04-29 06:15:57,432 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.000859
+2020-04-29 06:53:24,710 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 57/500] Train(Valid) loss: 0.0669(0.0742), PSNR: 29.477978(29.23798116048177), time 0.11150908470153809
+2020-04-29 06:53:24,971 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.231194, crash 26.251844, drop 35.4683, kobe 28.401825, runner 34.25483, traffic 23.81988
+2020-04-29 06:53:24,971 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.000859
+2020-04-29 07:30:47,865 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 58/500] Train(Valid) loss: 0.0668(0.0749), PSNR: 29.50637(29.109041849772137), time 0.13524079322814941
+2020-04-29 07:30:48,091 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.172623, crash 26.25601, drop 34.84903, kobe 28.462315, runner 34.26668, traffic 23.647604
+2020-04-29 07:30:48,092 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.000859
+2020-04-29 08:08:13,695 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 59/500] Train(Valid) loss: 0.0668(0.0752), PSNR: 29.493877(29.03881072998047), time 0.11572927236557007
+2020-04-29 08:08:13,952 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.251762, crash 26.249695, drop 34.14692, kobe 28.654495, runner 34.36532, traffic 23.56468
+2020-04-29 08:08:13,952 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.000859
+2020-04-29 08:45:38,164 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 60/500] Train(Valid) loss: 0.0667(0.0755), PSNR: 29.505503(29.07263946533203), time 0.11189776659011841
+2020-04-29 08:45:38,454 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.207668, crash 26.194134, drop 34.664062, kobe 28.429604, runner 34.2989, traffic 23.641462
+2020-04-29 08:45:38,455 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.000687
+2020-04-29 09:23:06,711 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 61/500] Train(Valid) loss: 0.0666(0.0753), PSNR: 29.538334(29.007898966471355), time 0.11498796939849854
+2020-04-29 09:23:07,074 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.18959, crash 26.237165, drop 34.168, kobe 28.484522, runner 34.353176, traffic 23.614952
+2020-04-29 09:23:07,075 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.000687
+2020-04-29 10:00:34,302 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Epoch [ 62/500] Train(Valid) loss: 0.0666(0.0752), PSNR: 29.539368(29.1417973836263), time 0.11174750328063965
+2020-04-29 10:00:34,617 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - PSNR: aerial 27.231281, crash 26.242905, drop 34.90148, kobe 28.471596, runner 34.328636, traffic 23.674883
+2020-04-29 10:00:34,617 - Decoder-T0427184230-D0.10L0.010-RMSE/ - INFO - Current learning rate to: 0.000687
