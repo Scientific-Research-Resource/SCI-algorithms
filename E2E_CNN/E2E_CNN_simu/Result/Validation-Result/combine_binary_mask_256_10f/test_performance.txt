@@ -1,3 +1,0 @@
-		traffic3	train3		tuk-tuk7	upside-down4	walking12	[average]
-psnr	25.2218    	23.7618    	22.9190    	20.9926    		21.1465    	22.8083
-ssim	0.8311		0.6480		0.6933		0.6325			0.6614		0.6933
