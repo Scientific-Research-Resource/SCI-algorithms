@@ -26,24 +26,24 @@ def main():
     ### pre-trainded model
     # pre_model_name [modify]
     # pre_model_name = 'gray_mask_256_10f_server/models-0.1103-608760'
-    pre_model_name = 'binary_mask_256_8f_original_model/models-0.0744-256404'
+    pre_model_name = 'binary_mask_256_10f_server/models-0.1047-1105380'
     
     pre_model_dir = 'Result/Model-Config'
     model_filename = os.path.join(os.path.abspath('.'), pre_model_dir, pre_model_name)
     model_config = {'model_filename': model_filename,
                     'result_data': 'Validation-Result',
                     'result_dir': 'Result',
-                    'compressive_ratio':8, # [modify]
+                    'compressive_ratio':10, # [modify]
                     'batch_size': 1} # [modify]
     
     ### test set
     # test_data_dir [modify]
-    test_data_dir = os.path.join(os.path.abspath('..'), 'data_simu/testing_truth/test_256_8f/')
+    test_data_dir = os.path.join(os.path.abspath('..'), 'data_simu/testing_truth/test_256_10f/')
 
     # mask_name [modify]
-    mask_name = 'mask/binary_mask_256_8f_original_model' 
+    # mask_name = 'mask/binary_mask_256_8f_original_model' 
     # mask_name = 'mask/combine_binary_mask_256_10f'
-    # mask_name = 'mask/binary_mask_256_10f'
+    mask_name = 'mask/binary_mask_256_10f'
 
 
     ## test_data

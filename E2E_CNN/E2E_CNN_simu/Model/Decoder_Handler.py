@@ -49,7 +49,7 @@ class Decoder_Handler(Basement_Handler):
         self.lr_new = tf.placeholder(tf.float32, shape=(), name='lr_new')
         self.lr_update = tf.assign(self.learning_rate, self.lr_new, name='lr_update')
         self.train_test_valid_assignment()
-        # self.trainable_parameter_info() # print network param, zzh
+        self.trainable_parameter_info() # print network param, zzh
         self.saver = tf.train.Saver(tf.global_variables())
 
     def initial_parameter(self):

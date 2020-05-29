@@ -24,6 +24,11 @@ This repository contains the  codes modified from https://github.com/mq0829/DL-C
 
 # Usage 
 
+## Environment
+
+- Tensorflow-gpu==1.13.1 (conda install tensorflow-gpu=1.13.1)
+- numpy, yaml, scipy, hdf5storage, matplotlib, math
+
 ## Training
 
 1. put the ground truth (orig) datasets for training and validation in 'data_simu/training_truth' and 'data_simu/valid_truth', respectively.

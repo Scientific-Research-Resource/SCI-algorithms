@@ -25,22 +25,21 @@ def main():
           
     ### pre-trainded model
     # pre_model_name [modify]
-    pre_model_name = 'Decoder-T0427184230-D0.10L0.010-RMSE/models-0.0744-256404'
+    pre_model_name = 'binary_mask_256_8f_original_model/models-0.0744-256404'
 
-    pre_model_dir = 'Result\\Model-Config'
+    pre_model_dir = 'Result/Model-Config'
     model_filename = os.path.join(os.path.abspath('.'), pre_model_dir, pre_model_name)
     model_config = {'model_filename': model_filename,
                     'result_data': 'Validation-Result',
                     'result_dir': 'Result',
-                    'compressive_ratio':10,
+                    'compressive_ratio':8, # [modify]
                     'batch_size': 1} # [modify]
         
     ### test set
     # test_data_dir [modify]
-    test_data_dir = os.path.join(os.path.abspath('..'), 'data_meas\\meas\\')
+    test_data_dir = os.path.join(os.path.abspath('..'), 'data_meas/meas/')
 
     # mask_name [modify]
-    # mask_name = 'mask_original' 
     mask_name = 'mask_256'
 
 
@@ -52,10 +51,10 @@ def main():
 
     ## mask
     # used to initialize the network input
-    mask_name = os.path.join(os.path.abspath('..'), 'data_meas\\mask', mask_name)
+    mask_path = os.path.join(os.path.abspath('..'), 'data_meas/mask', mask_name)
 
     ## test set    
-    dataset_name = (data_name,mask_name)
+    dataset_name = (data_name,mask_path)
     
 
     ### inference

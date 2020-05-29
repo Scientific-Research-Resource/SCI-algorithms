@@ -60,3 +60,5 @@
 2020-05-28 00:20:23,866 - Validation-Result - INFO - {'model_filename': 'E:\\project\\CACTI\\simulation\\CI algorithm\\E2E_CNN\\E2E_CNN_simu\\Result/Model-Config\\binary_mask_256_8f_original_model/models-0.0744-256404', 'result_data': 'Validation-Result', 'result_dir': 'Result', 'compressive_ratio': 8, 'batch_size': 1}
 2020-05-28 00:20:41,187 - Validation-Result - INFO - Log directory: Result\Validation-Result
 2020-05-28 00:20:41,189 - Validation-Result - INFO - {'model_filename': 'E:\\project\\CACTI\\simulation\\CI algorithm\\E2E_CNN\\E2E_CNN_simu\\Result/Model-Config\\binary_mask_256_8f_original_model/models-0.0744-256404', 'result_data': 'Validation-Result', 'result_dir': 'Result', 'compressive_ratio': 8, 'batch_size': 1}
+2020-05-29 09:39:47,019 - Validation-Result - INFO - Log directory: Result\Validation-Result
+2020-05-29 09:39:47,057 - Validation-Result - INFO - {'model_filename': 'E:\\project\\CACTI\\SCI algorithm\\E2E_CNN\\E2E_CNN_simu\\Result/Model-Config\\binary_mask_256_10f_server/models-0.1047-1105380', 'result_data': 'Validation-Result', 'result_dir': 'Result', 'compressive_ratio': 10, 'batch_size': 1}
