@@ -27,29 +27,26 @@ addpath(genpath('./packages'));   % packages
 addpath(genpath('./utils'));      % utilities
 
 % datasetdir = './dataset/simdata/benchmark'; % benchmark simulation dataset
+% datasetdir = './dataset/simdata/test_data';  % dataset for test
 datasetdir = './dataset/simdata/zzh_data'; % zzh simulation dataset
 resultdir  = './results';                   % results
+test_my_data = 1;
 
 % [1] load dataset
-%     dataname = 'kobe'; % [default] data name
-dataname = 'test'; %  data name
+dataname = 'test_kobe_binary'; % [default] data name
+% dataname = 'data_traffic3'; %  data name
+% dataname = 'data_train3_binary'; %  data name
+% dataname = 'traffic_8f'; %  data name
 datapath = sprintf('%s/%s.mat',datasetdir,dataname);
 
 if exist(datapath,'file')
-%     load(datapath,'meas','mask','orig'); % meas, mask, orig
+    load(datapath,'meas','mask','orig'); % meas, mask, orig
 
-	% zzh-load
-	if 1
-		load(datapath,'meas_bayer','mask_bayer','orig_bayer'); % meas, mask, orig	
-		% zzh- normalize
-		mask_max = max(mask_bayer,[],'a');
-		mask_bayer = mask_bayer./ mask_max;
-		meas_bayer = meas_bayer./ mask_max;
-		% zzh-rename
-		meas = meas_bayer;
-		mask = mask_bayer;
-		orig = orig_bayer;	
-	end
+	% zzh- normalize
+	mask_max = max(mask_bayer,[],'a');
+	mask_bayer = mask_bayer./ mask_max;
+	meas_bayer = meas_bayer./ mask_max;
+
 else
     error('File %s does not exist, please check dataset directory!',datapath);
 end
@@ -77,29 +74,35 @@ para.acc      =    1; % enable acceleration
 para.flag_iqa = true; % enable image quality assessments in iterations
 
 % [2.1] GAP-TV
-para.denoiser = 'tv'; % TV denoising
-  para.maxiter  = 100; % maximum iteration
-  para.tvweight = 0.07*255/MAXB; % weight for TV denoising
-  para.tviter   = 5; % number of iteration for TV denoising
-  
-[vgaptv,psnr_gaptv,ssim_gaptv,tgaptv,psnrall_tv] = ...
-    gapdenoise_cacti(mask,meas,orig,[],para);
-
-fprintf('GAP-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
-    upper(para.denoiser),mean(psnr_gaptv),mean(ssim_gaptv),tgaptv);
+% para.denoiser = 'tv'; % TV denoising
+%   para.maxiter  = 100; % maximum iteration
+%   para.tvweight = 0.07*255/MAXB; % weight for TV denoising
+%   para.tviter   = 5; % number of iteration for TV denoising
+%   
+% [vgaptv,psnr_gaptv,ssim_gaptv,tgaptv,psnrall_tv] = ...
+%     gapdenoise_cacti(mask,meas,orig,[],para);
+% 
+% fprintf('GAP-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
+%     upper(para.denoiser),mean(psnr_gaptv),mean(ssim_gaptv),tgaptv);
 
 % [2.2] GAP-FFDNet
 para.denoiser = 'ffdnet'; % FFDNet denoising
-  load(fullfile('models','FFDNet_gray.mat'),'net');
-  para.net = vl_simplenn_tidy(net);
-  para.useGPU = true;
-  if para.useGPU
-      para.net = vl_simplenn_move(para.net, 'gpu') ;
-  end
-  para.ffdnetvnorm_init = true; % use normalized video for the first 10 iterations
-  para.ffdnetvnorm = false; % normalize the video before FFDNet video denoising
-  para.sigma   = [50 25 12  6]/MAXB; % noise deviation (to be estimated and adapted)
-  para.maxiter = [10 10 10 10];
+load(fullfile('models','FFDNet_gray.mat'),'net');
+para.net = vl_simplenn_tidy(net);
+para.useGPU = true;
+if para.useGPU
+  para.net = vl_simplenn_move(para.net, 'gpu') ;
+end
+para.ffdnetvnorm_init = true; % use normalized video for the first 10 iterations
+para.ffdnetvnorm = false; % normalize the video before FFDNet video denoising
+%   para.sigma   = [50 25 12  6]/MAXB; % default, for kobe
+%   para.maxiter = [10 10 10 10];
+
+%   para.sigma   = [35 15 12  6]/MAXB; %   for test_kobe_binary
+%   para.maxiter = [10 10 10 10];
+
+para.sigma   = [35 15 12  6]/MAXB; %   for test_kobe_binary
+para.maxiter = [10 10 10 10];
   
 [vgapffdnet,psnr_gapffdnet,ssim_gapffdnet,tgapffdnet,psnrall_ffdnet] = ...
     gapdenoise_cacti(mask,meas,orig,[],para);

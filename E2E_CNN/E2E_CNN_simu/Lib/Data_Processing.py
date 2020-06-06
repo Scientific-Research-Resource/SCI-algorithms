@@ -58,6 +58,7 @@ def Data_Generator_File(dataset_name, label, mask, batch_size, nF, is_training=T
         key_name = 'patch_save'
     else:
         key_name = 'meas'
+        # key_name = 'meas_bayer'
         
     # W, H ,nC= 256,256,nF
     sample_num = len(label)
@@ -83,8 +84,7 @@ def Data_Generator_File(dataset_name, label, mask, batch_size, nF, is_training=T
                 else:
                     img = sio.loadmat(data_name[1]+label[ind_set])[key_name]
             else:
-                img = sio.loadmat(data_name[2]+label[ind_set])[key_name]
-
+                img = sio.loadmat(data_name[2]+label[ind_set])[key_name] # for < '-v7.3' .mat file (MATLAB)
 
             if is_testing_meas is False:
                 img=img/255

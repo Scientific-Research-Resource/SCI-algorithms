@@ -52,7 +52,9 @@ data_path = "../Data/B_8_DAVIS2017/train/480p"  # traning data from DAVIS2017
 
 test_path1 = "../Data/test/simulation"  # simulation data for comparison
 
-mask, mask_s = generate_masks(data_path)
+mask_name = 'combine_binary_mask_256_10f.mat';
+
+mask, mask_s = generate_masks(data_path, mask_name)
 
 last_train = 0
 model_save_filename = ''

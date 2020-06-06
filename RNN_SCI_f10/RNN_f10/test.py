@@ -42,7 +42,7 @@ import datetime
 import os
 import numpy as np
 from torch.autograd import Variable
-os.environ["CUDA_VISIBLE_DEVICES"] = "5"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 if not torch.cuda.is_available():
     raise Exception('NO GPU!')
@@ -51,7 +51,9 @@ data_path = "../Data/B_8_DAVIS2017/train/480p"  # traning data from DAVIS2017
 
 test_path = "../Data/test/simulation"  # simulation data for comparison
 
-mask, mask_s = generate_masks(data_path)
+mask_name = 'combine_binary_mask_256_10f.mat';
+
+mask, mask_s = generate_masks(data_path, mask_name)
 
 last_train = 81
 model_save_filename = 'pretrained_model'

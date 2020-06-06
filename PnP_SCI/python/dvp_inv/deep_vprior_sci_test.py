@@ -31,7 +31,8 @@ from utils import (A_, At_, psnr)
 
 
 # [0] environment configuration
-datasetdir = './dataset' # dataset
+# datasetdir = './dataset' # dataset
+datasetdir = './dataset/benchmark' # dataset
 resultsdir = './results' # results
 
 # datname = 'kobe' # name of the dataset
@@ -46,9 +47,10 @@ resultsdir = './results' # results
 # datname = 'test' # name of the dataset
 # varname = 'X' # name of the variable in the .mat data file
 
+datname = 'test_kobe_binary'
 # datname = 'init_test' # name of the dataset, traffice 4 frame
-# datname = 'init_test_8f' # name of the dataset, traffice 8 frame
-datname = 'test' # name of the dataset 
+# datname = 'init_test_10f' # name of the dataset, traffice 8 frame
+# datname = 'test' # name of the dataset 
 # datname = 'test_8f' # name of the dataset, traffice 8 frame
 
 # datname = '512scale_traffic_randomgraymask_syn' # name of the dataset 
@@ -70,41 +72,41 @@ matfile = datasetdir + '/' + datname + '.mat' # path of the .mat data file
 # [1] load data
 with h5py.File(matfile, 'r') as file: # for '-v7.3' .mat file (MATLAB)
     # print(list(file.keys()))
-    meas_bayer = np.array(file['meas_bayer'])
-    mask_bayer = np.array(file['mask_bayer'])
-    orig_bayer = np.array(file['orig_bayer'])
+    meas = np.array(file['meas'])
+    mask = np.array(file['mask'])
+    orig = np.array(file['orig'])
 #==============================================================================
 # file = scipy.io.loadmat(matfile) # for '-v7.2' and below .mat file (MATLAB)
 # X = list(file[varname])
 #==============================================================================
 
-mask_bayer = np.float32(mask_bayer).transpose((2,1,0))
+mask = np.float32(mask).transpose((2,1,0))
 
 # normalize zzh-20200430
-mask_max = np.max(mask_bayer)  # zzh-20200430
-mask_bayer = mask_bayer/mask_max # zzh-20200430
-meas_bayer = meas_bayer/mask_max # zzh-20200430
+mask_max = np.max(mask)  # zzh-20200430
+mask = mask/mask_max # zzh-20200430
+meas = meas/mask_max # zzh-20200430
 
-if len(meas_bayer.shape) < 3:
-    meas_bayer = np.float32(meas_bayer).transpose((1,0))
+if len(meas.shape) < 3:
+    meas = np.float32(meas).transpose((1,0))
 else:
-    meas_bayer = np.float32(meas_bayer).transpose((2,1,0))
-orig_bayer = np.float32(orig_bayer).transpose((2,1,0))
+    meas = np.float32(meas).transpose((2,1,0))
+orig = np.float32(orig).transpose((2,1,0))
 # print(mask_bayer.shape, meas_bayer.shape, orig_bayer.shape)
 
 iframe = 0
 MAXB = 255.
-(nrows, ncols, nmask) = mask_bayer.shape
-if len(meas_bayer.shape) >= 3:
-    meas_bayer = np.squeeze(meas_bayer[:,:,iframe])/MAXB
+(nrows, ncols, nmask) = mask.shape
+if len(meas.shape) >= 3:
+    meas = np.squeeze(meas[:,:,iframe])/MAXB
 else:
-    meas_bayer = meas_bayer/MAXB
-orig_bayer = orig_bayer[:,:,iframe*nmask:(iframe+1)*nmask]/MAXB
+    meas = meas/MAXB
+orig = orig[:,:,iframe*nmask:(iframe+1)*nmask]/MAXB
 
 
 # In[4]:
 
-
+'''
 ## [2.1] GAP-TV [for baseline reference]
 _lambda = 1 # regularization factor
 accelerate = True # enable accelerated version of GAP
@@ -122,7 +124,7 @@ end_time = time.time()
 tgaptv = end_time - begin_time
 print('GAP-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format(
     denoiser.upper(), mean(psnr_gaptv), mean(ssim_gaptv), tgaptv))
-
+'''
 
 # In[9]:
 
@@ -140,8 +142,10 @@ noise_estimate = False # disable noise estimation for GAP
 # iter_max = [20,20,20,10] # maximum number of iterations
 # sigma    = [50/255, 25/255, 12/255, 6/255] # pre-set noise standard deviation
 # iter_max = [10,10,10,10] # maximum number of iterations
-sigma    = [50/255,25/255] # pre-set noise standard deviation
-iter_max = [20,20] # maximum number of iterations
+# sigma    = [50/255,25/255] # pre-set noise standard deviation,original
+# iter_max = [20,20] # maximum number of iterations,original
+sigma    = [35/255,15/255,12/255,6/255] # pre-set noise standard deviation
+iter_max = [10,10,10,10] # maximum number of iterations
 useGPU = True # use GPU
 
 # pre-load the model for FFDNet image denoising
@@ -166,11 +170,11 @@ model.load_state_dict(state_dict)
 model.eval() # evaluation mode
 
 begin_time = time.time()
-vgapffdnet_bayer,psnr_gapffdnet,ssim_gapffdnet,psnrall_ffdnet =                 gap_denoise_bayer(meas_bayer, mask_bayer, _lambda, 
+vgapffdnet,psnr_gapffdnet,ssim_gapffdnet,psnrall_ffdnet =                 gap_denoise_bayer(meas, mask, _lambda, 
                                   accelerate, denoiser, iter_max, 
                                   noise_estimate, sigma,
                                   x0_bayer=None,
-                                  X_orig=orig_bayer,
+                                  X_orig=orig,
                                   model=model)
 end_time = time.time()
 tgapffdnet = end_time - begin_time
@@ -191,10 +195,10 @@ denoiser = 'fastdvdnet' # video non-local network
 noise_estimate = False # disable noise estimation for GAP
 # sigma    = [50/255, 25/255, 12/255, 6/255, 3/255] # pre-set noise standard deviation
 # iter_max = [10, 10, 10, 10, 10] # maximum number of iterations
-sigma    = [50/255, 25/255, 12/255] # pre-set noise standard deviation
-iter_max = [20, 20, 25] # maximum number of iterations
-# sigma    = [50/255,25/255] # pre-set noise standard deviation
-# iter_max = [10,10] # maximum number of iterations
+# sigma    = [50/255, 25/255, 12/255] # pre-set noise standard deviation,original
+# iter_max = [20, 20, 25] # maximum number of iterations,original
+sigma    = [50/255,25/255,12/255,6/255] # pre-set noise standard deviation
+iter_max = [10,10,10,10] # maximum number of iterations
 useGPU = True # use GPU
 
 # pre-load the model for FFDNet image denoising
@@ -215,16 +219,17 @@ model.load_state_dict(state_temp_dict)
 model.eval()
 
 begin_time = time.time()
-vgapfastdvdnet_bayer,psnr_gapfastdvdnet,ssim_gapfastdvdnet,psnrall_fastdvdnet =                 gap_denoise_bayer(meas_bayer, mask_bayer, _lambda, 
+vgapfastdvdnet,psnr_gapfastdvdnet,ssim_gapfastdvdnet,psnrall_fastdvdnet =                 gap_denoise_bayer(meas, mask, _lambda, 
                                   accelerate, denoiser, iter_max, 
                                   noise_estimate, sigma,
                                   x0_bayer=None,
-                                  X_orig=orig_bayer,
+                                  X_orig=orig,
                                   model=model)
 end_time = time.time()
 tgapfastdvdnet = end_time - begin_time
 print('GAP-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format(
     denoiser.upper(), mean(psnr_gapfastdvdnet), mean(ssim_gapfastdvdnet), tgapfastdvdnet))
+    
 
 # In[13]:
 
@@ -285,6 +290,24 @@ print('GAP-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format
 savedmatdir = resultsdir + '/savedmat/'
 if not os.path.exists(savedmatdir):
     os.makedirs(savedmatdir)
+
+sio.savemat('{}gap{}_{}{:d}_sigma{:d}.mat'.format(savedmatdir,'-Net',datname,nmask,int(sigma[-1]*MAXB)),
+            {'vgapffdnet':vgapffdnet, 
+             'orig':orig,
+             'psnr_gapffdnet':psnr_gapffdnet,
+             'ssim_gapffdnet':ssim_gapffdnet,
+             'psnrall_ffdnet':psnrall_ffdnet,
+             'tgapffdnet':tgapffdnet,
+             'vgapfastdvdnet':vgapfastdvdnet, 
+             'psnr_gapfastdvdnet':psnr_gapfastdvdnet,
+             'ssim_gapfastdvdnet':ssim_gapfastdvdnet,
+             'psnrall_fastdvdnet':psnrall_fastdvdnet,
+             'tgapfastdvdnet':tgapfastdvdnet})
+
+'''
+savedmatdir = resultsdir + '/savedmat/'
+if not os.path.exists(savedmatdir):
+    os.makedirs(savedmatdir)
 # sio.savemat('{}gap{}_{}{:d}.mat'.format(savedmatdir,denoiser.lower(),datname,nmask),
 #             {'vgapdenoise':vgapdenoise},{'psnr_gapdenoise':psnr_gapdenoise})
 sio.savemat('{}gap{}_{}{:d}_sigma{:d}.mat'.format(savedmatdir,denoiser.lower(),datname,nmask,int(sigma[-1]*MAXB)),
@@ -306,3 +329,4 @@ sio.savemat('{}gap{}_{}{:d}_sigma{:d}.mat'.format(savedmatdir,denoiser.lower(),d
 # sio.savemat(savedmatdir+'gaptv'+'_'+datname+str(ColT)+'.mat',{'vgaptv':vgaptv})
 #np.save('Traffic_cacti_T8.npy', f)
 
+'''

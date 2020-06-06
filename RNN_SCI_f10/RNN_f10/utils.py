@@ -34,8 +34,8 @@ import scipy.io as scio
 import numpy as np
 
 
-def generate_masks(mask_path):
-    mask = scio.loadmat(mask_path + '/mask.mat')
+def generate_masks(mask_path, mask_name = 'mask.mat'): # zzh
+    mask = scio.loadmat(mask_path + '/' + mask_name)
     mask = mask['mask']
     mask = np.transpose(mask, [2, 0, 1])
     mask_s = np.sum(mask, axis=0)
