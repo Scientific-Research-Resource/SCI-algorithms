@@ -2,39 +2,41 @@
 
 1. E2E_CNN **training info** (Cr=10)
 
-   | train/valid | binary mask | combine binary mask | gray mask | combine gray mask |
-   | ----------- | :---------: | :-----------------: | :-------: | :---------------: |
-   | train       |    28.7     |        26.3         |   27.3    |       25.7        |
-   | valid       |    24.4     |        22.7         |   23.5    |       22.1        |
-   | test        |    24.7     |        22.8         |   23.7    |       22.3        |
+   | train/valid  | binary mask | combine binary mask | gray mask | combine gray mask |
+   | ------------ | :---------: | :-----------------: | :-------: | :---------------: |
+   | train        |    28.7     |        26.3         |   27.3    |       25.7        |
+   | valid        |    24.4     |        22.7         |   23.5    |       22.1        |
+   | test_256_10f |    24.7     |        22.8         |   23.7    |       22.3        |
 
    
 
-2. reconstruction performance comparison between E2E_CNN and PnP (psnr/ssim)
+2. **reconstruction performance** comparison between E2E_CNN and PnP (psnr/ssim)
 
-   test set: traffic3  train3  tuk-tuk7  upside-down4  walking12
+- test set: test_256_10f (traffic3  train3  tuk-tuk7  upside-down4  walking12)
 
-| method  | binary mask    | combined binary mask |   gray mask    | combined gray mask |
-| :-----: | -------------- | :------------------: | :------------: | :----------------: |
-| E2E_CNN | 24.6777/0.7657 |    22.8083/0.6933    | 23.7212/0.7217 |   22.3240/0.6698   |
-| PnP-SCI |                |                      |                |                    |
+|   method   | binary mask    | combined binary mask |   gray mask    | combined gray mask |
+| :--------: | -------------- | :------------------: | :------------: | :----------------: |
+|  E2E_CNN   | 24.6777/0.7657 |    22.8083/0.6933    | 23.7212/0.7217 |   22.3240/0.6698   |
+| PnP-FFDNET |                |                      |                |                    |
+- test set: bm_256_10f (aerial	crash	drop	kobe	runner	traffic)
+
+|   method   | binary mask    | combined binary mask |   gray mask   | combined gray mask |
+| :--------: | -------------- | :------------------: | :-----------: | :----------------: |
+|  E2E_CNN   | 29.003/0.9037  |    27.628/0.8730     | 28.791/0.8855 |   27.7606/0.872    |
+|            | 26.45/0.8374   |                      |               |                    |
+| PnP-FFDNET | 28.3517/0.8641 |                      |               |                    |
 
 
 
 
 
 ---
-
 Appendix
 
-1. E2E_CNN reproduction performance test (psnr/ssim)
-
-   binary mask
-
-    (Cr=10, retrained model from Zhihong Zhang) & (Cr=8, original model from Ziyi Meng)
-
-   test set: traffic3  train3  tuk-tuk7  upside-down4  walking12
-
+1. **E2E_CNN reproduction performance** test (psnr/ssim)
+- binary mask
+   - (Cr=10, retrained model from Zhihong Zhang) & (Cr=8, original model from Ziyi Meng)
+   - test set: test_256_10f (traffic3  train3  tuk-tuk7  upside-down4  walking12)
 |       data        |    traffic3    |     train3     |    tuk-tuk7    |  upside-down4  |   walking12    |   [average]    |
 | :---------------: | :------------: | :------------: | :------------: | :------------: | :------------: | :------------: |
 | **Cr8, original** | 26.5100/0.8721 | 24.9001/0.7140 | 25.3374/0.7892 | 24.2673/0.7690 | 23.6823/0.7664 | 24.9394/0.7821 |

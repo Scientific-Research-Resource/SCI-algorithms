@@ -26,32 +26,17 @@ addpath(genpath('./algorithms')); % algorithms
 addpath(genpath('./packages'));   % packages
 addpath(genpath('./utils'));      % utilities
 
-% datasetdir = './dataset/simdata/benchmark'; % benchmark simulation dataset
-datasetdir = './dataset/simdata/zzh_data'; % zzh simulation dataset
+datasetdir = './dataset/simdata/benchmark'; % benchmark simulation dataset
 resultdir  = './results';                   % results
 
 % [1] load dataset
 if nargin<1
-%     dataname = 'kobe'; % [default] data name
-	dataname = 'test'; %  data name
+    dataname = 'kobe'; % [default] data name
 end
 datapath = sprintf('%s/%s.mat',datasetdir,dataname);
 
 if exist(datapath,'file')
-%     load(datapath,'meas','mask','orig'); % meas, mask, orig
-
-	% zzh-load
-	if 1
-		load(datapath,'meas_bayer','mask_bayer','orig_bayer'); % meas, mask, orig	
-		% zzh- normalize
-		mask_max = max(mask_bayer,[],'a');
-		mask_bayer = mask_bayer./ mask_max;
-		meas_bayer = meas_bayer./ mask_max;
-		% zzh-rename
-		meas = meas_bayer;
-		mask = mask_bayer;
-		orig = orig_bayer;	
-	end
+    load(datapath,'meas','mask','orig'); % meas, mask, orig
 else
     error('File %s does not exist, please check dataset directory!',datapath);
 end
@@ -118,4 +103,3 @@ end
 save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat']);
 
 end
-

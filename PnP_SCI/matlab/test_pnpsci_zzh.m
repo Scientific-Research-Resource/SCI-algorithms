@@ -22,18 +22,19 @@
 %   See also GAPDENOISE_CACTI, GAPDENOISE, TEST_PNPSCI_LARGESCALE.
 
 % [0] environment configuration
+clc, clear
 addpath(genpath('./algorithms')); % algorithms
 addpath(genpath('./packages'));   % packages
 addpath(genpath('./utils'));      % utilities
 
 % datasetdir = './dataset/simdata/benchmark'; % benchmark simulation dataset
 % datasetdir = './dataset/simdata/test_data';  % dataset for test
-datasetdir = './dataset/simdata/zzh_data'; % zzh simulation dataset
+datasetdir = './dataset/simdata/binary_mask_256_10f/bm_256_10f'; % zzh simulation dataset
 resultdir  = './results';                   % results
 test_my_data = 1;
 
 % [1] load dataset
-dataname = 'test_kobe_binary'; % [default] data name
+dataname = 'data_traffic'; % [default] data name
 % dataname = 'data_traffic3'; %  data name
 % dataname = 'data_train3_binary'; %  data name
 % dataname = 'traffic_8f'; %  data name
@@ -43,9 +44,9 @@ if exist(datapath,'file')
     load(datapath,'meas','mask','orig'); % meas, mask, orig
 
 	% zzh- normalize
-	mask_max = max(mask_bayer,[],'a');
-	mask_bayer = mask_bayer./ mask_max;
-	meas_bayer = meas_bayer./ mask_max;
+	mask_max = max(mask,[],'a');
+	mask = mask./ mask_max;
+	meas = meas./ mask_max;
 
 else
     error('File %s does not exist, please check dataset directory!',datapath);
@@ -75,10 +76,13 @@ para.flag_iqa = true; % enable image quality assessments in iterations
 
 % [2.1] GAP-TV
 % para.denoiser = 'tv'; % TV denoising
-%   para.maxiter  = 100; % maximum iteration
-%   para.tvweight = 0.07*255/MAXB; % weight for TV denoising
-%   para.tviter   = 5; % number of iteration for TV denoising
-%   
+% para.maxiter  = 100; % maximum iteration
+% % para.tvweight = 0.07*255/MAXB; % weight for TV denoising, original
+% % para.tviter   = 5; % number of iteration for TV denoising, original
+% 
+% para.tvweight = 0.07*255/MAXB; % weight for TV denoising, test
+% para.tviter   = 5; % number of iteration for TV denoising, test
+% 
 % [vgaptv,psnr_gaptv,ssim_gaptv,tgaptv,psnrall_tv] = ...
 %     gapdenoise_cacti(mask,meas,orig,[],para);
 % 
@@ -95,14 +99,14 @@ if para.useGPU
 end
 para.ffdnetvnorm_init = true; % use normalized video for the first 10 iterations
 para.ffdnetvnorm = false; % normalize the video before FFDNet video denoising
-%   para.sigma   = [50 25 12  6]/MAXB; % default, for kobe
-%   para.maxiter = [10 10 10 10];
+% para.sigma   = [50 25 12  6]/MAXB; % default, for kobe
+% para.maxiter = [10 10 10 10];
 
 %   para.sigma   = [35 15 12  6]/MAXB; %   for test_kobe_binary
 %   para.maxiter = [10 10 10 10];
 
-para.sigma   = [35 15 12  6]/MAXB; %   for test_kobe_binary
-para.maxiter = [10 10 10 10];
+para.sigma   = [30 15 6]/MAXB; %   for test
+para.maxiter = [10 12 5];
   
 [vgapffdnet,psnr_gapffdnet,ssim_gapffdnet,tgapffdnet,psnrall_ffdnet] = ...
     gapdenoise_cacti(mask,meas,orig,[],para);
@@ -116,7 +120,8 @@ if ~exist(matdir,'dir')
     mkdir(matdir);
 end
 
-save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat']);
+% save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat']);
+save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat'], '-append');
 
 % end
 

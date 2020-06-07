@@ -56,6 +56,7 @@ def Data_Generator_File(dataset_name, label, mask, batch_size, nF, is_training=T
     (data_name,mask_name) = dataset_name
     if is_testing_meas is False:
         key_name = 'patch_save'
+        # key_name = 'orig'
     else:
         key_name = 'meas'
         # key_name = 'meas_bayer'

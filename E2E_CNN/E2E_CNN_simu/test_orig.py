@@ -26,7 +26,7 @@ def main():
     ### pre-trainded model
     # pre_model_name [modify]
     # pre_model_name = 'gray_mask_256_10f_server/models-0.1103-608760'
-    pre_model_name = 'binary_mask_256_10f_server/models-0.1047-1105380'
+    pre_model_name = 'combine_gray_mask_256_10f_server_finetune/models-0.1688-971880'
     
     pre_model_dir = 'Result/Model-Config'
     model_filename = os.path.join(os.path.abspath('.'), pre_model_dir, pre_model_name)
@@ -38,14 +38,15 @@ def main():
     
     ### test set
     # test_data_dir [modify]
-    test_data_dir = os.path.join(os.path.abspath('..'), 'data_simu/testing_truth/test_256_10f/')
+    test_data_dir = os.path.join(os.path.abspath('..'), 'data_simu/testing_truth/bm_256_10f/')
 
     # mask_name [modify]
-    # mask_name = 'mask/binary_mask_256_8f_original_model' 
-    # mask_name = 'mask/combine_binary_mask_256_10f'
-    mask_name = 'mask/binary_mask_256_10f'
-
-
+    # mask_name = 'mask/binary_mask_256_10f'
+    # mask_name = 'mask/combine_binary_mask_256_10f'   
+    # mask_name = 'mask/gray_mask_256_10f'
+    mask_name = 'mask/combine_gray_mask_256_10f'
+   
+   
     ## test_data
     data_name = []
     data_name.append('') # placeholder
