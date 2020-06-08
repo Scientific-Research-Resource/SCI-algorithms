@@ -38,10 +38,18 @@ def generate_masks(mask_path, mask_name = 'mask.mat'): # zzh
     mask = scio.loadmat(mask_path + '/' + mask_name)
     mask = mask['mask']
     mask = np.transpose(mask, [2, 0, 1])
+
     mask_s = np.sum(mask, axis=0)
+
+    # replace 0 to avoid nan value, for binary mask
+    # index = np.where(mask_s == 0)
+    # mask_s[index] = 1
+    # mask_s = mask_s.astype(np.uint8) 
+
+    # replace 0 to avoid nan value, for gray mask
     index = np.where(mask_s == 0)
-    mask_s[index] = 1
-    mask_s = mask_s.astype(np.uint8)
+    mask_s[index] = 0.1 # zzh: this value is chosen empirically
+
     mask = torch.from_numpy(mask)
     mask = mask.float()
     mask = mask.cuda()

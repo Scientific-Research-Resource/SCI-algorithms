@@ -30,7 +30,7 @@ zhcheng@stu.xidian.edu.cn
 """
 
 from my_tools import *
-
+import numpy as np #[debug]
 
 class forward_rnn(nn.Module):
 
@@ -120,6 +120,11 @@ class cnn1(nn.Module):
         maskt = maskt.mul(meas_re)
         xt = torch.cat([meas_re, maskt], dim=1)
         data = xt
+
+        # [debug] check for nan value
+        # if torch.any((torch.isnan(data))):
+            # print('There are nan values:{}'.format(np.where(data.cpu().numpy())))
+
         out = self.conv1(data)
 
         out = self.relu1(out)
