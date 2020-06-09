@@ -203,8 +203,6 @@ def test(test_path, epoch, result_path):
 ## train
 def train(epoch, learning_rate, result_path, logger):
     epoch_loss = 0
-    begin = time.time()
-
     optimizer = optim.Adam([{'params': first_frame_net.parameters()}, {'params': rnn1.parameters()},
                             {'params': rnn2.parameters()}], lr=learning_rate)
 
@@ -242,13 +240,13 @@ def train(epoch, learning_rate, result_path, logger):
 
         if iteration%50==0:
             now_time = time.time()
-            print('---> iter {} Complete: Avg. Loss: {:.4f} time: {}'\
+            print('---> iter {} Complete: Avg. Loss: {:.8f} time: {:.2f}'\
                 .format(iteration, epoch_loss / iteration, now_time - begin))
             
     test(test_path, epoch, result_path)
 
     end = time.time()
-    logger.info('===> Epoch {} Complete: Avg. Loss: {:.4f} time: {:.2f}'\
+    logger.info('===> Epoch {} Complete: Avg. Loss: {:.8f} time: {:.2f}'\
         .format(epoch, epoch_loss / len(train_data_loader), end - begin))
 
 ## checkpoint
@@ -314,4 +312,5 @@ def main(learning_rate):
 
 
 if __name__ == '__main__':
+    begin = time.time()
     main(learning_rate)
