@@ -1,30 +1,3 @@
-obj_pos: -5
-
-obj_size: 512x512
-
-obj_pix_size: 0.00115
-
-lens_pos: 0
-
-lens_f: 2.5
-
-lens_radius: 0.5
-
-dmd_pos: 0
-
-dmd_size: 100x100
-
-dmd_pix_size: 0.0105
-
-mask_pos: 4.98
-
-mask_size: 600x600
-
-mask_pix_size: 0.001
-
-sensor_pos: 5
-
-sensor_size: 512x512
-
-sensor_pix_size: 0.00115
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:5a38e29fee2be225d4102c883754625b00b466480502e3ae47aa4918933f3946
+size 273
