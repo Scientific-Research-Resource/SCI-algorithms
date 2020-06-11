@@ -2,27 +2,31 @@
 %	Generate Dataset for E2E_CNN
 %	with data augmentation
 %
+%	main params:
+%	-------- 
+%	raw_dataset_dir: directory for raw dataset 
+%	raw_data_filetype: raw dataset image filetype
+%	root_dir / train_dir | test_dir | valid dir: directory for saving generated dataset
+% 
 %   --------
 %   Created:        Zhihong Zhang <z_zhi_hong@163.com>, 2020-05-17
-%   Last Modified:  Zhihong Zhang, 2020-05-17
+%   Last Modified:  Zhihong Zhang, 2020-06-11
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% setting
 % path setting
-root_dir = 'E:\project\CACTI\simulation\CI algorithm\E2E_CNN\';
 % 480p resolution - 90 videos, 6208 images
-data_raw_dir = 'data_raw\DAVIS-2017-Unsupervised-trainval\480p\';
+raw_dataset_dir = 'E:\project\CACTI\SCI algorithm\E2E_CNN\data_raw\DAVIS-2017-Unsupervised-trainval\480p\'; %! change this with your path
 % full resolution - 90 videos, 6208 images
-% data_raw_dir = 'data_raw\DAVIS-2017-Unsupervised-trainval\full_resolution\'; 
-data_raw_filetype = '*.jpg';
+% raw_dataset_dir = 'data_raw\DAVIS-2017-Unsupervised-trainval\full_resolution\'; 
+raw_data_filetype = '*.jpg';
 
 % save_path
-% train_dir = 'data_simu\training_truth\';
-% test_dir = 'data_simu\testing_truth\';
-% valid_dir = 'data_simu\valid_truth\';
-train_dir = 'test\1\';
-test_dir = 'test\2\';
-valid_dir = 'test\3\';
+root_dir = '.\';
+train_dir = 'data_simu\training_truth\';
+test_dir = 'data_simu\testing_truth\';
+valid_dir = 'data_simu\valid_truth\';
+
 
 % param setting
 Cr = 10; % compressive ratio of snapshot
@@ -32,8 +36,8 @@ var_name = 'patch_save'; % save name for a Cr patch
 
 % total num: 90 videos, 6208 images
 trainset_num = 85; % number of videos used to generate training set
-testset_num = 3;
-validset_num = 2;
+testset_num = 0;
+validset_num = 0;
 
 % opt
 opt.data_startpoint_step = 5;
@@ -61,17 +65,17 @@ valid_opt.dataset_end_point =  trainset_num+testset_num+validset_num;
 
 % generating trainning set
 disp('----- generate train set -----')
-gen_multiframe_dataset([root_dir data_raw_dir], data_raw_filetype, Cr,...
+gen_multiframe_dataset(raw_dataset_dir, raw_data_filetype, Cr,...
 	save_img_sz, var_name, [root_dir train_dir], train_opt)
 
 % generating test set
 disp('----- generate test set -----')
-gen_multiframe_dataset([root_dir data_raw_dir], data_raw_filetype, Cr,...
+gen_multiframe_dataset(raw_dataset_dir, raw_data_filetype, Cr,...
 	save_img_sz, var_name, [root_dir test_dir], test_opt)
 
 % generating valid set
 disp('----- generate valid set -----')
-gen_multiframe_dataset([root_dir data_raw_dir], data_raw_filetype, Cr,...
+gen_multiframe_dataset(raw_dataset_dir, raw_data_filetype, Cr,...
 	save_img_sz, var_name, [root_dir valid_dir], valid_opt)
 
 disp('----- all dataset generated! -----')
@@ -133,7 +137,7 @@ function gen_multiframe_dataset(raw_data_dir, raw_data_filetype, frame_num, img_
 %	nth_data_item_samping_idx = n+data_startpoint_step : image_sampling_step : 
 %								n+data_startpoint_step+image_sampling_step*(frame_num-1);
 % 
-%   Infoï¼?
+%   Info:
 %   --------
 %   Created:        Zhihong Zhang <z_zhi_hong@163.com>, 2020-05-17
 %   Last Modified:  Zhihong Zhang <z_zhi_hong@163.com>, 2020-05-17

@@ -42,17 +42,19 @@ def generate_masks(mask_path, mask_name = 'mask.mat'): # zzh
     mask_s = np.sum(mask, axis=0)
 
     # replace 0 to avoid nan value
-    if mask.dtype in [np.float]:
+    if (mask - mask.astype(np.int32)).any():
         # for float mask
         index = np.where(mask_s == 0)
         mask_s[index] = 0.1 # zzh: this value is chosen empirically
-        print('\nmask: {}, float type mask'.format(mask_path + '/' + mask_name)) # [debug]
+        # print('float mask') #[debug]
     else:
-        # for binary/integer mask
+        # for binary mask
         index = np.where(mask_s == 0)
         mask_s[index] = 1
         mask_s = mask_s.astype(np.uint8) 
-        print('\nmask: {}, non-float type mask'.format(mask_path + '/' + mask_name)) # [debug]
+        # print('binary mask') #[debug]
+        
+    # print('\nmask: {}'.format(mask_path + '/' + mask_name)) #[debug]
 
     mask = torch.from_numpy(mask)
     mask = mask.float()

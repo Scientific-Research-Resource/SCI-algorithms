@@ -63,8 +63,11 @@ mask_name = 'combine_binary_mask_256_10f.mat'
 Cr = 10
 last_train = 0
 max_iter = 100
-batch_size = 1
+batch_size = 5
 learning_rate = 0.0003
+lr_decay = 0.95
+lr_decay_step = 3   # epoch interval for learning rate decay
+checkpoint_step = 5 # epoch interval for save checkpoints
 mode = 'train'  # train or test
 
 
@@ -76,18 +79,6 @@ train_data_loader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=T
 
 
 ## model set
-# first_frame_net = cnn1()
-# first_frame_net = nn.DataParallel(first_frame_net)
-# first_frame_net = first_frame_net.cuda()
-
-# rnn1 = forward_rnn()
-# rnn1 = nn.DataParallel(rnn1)
-# rnn1 = rnn1.cuda()
-
-# rnn2 = backrnn()
-# rnn2 = nn.DataParallel(rnn2)
-# rnn2 = rnn2.cuda()
-
 first_frame_net = cnn1().cuda()
 rnn1 = forward_rnn().cuda()
 rnn2 = backrnn().cuda()
@@ -106,7 +97,7 @@ loss.cuda()
 
 ### function
 ## test
-def test(test_path, epoch, result_path):
+def test(test_path, epoch, result_path, logger):
     test_list = os.listdir(test_path)
     psnr_forward = torch.zeros(len(test_list))
     psnr_backward = torch.zeros(len(test_list))
@@ -197,8 +188,8 @@ def test(test_path, epoch, result_path):
                     out_pic2 = out_pic2.cpu()
                     scio.savemat(name1, {'pic': out_pic1.numpy()})
                     scio.savemat(name2, {'pic': out_pic2.numpy()})
-    print("only forward rnn result: {:.4f}".format(torch.mean(psnr_forward)),
-          "     backward rnn result: {:.4f}".format(torch.mean(psnr_backward)))
+    logger.info("only forward rnn result: {:.4f}    backward rnn result: {:.4f}"\
+        .format(torch.mean(psnr_forward), torch.mean(psnr_backward)))
 
 ## train
 def train(epoch, learning_rate, result_path, logger):
@@ -243,7 +234,7 @@ def train(epoch, learning_rate, result_path, logger):
             print('---> iter {} Complete: Avg. Loss: {:.8f} time: {:.2f}'\
                 .format(iteration, epoch_loss / iteration, now_time - begin))
             
-    test(test_path, epoch, result_path)
+    test(test_path, epoch, result_path, logger)
 
     end = time.time()
     logger.info('===> Epoch {} Complete: Avg. Loss: {:.8f} time: {:.2f}'\
@@ -300,14 +291,16 @@ def main(learning_rate):
     
     # train
     print('\n---- start training ----\n')
+    logger.info('mask: {}'.format(mask_path + '/' + mask_name)) 
+    
     for epoch in range(last_train + 1, last_train + max_iter + 1):
         train(epoch, learning_rate, result_path, logger)
-        if (epoch % 10 == 0 or epoch > 70):
+        if (epoch % checkpoint_step == 0 or epoch > 70):
             checkpoint(epoch, model_path, logger)
             checkpoint2(epoch, model_path)
             checkpoint3(epoch, model_path)
-        if (epoch % 5 == 0) and (epoch < 150):
-            learning_rate = learning_rate * 0.95
+        if (epoch % lr_decay_step == 0) and (epoch < 150):
+            learning_rate = learning_rate * lr_decay
             logger.info('current learning rate: {}\n'.format(learning_rate))
 
 

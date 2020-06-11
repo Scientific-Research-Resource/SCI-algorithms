@@ -107,7 +107,7 @@ para.ffdnetvnorm = false; % normalize the video before FFDNet video denoising
 
 para.sigma   = [30 15 6]/MAXB; %   for test
 para.maxiter = [10 12 5];
-  
+
 [vgapffdnet,psnr_gapffdnet,ssim_gapffdnet,tgapffdnet,psnrall_ffdnet] = ...
     gapdenoise_cacti(mask,meas,orig,[],para);
 
