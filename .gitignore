@@ -22,7 +22,6 @@ tmp/
 
 # E2E-CNN
 data_raw/
-22/
 
 # keep
 !.gitkeep

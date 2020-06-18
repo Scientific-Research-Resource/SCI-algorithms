@@ -43,6 +43,8 @@ import os
 import logging
 import numpy as np
 from torch.autograd import Variable
+from skimage.metrics import structural_similarity as ssim
+
 
 ### environ
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
@@ -63,7 +65,7 @@ mask_name = 'combine_binary_mask_256_10f.mat'
 Cr = 10
 last_train = 0
 max_iter = 100
-batch_size = 5
+batch_size = 1
 learning_rate = 0.0003
 lr_decay = 0.95
 lr_decay_step = 3   # epoch interval for learning rate decay
@@ -101,6 +103,10 @@ def test(test_path, epoch, result_path, logger):
     test_list = os.listdir(test_path)
     psnr_forward = torch.zeros(len(test_list))
     psnr_backward = torch.zeros(len(test_list))
+    ssim_forward = torch.zeros(len(test_list))
+    ssim_backward = torch.zeros(len(test_list))   
+    
+    
     # load test data
     for i in range(len(test_list)):
         # load orig pic
@@ -161,9 +167,12 @@ def test(test_path, epoch, result_path, logger):
             out_pic1,h1 = rnn1(xt1, meas, mask, meas.shape[0], h0, mode, meas_re)
             out_pic2 = rnn2(out_pic1[:, 9, :, :], meas, mask, meas.shape[0], h1, mode, meas_re)        #  out_pic1[:, fn-1, :, :]
         
-        # calculate psnr
+        # calculate psnr and ssim
             psnr_1 = 0
             psnr_2 = 0
+            ssim_1 = 0
+            ssim_2 = 0
+            
             for ii in range(meas.shape[0] * Cr):
                 out_pic_forward = out_pic1[ii // Cr, ii % Cr, :, :]
                 out_pic_backward = out_pic2[ii // Cr, ii % Cr, :, :]
@@ -174,22 +183,31 @@ def test(test_path, epoch, result_path, logger):
                 mse_backward = mse_backward.data
                 psnr_1 += 10 * torch.log10(255 * 255 / mse_forward)
                 psnr_2 += 10 * torch.log10(255 * 255 / mse_backward)
+
+                ssim_1 += ssim(out_pic_forward.cpu().numpy()* 255, gt_t.cpu().numpy()* 255)
+                ssim_2 += ssim(out_pic_backward.cpu().numpy()* 255, gt_t.cpu().numpy()* 255)
+
             psnr_1 = psnr_1 / (meas.shape[0] * Cr)
             psnr_2 = psnr_2 / (meas.shape[0] * Cr)
             psnr_forward[i] = psnr_1
             psnr_backward[i] = psnr_2
 
+            ssim_1 = ssim_1 / (meas.shape[0] * Cr)
+            ssim_2 = ssim_2 / (meas.shape[0] * Cr)
+            ssim_forward[i] = ssim_1
+            ssim_backward[i] = ssim_2
+
             if sign == 1:
                 if epoch % 10 == 0 or (epoch > 50 and epoch % 2 == 0):
                     a = test_list[i]
-                    name1 = result_path + '/forward_' + a[0:len(a) - 4] + '{}_{:.4f}'.format(epoch, psnr_1) + '.mat'
-                    name2 = result_path + '/backward_' + a[0:len(a) - 4] + '{}_{:.4f}'.format(epoch, psnr_2) + '.mat'
+                    name1 = result_path + '/forward_' + a[0:len(a) - 4] + '{}_{:.4f}_{:.4f}'.format(epoch, psnr_1, ssim_1) + '.mat'
+                    name2 = result_path + '/backward_' + a[0:len(a) - 4] + '{}_{:.4f}_{:.4f}'.format(epoch, psnr_2, ssim_2) + '.mat'
                     out_pic1 = out_pic1.cpu()
                     out_pic2 = out_pic2.cpu()
                     scio.savemat(name1, {'pic': out_pic1.numpy()})
                     scio.savemat(name2, {'pic': out_pic2.numpy()})
-    logger.info("only forward rnn result: {:.4f}    backward rnn result: {:.4f}"\
-        .format(torch.mean(psnr_forward), torch.mean(psnr_backward)))
+    logger.info("only forward rnn result (psnr/ssim): {:.4f}/{:.4f}   backward rnn result: {:.4f}/{:.4f}"\
+        .format(torch.mean(psnr_forward), torch.mean(ssim_forward), torch.mean(psnr_backward), torch.mean(ssim_backward)))
 
 ## train
 def train(epoch, learning_rate, result_path, logger):
@@ -229,6 +247,7 @@ def train(epoch, learning_rate, result_path, logger):
         Loss.backward()
         optimizer.step()
 
+        # show loss and time
         if iteration%50==0:
             now_time = time.time()
             print('---> iter {} Complete: Avg. Loss: {:.8f} time: {:.2f}'\

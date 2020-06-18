@@ -1,0 +1,37 @@
+2020-06-09 06:53:57,064 - INFO: ===> Epoch 1 Complete: Avg. Loss: 0.0096 time: 28053.45
+2020-06-09 14:42:32,806 - INFO: ===> Epoch 2 Complete: Avg. Loss: 0.0063 time: 28115.74
+2020-06-09 22:28:59,731 - INFO: ===> Epoch 3 Complete: Avg. Loss: 0.0051 time: 27986.92
+2020-06-10 06:14:58,747 - INFO: ===> Epoch 4 Complete: Avg. Loss: 0.0047 time: 27959.01
+2020-06-10 14:04:55,803 - INFO: ===> Epoch 5 Complete: Avg. Loss: 0.0044 time: 28197.05
+2020-06-10 14:04:55,805 - INFO: current learning rate: 0.000285
+
+2020-06-10 21:58:26,691 - INFO: ===> Epoch 6 Complete: Avg. Loss: 0.0043 time: 28410.89
+2020-06-11 05:42:34,531 - INFO: ===> Epoch 7 Complete: Avg. Loss: 0.0041 time: 27847.84
+2020-06-11 13:26:34,631 - INFO: ===> Epoch 8 Complete: Avg. Loss: 0.0040 time: 27840.10
+2020-06-11 21:10:24,584 - INFO: ===> Epoch 9 Complete: Avg. Loss: 0.0039 time: 27829.95
+2020-06-12 04:51:45,433 - INFO: ===> Epoch 10 Complete: Avg. Loss: 0.0038 time: 27680.85
+2020-06-12 04:51:45,471 - INFO: Checkpoint saved to ./model/2020_06_08_23_06_23/first_frame_net_model_epoch_10.pth
+2020-06-12 04:51:45,511 - INFO: current learning rate: 0.00027075
+
+2020-06-12 12:33:16,224 - INFO: ===> Epoch 11 Complete: Avg. Loss: 0.0037 time: 27690.71
+2020-06-12 20:18:27,325 - INFO: ===> Epoch 12 Complete: Avg. Loss: 0.0037 time: 27911.10
+2020-06-13 04:01:50,982 - INFO: ===> Epoch 13 Complete: Avg. Loss: 0.0036 time: 27803.65
+2020-06-13 11:44:17,253 - INFO: ===> Epoch 14 Complete: Avg. Loss: 0.0036 time: 27746.27
+2020-06-13 19:27:08,940 - INFO: ===> Epoch 15 Complete: Avg. Loss: 0.0035 time: 27771.68
+2020-06-13 19:27:08,942 - INFO: current learning rate: 0.0002572125
+
+2020-06-14 03:11:40,194 - INFO: ===> Epoch 16 Complete: Avg. Loss: 0.0035 time: 27871.25
+2020-06-14 10:54:52,781 - INFO: ===> Epoch 17 Complete: Avg. Loss: 0.0034 time: 27792.58
+2020-06-14 18:39:44,167 - INFO: ===> Epoch 18 Complete: Avg. Loss: 0.0034 time: 27891.38
+2020-06-15 02:28:18,044 - INFO: ===> Epoch 19 Complete: Avg. Loss: 0.0034 time: 28113.87
+2020-06-15 10:12:21,333 - INFO: ===> Epoch 20 Complete: Avg. Loss: 0.0034 time: 27843.29
+2020-06-15 10:12:21,358 - INFO: Checkpoint saved to ./model/2020_06_08_23_06_23/first_frame_net_model_epoch_20.pth
+2020-06-15 10:12:21,390 - INFO: current learning rate: 0.000244351875
+
+2020-06-15 17:58:21,883 - INFO: ===> Epoch 21 Complete: Avg. Loss: 0.0033 time: 27960.49
+2020-06-16 01:42:59,520 - INFO: ===> Epoch 22 Complete: Avg. Loss: 0.0033 time: 27877.64
+2020-06-16 09:26:00,928 - INFO: ===> Epoch 23 Complete: Avg. Loss: 0.0033 time: 27781.41
+2020-06-16 17:09:58,787 - INFO: ===> Epoch 24 Complete: Avg. Loss: 0.0033 time: 27837.86
+2020-06-17 00:53:07,371 - INFO: ===> Epoch 25 Complete: Avg. Loss: 0.0032 time: 27788.58
+2020-06-17 00:53:07,373 - INFO: current learning rate: 0.00023213428124999998
+
