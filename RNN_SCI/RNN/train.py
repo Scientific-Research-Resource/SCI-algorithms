@@ -198,7 +198,7 @@ def test(test_path, epoch, result_path, logger):
             ssim_backward[i] = ssim_2
 
             if sign == 1:
-                if epoch % 10 == 0 or (epoch > 50 and epoch % 2 == 0):
+                if epoch % 5 == 0 or (epoch > 50 and epoch % 2 == 0):
                     a = test_list[i]
                     name1 = result_path + '/forward_' + a[0:len(a) - 4] + '{}_{:.4f}_{:.4f}'.format(epoch, psnr_1, ssim_1) + '.mat'
                     name2 = result_path + '/backward_' + a[0:len(a) - 4] + '{}_{:.4f}_{:.4f}'.format(epoch, psnr_2, ssim_2) + '.mat'

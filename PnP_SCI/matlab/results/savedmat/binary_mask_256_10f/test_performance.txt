@@ -1,3 +1,5 @@
+# binary_mask
+
 test_256_10f:
 		traffic3	train3		tuk-tuk7	upside-down4	walking12	[average]
 psnr	

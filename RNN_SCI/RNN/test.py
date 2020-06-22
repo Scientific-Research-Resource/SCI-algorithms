@@ -85,7 +85,7 @@ loss.cuda()
 
 
 ## function
-def test(test_path, epoch, result_path, logger):
+def test(test_path, epoch, result_path):
     test_list = os.listdir(test_path)
     psnr_forward = torch.zeros(len(test_list))
     psnr_backward = torch.zeros(len(test_list))
@@ -184,14 +184,14 @@ def test(test_path, epoch, result_path, logger):
             ssim_backward[i] = ssim_2
 
             if sign == 1:
-                if epoch % 10 == 0 or (epoch > 50 and epoch % 2 == 0):
-                    a = test_list[i]
-                    name1 = result_path + '/forward_' + a[0:len(a) - 4] + '{}_{:.4f}_{:.4f}'.format(epoch, psnr_1, ssim_1) + '.mat'
-                    name2 = result_path + '/backward_' + a[0:len(a) - 4] + '{}_{:.4f}_{:.4f}'.format(epoch, psnr_2, ssim_2) + '.mat'
-                    out_pic1 = out_pic1.cpu()
-                    out_pic2 = out_pic2.cpu()
-                    scio.savemat(name1, {'pic': out_pic1.numpy()})
-                    scio.savemat(name2, {'pic': out_pic2.numpy()})
+                # if epoch % 5 == 0 or (epoch > 50 and epoch % 2 == 0):
+                a = test_list[i]
+                name1 = result_path + '/forward_' + a[0:len(a) - 4] + '{}_{:.4f}_{:.4f}'.format(epoch, psnr_1, ssim_1) + '.mat'
+                name2 = result_path + '/backward_' + a[0:len(a) - 4] + '{}_{:.4f}_{:.4f}'.format(epoch, psnr_2, ssim_2) + '.mat'
+                out_pic1 = out_pic1.cpu()
+                out_pic2 = out_pic2.cpu()
+                scio.savemat(name1, {'pic': out_pic1.numpy()})
+                scio.savemat(name2, {'pic': out_pic2.numpy()})
     print("only forward rnn result (psnr/ssim): {:.4f}/{:.4f}   backward rnn result: {:.4f}/{:.4f}"\
         .format(torch.mean(psnr_forward), torch.mean(ssim_forward), torch.mean(psnr_backward), torch.mean(ssim_backward)))
 

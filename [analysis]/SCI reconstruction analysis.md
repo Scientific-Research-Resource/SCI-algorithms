@@ -22,7 +22,7 @@
 
    
 
-3. **reconstruction performance** comparison between E2E_CNN, RNN-SCI and PnP (psnr/ssim)
+3. **reconstruction performance comparison** between E2E_CNN, RNN-SCI and PnP (psnr/ssim)
 
 - test set: test_256_10f (traffic3  train3  tuk-tuk7  upside-down4  walking12)
 
@@ -35,7 +35,8 @@
 | :--------: | -------------- | :------------------: | :-----------: | :----------------: |
 |  E2E_CNN   | 29.003/0.9037  |    27.628/0.8730     | 28.791/0.8855 |   27.7606/0.872    |
 |  RNN-SCI*  | 30.5/0.915     |     28.23/0.8760     |               |                    |
-| PnP-FFDNET | 28.3517/0.8641 |                      |               |                    |
+| PnP-FFDNET | 28.3517/0.8641 |     20.84/0.6838     |               |                    |
+|            | 26.45/0.8374   |     23.09/0.7998     |               |                    |
 
 注：
 
@@ -46,7 +47,7 @@ RNN-SCI*： inadequate training!
 ---
 Appendix
 
-1. **E2E_CNN reproduction performance** test (psnr/ssim)
+1. **E2E_CNN reproduction performance test** (psnr/ssim)
 - binary mask
    - (Cr=10, retrained model from Zhihong Zhang) & (Cr=8, original model from Ziyi Meng)
    - test set: test_256_10f (traffic3  train3  tuk-tuk7  upside-down4  walking12)

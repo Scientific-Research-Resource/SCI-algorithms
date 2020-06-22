@@ -29,13 +29,17 @@ addpath(genpath('./utils'));      % utilities
 
 % datasetdir = './dataset/simdata/benchmark'; % benchmark simulation dataset
 % datasetdir = './dataset/simdata/test_data';  % dataset for test
-datasetdir = './dataset/simdata/binary_mask_256_10f/bm_256_10f'; % zzh simulation dataset
+datasetdir = './dataset/simdata/combine_binary_mask_256_10f/bm_256_10f'; % zzh simulation dataset
 resultdir  = './results';                   % results
 test_my_data = 1;
 
 % [1] load dataset
-dataname = 'data_traffic'; % [default] data name
-% dataname = 'data_traffic3'; %  data name
+% dataname = 'data_aerial'; % data name
+% dataname = 'data_crash'; 
+% dataname = 'data_drop'; 
+% dataname = 'data_kobe'; 
+% dataname = 'data_runner'; 
+dataname = 'data_traffic'; 
 % dataname = 'data_train3_binary'; %  data name
 % dataname = 'traffic_8f'; %  data name
 datapath = sprintf('%s/%s.mat',datasetdir,dataname);
@@ -75,44 +79,44 @@ para.acc      =    1; % enable acceleration
 para.flag_iqa = true; % enable image quality assessments in iterations
 
 % [2.1] GAP-TV
-% para.denoiser = 'tv'; % TV denoising
-% para.maxiter  = 100; % maximum iteration
-% % para.tvweight = 0.07*255/MAXB; % weight for TV denoising, original
-% % para.tviter   = 5; % number of iteration for TV denoising, original
-% 
-% para.tvweight = 0.07*255/MAXB; % weight for TV denoising, test
-% para.tviter   = 5; % number of iteration for TV denoising, test
-% 
-% [vgaptv,psnr_gaptv,ssim_gaptv,tgaptv,psnrall_tv] = ...
-%     gapdenoise_cacti(mask,meas,orig,[],para);
-% 
-% fprintf('GAP-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
-%     upper(para.denoiser),mean(psnr_gaptv),mean(ssim_gaptv),tgaptv);
+para.denoiser = 'tv'; % TV denoising
+para.maxiter  = 100; % maximum iteration
+% para.tvweight = 0.07*255/MAXB; % weight for TV denoising, original
+% para.tviter   = 5; % number of iteration for TV denoising, original
 
-% [2.2] GAP-FFDNet
-para.denoiser = 'ffdnet'; % FFDNet denoising
-load(fullfile('models','FFDNet_gray.mat'),'net');
-para.net = vl_simplenn_tidy(net);
-para.useGPU = true;
-if para.useGPU
-  para.net = vl_simplenn_move(para.net, 'gpu') ;
-end
-para.ffdnetvnorm_init = true; % use normalized video for the first 10 iterations
-para.ffdnetvnorm = false; % normalize the video before FFDNet video denoising
-% para.sigma   = [50 25 12  6]/MAXB; % default, for kobe
-% para.maxiter = [10 10 10 10];
+para.tvweight = 0.75*255/MAXB; % weight for TV denoising, test
+para.tviter   = 5; % number of iteration for TV denoising, test
 
-%   para.sigma   = [35 15 12  6]/MAXB; %   for test_kobe_binary
-%   para.maxiter = [10 10 10 10];
-
-para.sigma   = [30 15 6]/MAXB; %   for test
-para.maxiter = [10 12 5];
-
-[vgapffdnet,psnr_gapffdnet,ssim_gapffdnet,tgapffdnet,psnrall_ffdnet] = ...
+[vgaptv,psnr_gaptv,ssim_gaptv,tgaptv,psnrall_tv] = ...
     gapdenoise_cacti(mask,meas,orig,[],para);
 
 fprintf('GAP-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
-    upper(para.denoiser),mean(psnr_gapffdnet),mean(ssim_gapffdnet),tgapffdnet);
+    upper(para.denoiser),mean(psnr_gaptv),mean(ssim_gaptv),tgaptv);
+
+% [2.2] GAP-FFDNet
+% para.denoiser = 'ffdnet'; % FFDNet denoising
+% load(fullfile('models','FFDNet_gray.mat'),'net');
+% para.net = vl_simplenn_tidy(net);
+% para.useGPU = true;
+% if para.useGPU
+%   para.net = vl_simplenn_move(para.net, 'gpu') ;
+% end
+% para.ffdnetvnorm_init = true; % use normalized video for the first 10 iterations
+% para.ffdnetvnorm = false; % normalize the video before FFDNet video denoising
+% % para.sigma   = [50 25 12  6]/MAXB; % default, for kobe
+% % para.maxiter = [10 10 10 10];
+% 
+% %   para.sigma   = [35 15 12  6]/MAXB; %   for test_kobe_binary
+% %   para.maxiter = [10 10 10 10];
+% 
+% para.sigma   = [25 15 ]/MAXB; %   for test
+% para.maxiter = [10 10 ];
+% 
+% [vgapffdnet,psnr_gapffdnet,ssim_gapffdnet,tgapffdnet,psnrall_ffdnet] = ...
+%     gapdenoise_cacti(mask,meas,orig,[],para);
+% 
+% fprintf('GAP-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
+%     upper(para.denoiser),mean(psnr_gapffdnet),mean(ssim_gapffdnet),tgapffdnet);
 
 % [3] save as the result .mat file 
 matdir = [resultdir '/savedmat'];
@@ -120,8 +124,11 @@ if ~exist(matdir,'dir')
     mkdir(matdir);
 end
 
-% save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat']);
-save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat'], '-append');
-
-% end
+save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat']);
+% zzh
+if ~exist([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat'], 'file')
+	save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat']);
+else
+	save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat'], '-append');
+end
 
