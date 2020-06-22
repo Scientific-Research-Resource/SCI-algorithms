@@ -184,8 +184,8 @@ def test(test_path, epoch, result_path, logger):
                 psnr_1 += 10 * torch.log10(255 * 255 / mse_forward)
                 psnr_2 += 10 * torch.log10(255 * 255 / mse_backward)
 
-                ssim_1 += ssim(out_pic_forward.cpu().numpy()* 255, gt_t.cpu().numpy()* 255)
-                ssim_2 += ssim(out_pic_backward.cpu().numpy()* 255, gt_t.cpu().numpy()* 255)
+                ssim_1 += ssim(out_pic_forward.cpu().numpy(), gt_t.cpu().numpy())
+                ssim_2 += ssim(out_pic_backward.cpu().numpy(), gt_t.cpu().numpy())
 
             psnr_1 = psnr_1 / (meas.shape[0] * Cr)
             psnr_2 = psnr_2 / (meas.shape[0] * Cr)
