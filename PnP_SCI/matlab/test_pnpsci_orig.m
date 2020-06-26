@@ -29,30 +29,41 @@ addpath(genpath('./utils'));      % utilities
 
 % datasetdir = './dataset/simdata/benchmark'; % benchmark simulation dataset
 % datasetdir = './dataset/simdata/test_data';  % dataset for test
-datasetdir = './dataset/simdata/benchmark/binary_mask_256_10f/bm_256_10f'; % zzh simulation dataset
-resultdir  = './results';                   % results
+orig_dir = 'E:/project/CACTI/SCI algorithm/[dataset]/#benchmark/orig/bm_256_10f';
+mask_dir = 'E:/project/CACTI/SCI algorithm/[dataset]/#benchmark/mask/'; % zzh simulation dataset
+result_dir  = './results';                   % results
 
 % [1] load dataset
-% dataname = 'data_aerial'; % data name
-% dataname = 'data_crash'; 
-% dataname = 'data_drop'; 
-% dataname = 'data_kobe'; 
-% dataname = 'data_runner'; 
-dataname = 'data_traffic'; 
-% dataname = 'data_train3_binary'; %  data name
-% dataname = 'traffic_8f'; %  data name
-datapath = sprintf('%s/%s.mat',datasetdir,dataname);
+% dataname = 'aerial'; % data name
+% dataname = 'crash'; 
+% dataname = 'drop'; 
+dataname = 'kobe'; 
+% dataname = 'runner'; 
+% dataname = 'traffic'; 
 
-if exist(datapath,'file')
-    load(datapath,'meas','mask','orig'); % meas, mask, orig
+maskname = 'binary_mask_256_10f';
 
-	% zzh- normalize
+
+origpath = sprintf('%s/%s.mat',orig_dir,dataname);
+maskpath =  sprintf('%s/%s.mat',mask_dir,maskname);
+
+
+if exist(origpath,'file') && exist(maskpath,'file')
+    load(origpath,'orig');  % orig
+	load(maskpath,'mask')   % mask
+	
+	% meas
+	mask = single(mask);
+	coded_frame = single(mask).*single(orig);
+	meas = sum(coded_frame, 3);	
+	
+	% normalize
 	mask_max = max(mask,[],'a');
 	mask = mask./ mask_max;
 	meas = meas./ mask_max;
 
 else
-    error('File %s does not exist, please check dataset directory!',datapath);
+    error('File %s does not exist, please check dataset directory!',origpath);
 end
 
 nframe = size(meas, 3); % number of coded frames to be reconstructed
@@ -83,7 +94,7 @@ para.maxiter  = 100; % maximum iteration
 % para.tvweight = 0.07*255/MAXB; % weight for TV denoising, original
 % para.tviter   = 5; % number of iteration for TV denoising, original
 
-para.tvweight = 0.75*255/MAXB; % weight for TV denoising, test
+para.tvweight = 0.07*255/MAXB; % weight for TV denoising, test
 para.tviter   = 5; % number of iteration for TV denoising, test
 
 [vgaptv,psnr_gaptv,ssim_gaptv,tgaptv,psnrall_tv] = ...
@@ -105,9 +116,6 @@ para.ffdnetvnorm = false; % normalize the video before FFDNet video denoising
 para.sigma   = [50 25 12  6]/MAXB; % default, for kobe
 para.maxiter = [10 10 10 10];
 
-%   para.sigma   = [35 15 12  6]/MAXB; %   for test_kobe_binary
-%   para.maxiter = [10 10 10 10];
-
 % para.sigma   = [25 15 ]/MAXB; %   for test
 % para.maxiter = [10 10 ];
 
@@ -118,16 +126,17 @@ fprintf('GAP-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
     upper(para.denoiser),mean(psnr_gapffdnet),mean(ssim_gapffdnet),tgapffdnet);
 
 % [3] save as the result .mat file 
-matdir = [resultdir '/savedmat'];
+matdir = [result_dir '/savedmat'];
 if ~exist(matdir,'dir')
     mkdir(matdir);
 end
 
-save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat']);
+saved_name = [matdir '/pnpsci-' dataname '-' maskname '-' num2str(nframe*nmask) '.mat'];
 % zzh
-if ~exist([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat'], 'file')
-	save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat']);
+if ~exist([matdir '/pnpsci-' dataname num2str(nframe*nmask) '.mat'], 'file')
+	save(saved_name);
 else
-	save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat'], '-append');
+	save(saved_name, '-append');
 end
 
+% save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat']);

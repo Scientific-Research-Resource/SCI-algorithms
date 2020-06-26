@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%	generate E2E_CNN mask data
+%	generate CACTI mask
 %	generate binary/gray/combined mask with the given size.
 %
 %   --------
@@ -21,9 +21,10 @@ Cr = 10; % compressive ratio of snapshot
 % save name for a Cr patch
 mask_key = 'mask';
 mask_type = 1; % 1-binary mask, 2-gray mask
-combine_mask_flag = 1; % 0-not combine mask, 1-combine mask
+combine_mask_flag = 1; % 0-not combine mask, 1-random combine mask, 2-specific combine mask
 
 %% generate mask
+% init mask
 if mask_type==1
 	% 1-binary mask
 	init_mask = binary_mask([mask_size Cr]);
@@ -32,20 +33,31 @@ elseif  mask_type==2
 	init_mask = gray_mask([mask_size Cr]);
 end
 
+% combine_matrix
 if combine_mask_flag==0
-	combine_matrix = eye(Cr); % combine0: non-combined
+	% combine0: non-combined
+	combine_matrix = eye(Cr); 
 elseif combine_mask_flag==1
-	combine_matrix = single(binary_mask(Cr));		% combine1
+	% combine1:random combine mask
+	combine_matrix = single(binary_mask(Cr));	
+elseif combine_mask_flag==2
+	%combine2: specific combine mask
 end
+% evaluate
+rank_combine_matrix = rank(combine_matrix);
+disp(['rank of combine_matrix: ' num2str(rank_combine_matrix)]);
+imshow(combine_matrix)
+disp('If ok, press any key to continue, or press Ctrl+C to stop')
+pause
 
+% combine mask 
 non_norm_mask = combine_mask(init_mask,combine_matrix);
 mask = non_norm_mask./max(non_norm_mask, [],'a');
 
 % histgram and statistic
 figure,hist(init_mask(:),10), title('init mask distribution')
 figure,hist(mask(:),10), title('combined mask distribution')
-rank_combine_matrix = rank(combine_matrix)
-mean_mask = mean(mask,'a')
+
 
 %% save
 save([root_dir mask_name], 'mask')

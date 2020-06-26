@@ -69,7 +69,7 @@ if len(meas_bayer.shape) < 3:
 else:
     meas_bayer = np.float32(meas_bayer).transpose((2,1,0))
 orig_bayer = np.float32(orig_bayer).transpose((2,1,0))
-# print(mask_bayer.shape, meas_bayer.shape, orig_bayer.shape)
+print(mask_bayer.shape, meas_bayer.shape, orig_bayer.shape)
 
 iframe = 0
 MAXB = 255.
@@ -79,6 +79,7 @@ if len(meas_bayer.shape) >= 3:
 else:
     meas_bayer = meas_bayer/MAXB
 orig_bayer = orig_bayer[:,:,iframe*nmask:(iframe+1)*nmask]/MAXB
+
 
 
 # In[4]:
@@ -119,8 +120,8 @@ noise_estimate = False # disable noise estimation for GAP
 # iter_max = [20,20,20,10] # maximum number of iterations
 # sigma    = [50/255, 25/255, 12/255, 6/255] # pre-set noise standard deviation
 # iter_max = [10,10,10,10] # maximum number of iterations
-sigma    = [50/255,25/255] # pre-set noise standard deviation
-iter_max = [20,20] # maximum number of iterations
+sigma    = [50/255,25/255] # pre-set noise standard deviation, for traffic
+iter_max = [20,20] # maximum number of iterations, for traffic
 useGPU = True # use GPU
 
 # pre-load the model for FFDNet image denoising

@@ -38,7 +38,7 @@ resultsdir = './results' # results
 # datname = 'traffic' # name of the dataset
 # datname = 'bus_bayer' # name of the dataset
 # datname = 'bus_256_bayer' # name of the dataset
-datname = 'traffic' # name of the dataset
+datname = 'traffic_double' # name of the dataset
 # varname = 'X' # name of the variable in the .mat data file
 
 matfile = datasetdir + '/' + datname + '.mat' # path of the .mat data file
@@ -48,23 +48,33 @@ matfile = datasetdir + '/' + datname + '.mat' # path of the .mat data file
 
 
 # [1] load data
-with h5py.File(matfile, 'r') as file: # for '-v7.3' .mat file (MATLAB)
-    # print(list(file.keys()))
+mat_v73_flag = 0  # v7.3 version .mat file flag
+
+if not mat_v73_flag:
+    file = sio.loadmat(matfile) # for '-v7.2' and below .mat file (MATLAB)
     meas = np.array(file['meas'])
     mask = np.array(file['mask'])
     orig = np.array(file['orig'])
-#==============================================================================
-# file = scipy.io.loadmat(matfile) # for '-v7.2' and below .mat file (MATLAB)
-# X = list(file[varname])
-#==============================================================================
 
-mask = np.float32(mask).transpose((2,1,0))
-if len(meas.shape) < 3:
-    meas = np.float32(meas).transpose((1,0))
+    mask = np.float32(mask)
+    orig = np.float32(orig)
+    meas = np.float32(meas)
+    # print(mask.shape, meas.shape, orig.shape)
 else:
-    meas = np.float32(meas).transpose((2,1,0))
-orig = np.float32(orig).transpose((2,1,0))
-# print(mask_bayer.shape, meas_bayer.shape, orig_bayer.shape)
+    with h5py.File(matfile, 'r') as file: # for '-v7.3' .mat file (MATLAB)
+        # print(list(file.keys()))
+        meas = np.array(file['meas'])
+        mask = np.array(file['mask'])
+        orig = np.array(file['orig'])
+
+        mask = np.float32(mask).transpose((2,1,0))
+        orig = np.float32(orig).transpose((2,1,0))
+        if len(meas.shape) < 3:
+            meas = np.float32(meas).transpose((1,0))
+        else:
+            meas = np.float32(meas).transpose((2,1,0))
+    # print(mask.shape, meas.shape, orig.shape)
+
 
 iframe = 0
 MAXB = 255.

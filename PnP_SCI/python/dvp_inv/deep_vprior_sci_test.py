@@ -31,36 +31,22 @@ from utils import (A_, At_, psnr)
 
 
 # [0] environment configuration
-# datasetdir = './dataset' # dataset
-datasetdir = './dataset/benchmark' # dataset
+datasetdir = './dataset' # dataset
+# datasetdir = './dataset/original_dataset' # dataset            
+# datasetdir = './dataset/benchmark/binary_mask_256_10f/bm_256_10f' # dataset
 resultsdir = './results' # results
 
-# datname = 'kobe' # name of the dataset
-# datname = 'traffic' # name of the dataset
-# datname = 'bus_bayer' # name of the dataset
-# datname = 'bus_256_bayer' # name of the dataset
-# datname = 'traffic_bayer' # name of the dataset
-# datname = 'messi_bayer' # name of the dataset
-# datname = 'messi_c24_bayer' # name of the dataset
-# datname = 'hummingbird_c40_bayer' # name of the dataset
-# datname = 'football_cif_bayer' # name of the dataset
+
 # datname = 'test' # name of the dataset
 # varname = 'X' # name of the variable in the .mat data file
+# datname = 'data_traffic'
+# datname = 'data_kobe'
+datname = 'traffic_bayer'
 
-datname = 'test_kobe_binary'
 # datname = 'init_test' # name of the dataset, traffice 4 frame
 # datname = 'init_test_10f' # name of the dataset, traffice 8 frame
 # datname = 'test' # name of the dataset 
-# datname = 'test_8f' # name of the dataset, traffice 8 frame
-
-# datname = '512scale_traffic_randomgraymask_syn' # name of the dataset 
-# datname = '512scale_traffic_movinggraymask_syn' # name of the dataset 
-
-
-# datname = '512scale_traffic_randomgraymask_4frame_syn' # name of the dataset 
-# datname = '512scale_traffic_combinedgraymask_4frame_syn' # name of the dataset 
-# datname = '512scale_traffic_combinedgraymask_normalized_4frame_syn' # name of the dataset 
-
+# datname = 'test_8f' # name of the dataset, traffice 8 fram
 
 
 matfile = datasetdir + '/' + datname + '.mat' # path of the .mat data file
@@ -70,29 +56,39 @@ matfile = datasetdir + '/' + datname + '.mat' # path of the .mat data file
 
 
 # [1] load data
-with h5py.File(matfile, 'r') as file: # for '-v7.3' .mat file (MATLAB)
-    # print(list(file.keys()))
+mat_v73_flag = 1  # v7.3 version .mat file flag
+
+if not mat_v73_flag:
+    file = sio.loadmat(matfile) # for '-v7.2' and below .mat file (MATLAB)
     meas = np.array(file['meas'])
     mask = np.array(file['mask'])
     orig = np.array(file['orig'])
-#==============================================================================
-# file = scipy.io.loadmat(matfile) # for '-v7.2' and below .mat file (MATLAB)
-# X = list(file[varname])
-#==============================================================================
 
-mask = np.float32(mask).transpose((2,1,0))
+    mask = np.float32(mask)
+    orig = np.float32(orig)
+    meas = np.float32(meas)
+    # print(mask.shape, meas.shape, orig.shape)
+else:
+    with h5py.File(matfile, 'r') as file: # for '-v7.3' .mat file (MATLAB)
+        # print(list(file.keys()))
+        meas = np.array(file['meas'])
+        mask = np.array(file['mask'])
+        orig = np.array(file['orig'])
+
+        mask = np.float32(mask).transpose((2,1,0))
+        orig = np.float32(orig).transpose((2,1,0))
+        if len(meas.shape) < 3:
+            meas = np.float32(meas).transpose((1,0))
+        else:
+            meas = np.float32(meas).transpose((2,1,0))
+    # print(mask.shape, meas.shape, orig.shape)
+
+
 
 # normalize zzh-20200430
 mask_max = np.max(mask)  # zzh-20200430
 mask = mask/mask_max # zzh-20200430
 meas = meas/mask_max # zzh-20200430
-
-if len(meas.shape) < 3:
-    meas = np.float32(meas).transpose((1,0))
-else:
-    meas = np.float32(meas).transpose((2,1,0))
-orig = np.float32(orig).transpose((2,1,0))
-# print(mask_bayer.shape, meas_bayer.shape, orig_bayer.shape)
 
 iframe = 0
 MAXB = 255.
@@ -142,10 +138,10 @@ noise_estimate = False # disable noise estimation for GAP
 # iter_max = [20,20,20,10] # maximum number of iterations
 # sigma    = [50/255, 25/255, 12/255, 6/255] # pre-set noise standard deviation
 # iter_max = [10,10,10,10] # maximum number of iterations
-# sigma    = [50/255,25/255] # pre-set noise standard deviation,original
-# iter_max = [20,20] # maximum number of iterations,original
-sigma    = [35/255,15/255,12/255,6/255] # pre-set noise standard deviation
-iter_max = [10,10,10,10] # maximum number of iterations
+sigma    = [50/255,25/255] # pre-set noise standard deviation,original, for traffic
+iter_max = [20,20] # maximum number of iterations,original, for traffic
+# sigma    = [35/255,15/255,12/255,6/255] # pre-set noise standard deviation
+# iter_max = [10,10,10,10] # maximum number of iterations
 useGPU = True # use GPU
 
 # pre-load the model for FFDNet image denoising
@@ -195,10 +191,10 @@ denoiser = 'fastdvdnet' # video non-local network
 noise_estimate = False # disable noise estimation for GAP
 # sigma    = [50/255, 25/255, 12/255, 6/255, 3/255] # pre-set noise standard deviation
 # iter_max = [10, 10, 10, 10, 10] # maximum number of iterations
-# sigma    = [50/255, 25/255, 12/255] # pre-set noise standard deviation,original
-# iter_max = [20, 20, 25] # maximum number of iterations,original
-sigma    = [50/255,25/255,12/255,6/255] # pre-set noise standard deviation
-iter_max = [10,10,10,10] # maximum number of iterations
+sigma    = [50/255, 25/255, 12/255] # pre-set noise standard deviation,original, for traffic
+iter_max = [20, 20, 25] # maximum number of iterations,original, for traffic
+# sigma    = [50/255,25/255,12/255,6/255] # pre-set noise standard deviation
+# iter_max = [10,10,10,10] # maximum number of iterations
 useGPU = True # use GPU
 
 # pre-load the model for FFDNet image denoising
