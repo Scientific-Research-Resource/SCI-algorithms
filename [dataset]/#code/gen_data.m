@@ -21,11 +21,11 @@ mask_type = 0; % 0-load, 1-binary, 2-gray
 combine_mask_type = 0; % 0-not combine mask, 1-random combine mask, 2-specific combine mask
 
 % image path
-save_dataset_folder = 'E:\project\CACTI\SCI algorithm\[dataset]\#test\data\binary_mask_512_10f\bm_rescale_512_10f\';
+save_dataset_folder = 'E:\project\CACTI\SCI algorithm\[dataset]\#test\data\combine_binary_mask_512_10f\bm_rescale_512_10f\';
 save_dataset_name = 0; % default=0, save as 'data_[orig_name]'
 % save_dataset_name = test.mat; 
 
-load_mask_path = "E:\project\CACTI\SCI algorithm\[dataset]\#test\mask\binary_mask_512_10f.mat";
+load_mask_path = "E:\project\CACTI\SCI algorithm\[dataset]\#test\mask\combine_binary_mask_512_10f.mat";
 % load_dataset_folder = 'E:\project\CACTI\SCI algorithm\[dataset]\#benchmark\orig\bm_256_10f\';
 load_dataset_folder = 'E:\project\CACTI\SCI algorithm\[dataset]\#test\orig\bm_rescale_512_10f\';
 load_dataset_names = 'all';

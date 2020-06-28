@@ -32,22 +32,14 @@ from utils import (A_, At_, psnr)
 
 # [0] environment configuration
 datasetdir = './dataset' # dataset
-# datasetdir = './dataset/original_dataset' # dataset            
-# datasetdir = './dataset/benchmark/binary_mask_256_10f/bm_256_10f' # dataset
 resultsdir = './results' # results
 
-
-# datname = 'test' # name of the dataset
+# datname = 'kobe' # name of the dataset
+# datname = 'traffic' # name of the dataset
+# datname = 'bus_bayer' # name of the dataset
+# datname = 'bus_256_bayer' # name of the dataset
+datname = 'traffic' # name of the dataset
 # varname = 'X' # name of the variable in the .mat data file
-# datname = 'data_traffic'
-# datname = 'data_kobe'
-datname = 'traffic_bayer'
-
-# datname = 'init_test' # name of the dataset, traffice 4 frame
-# datname = 'init_test_10f' # name of the dataset, traffice 8 frame
-# datname = 'test' # name of the dataset 
-# datname = 'test_8f' # name of the dataset, traffice 8 fram
-
 
 matfile = datasetdir + '/' + datname + '.mat' # path of the .mat data file
 
@@ -84,12 +76,6 @@ else:
     # print(mask.shape, meas.shape, orig.shape)
 
 
-
-# normalize zzh-20200430
-mask_max = np.max(mask)  # zzh-20200430
-mask = mask/mask_max # zzh-20200430
-meas = meas/mask_max # zzh-20200430
-
 iframe = 0
 MAXB = 255.
 (nrows, ncols, nmask) = mask.shape
@@ -102,7 +88,7 @@ orig = orig[:,:,iframe*nmask:(iframe+1)*nmask]/MAXB
 
 # In[4]:
 
-'''
+
 ## [2.1] GAP-TV [for baseline reference]
 _lambda = 1 # regularization factor
 accelerate = True # enable accelerated version of GAP
@@ -111,16 +97,16 @@ iter_max = 40 # maximum number of iterations
 tv_weight = 0.1 # TV denoising weight (larger for smoother but slower)
 tv_iter_max = 5 # TV denoising maximum number of iterations each
 begin_time = time.time()
-vgaptv_bayer,psnr_gaptv,ssim_gaptv,psnrall_tv =             gap_denoise_bayer(meas_bayer, mask_bayer, _lambda, 
+vgaptv,psnr_gaptv,ssim_gaptv,psnrall_tv =             gap_denoise_bayer(meas, mask, _lambda, 
                               accelerate, denoiser, iter_max, 
                               tv_weight=tv_weight, 
                               tv_iter_max=tv_iter_max,
-                              X_orig=orig_bayer)
+                              X_orig=orig)
 end_time = time.time()
 tgaptv = end_time - begin_time
 print('GAP-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format(
     denoiser.upper(), mean(psnr_gaptv), mean(ssim_gaptv), tgaptv))
-'''
+
 
 # In[9]:
 
@@ -138,10 +124,8 @@ noise_estimate = False # disable noise estimation for GAP
 # iter_max = [20,20,20,10] # maximum number of iterations
 # sigma    = [50/255, 25/255, 12/255, 6/255] # pre-set noise standard deviation
 # iter_max = [10,10,10,10] # maximum number of iterations
-sigma    = [50/255,25/255] # pre-set noise standard deviation,original, for traffic
-iter_max = [20,20] # maximum number of iterations,original, for traffic
-# sigma    = [35/255,15/255,12/255,6/255] # pre-set noise standard deviation
-# iter_max = [10,10,10,10] # maximum number of iterations
+sigma    = [50/255,25/255] # pre-set noise standard deviation
+iter_max = [20,20] # maximum number of iterations
 useGPU = True # use GPU
 
 # pre-load the model for FFDNet image denoising
@@ -191,10 +175,10 @@ denoiser = 'fastdvdnet' # video non-local network
 noise_estimate = False # disable noise estimation for GAP
 # sigma    = [50/255, 25/255, 12/255, 6/255, 3/255] # pre-set noise standard deviation
 # iter_max = [10, 10, 10, 10, 10] # maximum number of iterations
-sigma    = [50/255, 25/255, 12/255] # pre-set noise standard deviation,original, for traffic
-iter_max = [20, 20, 25] # maximum number of iterations,original, for traffic
-# sigma    = [50/255,25/255,12/255,6/255] # pre-set noise standard deviation
-# iter_max = [10,10,10,10] # maximum number of iterations
+sigma    = [50/255, 25/255, 12/255] # pre-set noise standard deviation
+iter_max = [20, 20, 25] # maximum number of iterations
+# sigma    = [50/255,25/255] # pre-set noise standard deviation
+# iter_max = [10,10] # maximum number of iterations
 useGPU = True # use GPU
 
 # pre-load the model for FFDNet image denoising
@@ -225,7 +209,6 @@ end_time = time.time()
 tgapfastdvdnet = end_time - begin_time
 print('GAP-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format(
     denoiser.upper(), mean(psnr_gapfastdvdnet), mean(ssim_gapfastdvdnet), tgapfastdvdnet))
-    
 
 # In[13]:
 
@@ -286,10 +269,16 @@ print('GAP-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format
 savedmatdir = resultsdir + '/savedmat/'
 if not os.path.exists(savedmatdir):
     os.makedirs(savedmatdir)
-
-sio.savemat('{}gap{}_{}{:d}_sigma{:d}.mat'.format(savedmatdir,'-Net',datname,nmask,int(sigma[-1]*MAXB)),
-            {'vgapffdnet':vgapffdnet, 
-             'orig':orig,
+# sio.savemat('{}gap{}_{}{:d}.mat'.format(savedmatdir,denoiser.lower(),datname,nmask),
+#             {'vgapdenoise':vgapdenoise},{'psnr_gapdenoise':psnr_gapdenoise})
+# sio.savemat('{}gap{}_{}{:d}_sigma{:d}.mat'.format(savedmatdir,denoiser.lower(),datname,nmask,int(sigma[-1]*MAXB)),
+sio.savemat('{}gap{}_{}{:d}_sigma{:d}.mat'.format(savedmatdir,'-TV&Net',datname,nmask,int(sigma[-1]*MAXB)),
+            {'vgaptv':vgaptv, 
+             'psnr_gaptv':psnr_gaptv,
+             'ssim_gaptv':ssim_gaptv,
+             'psnrall_tv':psnrall_tv,
+             'tgaptv':tgaptv,
+             'vgapffdnet':vgapffdnet, 
              'psnr_gapffdnet':psnr_gapffdnet,
              'ssim_gapffdnet':ssim_gapffdnet,
              'psnrall_ffdnet':psnrall_ffdnet,
@@ -299,30 +288,6 @@ sio.savemat('{}gap{}_{}{:d}_sigma{:d}.mat'.format(savedmatdir,'-Net',datname,nma
              'ssim_gapfastdvdnet':ssim_gapfastdvdnet,
              'psnrall_fastdvdnet':psnrall_fastdvdnet,
              'tgapfastdvdnet':tgapfastdvdnet})
-
-'''
-savedmatdir = resultsdir + '/savedmat/'
-if not os.path.exists(savedmatdir):
-    os.makedirs(savedmatdir)
-# sio.savemat('{}gap{}_{}{:d}.mat'.format(savedmatdir,denoiser.lower(),datname,nmask),
-#             {'vgapdenoise':vgapdenoise},{'psnr_gapdenoise':psnr_gapdenoise})
-sio.savemat('{}gap{}_{}{:d}_sigma{:d}.mat'.format(savedmatdir,denoiser.lower(),datname,nmask,int(sigma[-1]*MAXB)),
-            {'vgaptv_bayer':vgaptv_bayer, 
-             'psnr_gaptv':psnr_gaptv,
-             'ssim_gaptv':ssim_gaptv,
-             'psnrall_tv':psnrall_tv,
-             'tgaptv':tgaptv,
-             'vgapffdnet_bayer':vgapffdnet_bayer, 
-             'psnr_gapffdnet':psnr_gapffdnet,
-             'ssim_gapffdnet':ssim_gapffdnet,
-             'psnrall_ffdnet':psnrall_ffdnet,
-             'tgapffdnet':tgapffdnet,
-             'vgapfastdvdnet_bayer':vgapfastdvdnet_bayer, 
-             'psnr_gapfastdvdnet':psnr_gapfastdvdnet,
-             'ssim_gapfastdvdnet':ssim_gapfastdvdnet,
-             'psnrall_fastdvdnet':psnrall_fastdvdnet,
-             'tgapfastdvdnet':tgapfastdvdnet})
 # sio.savemat(savedmatdir+'gaptv'+'_'+datname+str(ColT)+'.mat',{'vgaptv':vgaptv})
 #np.save('Traffic_cacti_T8.npy', f)
 
-'''
