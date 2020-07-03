@@ -8,7 +8,6 @@
 *.zip
 *.rar
 *.pyc
-*.pth
 
 # dirs
 bak/

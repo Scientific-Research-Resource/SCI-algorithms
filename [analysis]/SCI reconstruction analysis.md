@@ -13,15 +13,14 @@
 2. **RNN-SCI** test info (Cr=10) (psnr/ssim)
 
    - test set: bm_256_10f (aerial	crash	drop	kobe	runner	traffic)
-   - inadequate training!
-
-   | model                       | aerial     | crash      | drop       | kobe       | runner     | traffic    | [average]   |
-   | --------------------------- | ---------- | ---------- | ---------- | ---------- | ---------- | ---------- | ----------- |
-   | combine_binary_mask_256_10f | 26.5/0.843 | 26.9/0.890 | 35.6/0.974 | 26.6/0.845 | 31.4/0.931 | 22.4/0.773 | 28.23/0.876 |
-   | binary_mask_256_10          | 27.5/0.874 | 27.9/0.910 | 38.5/0.983 | 29.8/0.910 | 34.3/0.952 | 25.0/0.858 | 30.5/0.915  |
-
+   
+| model                       | aerial         | crash          | drop           | kobe           | runner         | traffic        | [average]      |
+   | --------------------------- | -------------- | -------------- | -------------- | -------------- | -------------- | -------------- | -------------- |
+   | combine_binary_mask_256_10f | 27.2957/0.8693 | 27.8569/0.9178 | 37.9198/0.9827 | 28.5434/0.8896 | 33.4954/0.9489 | 24.6322/0.8489 | 29.9572/0.9095 |
+   | binary_mask_256_10          | 28.2730/0.8981 | 28.8262/0.9382 | 40.6359/0.9893 | 31.8736/0.9403 | 36.3857/0.9652 | 27.2610/0.9087 | 32.0592/0.9400 |
    
 
+   
 3. **reconstruction performance comparison** between E2E_CNN, RNN-SCI and PnP (psnr/ssim)
 
 - test set: test_256_10f (traffic3  train3  tuk-tuk7  upside-down4  walking12)
@@ -34,13 +33,11 @@
 |   method   | binary mask    | combined binary mask |   gray mask   | combined gray mask |
 | :--------: | -------------- | :------------------: | :-----------: | :----------------: |
 |  E2E_CNN   | 29.003/0.9037  |    27.628/0.8730     | 28.791/0.8855 |   27.7606/0.872    |
-|  RNN-SCI*  | 31.682/        |       28.964/        |               |                    |
+|  RNN-SCI   | 32.059/0.9400  |    29.957/0.9095     |               |                    |
 | PnP-FFDNET | 28.3517/0.8641 |     20.84/0.6838     |               |                    |
 |   GAP_TV   | 26.45/0.8374   |     23.09/0.7998     |               |                    |
 
-注：
-
-RNN-SCI*： inadequate training!
+Note：
 
 
 

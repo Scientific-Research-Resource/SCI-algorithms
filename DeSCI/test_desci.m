@@ -34,8 +34,11 @@ resultdir  = './results'; % results
 
 % [1] load dataset
 para.type   = 'cacti'; % type of dataset, cassi or cacti
-para.name   = 'kobe'; % name of dataset
-para.number =  32; % number of frames in the dataset
+% para.name   = 'kobe'; % name of dataset
+para.name   = 'data_kobe'; % name of dataset
+% para.number =  32; % number of frames in the dataset
+para.number =  10; % number of frames in the dataset
+
 
 datapath = sprintf('%s/%s%d_%s.mat',datasetdir,para.name,...
     para.number,para.type);
@@ -90,13 +93,17 @@ para.denoiser = 'wnnm'; % WNNM denoising
       poolobj = parpool(mycluster,min(nmask,mycluster.NumWorkers));
   end
 
+
 [vdesci,psnr_desci,ssim_desci,tdesci,psnrall] = ...
     gapdenoise_cacti(mask,meas,orig,[],para);
-  
+
+
+
   delete(poolobj); % delete pool object
 
 fprintf('DeSCI mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
     mean(psnr_desci),mean(ssim_desci),tdesci);
+
 
 %% [3] save results as mat file
 matdir = [resultdir '/savedmat'];
