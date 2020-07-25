@@ -11,7 +11,7 @@ import cv2
 import torch
 import torch.nn as nn
 from .models import FastDVDnet
-from .fastdvdnet import fastdvdnet_seqdenoise, denoise_seq_fastdvdnet
+from .fastdvdnet import denoise_seq_fastdvdnet
 from .utils import batch_psnr, init_logger_test, \
 				variable_to_cv2_image, remove_dataparallel_wrapper, open_sequence, close_logger
 
@@ -115,8 +115,8 @@ def test_fastdvdnet(**args):
 		seq_time = time.time() # modified starter
 		denframes = denoise_seq_fastdvdnet(seq=seqn,\
 										noise_std=noisestd,\
-										windsize=NUM_IN_FR_EXT,\
-										model=model_temp)
+										temp_psz=NUM_IN_FR_EXT,\
+										model_temporal=model_temp)
 
 	# Compute PSNR and log it
 	stop_time = time.time()
@@ -141,12 +141,11 @@ def test_fastdvdnet(**args):
 	# close logger
 	close_logger(logger)
 
-def fastdvdnet_denoiser(vnoisy, sigma, model=None, useGPU=True, gray=False):
+def fastdvdnet_denoiser(vnoisy, sigma, model=None, useGPU=True):
 	r"""Denoise an input video (H x W x F x C for color video, and H x W x F for
 	     grayscale video) with FastDVDnet
 	"""
-	# start_time = time.time()
-	nColor = 1 if gray else 3 # number of color channels (3 - RGB color, 1 - grayscale)
+	start_time = time.time()
 	# Sets data type according to CPU or GPU modes
 	if useGPU:
 		device = torch.device('cuda')
@@ -154,13 +153,10 @@ def fastdvdnet_denoiser(vnoisy, sigma, model=None, useGPU=True, gray=False):
 		device = torch.device('cpu')
 
 	if model is None:
-		model = FastDVDnet(num_input_frames=NUM_IN_FR_EXT, num_color_channels=nColor)
+		model = FastDVDnet(num_input_frames=NUM_IN_FR_EXT)
 
 		# Load saved weights
-		if gray:
-			state_temp_dict = torch.load('model_gray.pth') # [pre-trained] model for grayscale videos
-		else:
-			state_temp_dict = torch.load('model.pth') # [pre-trained] model for color videos
+		state_temp_dict = torch.load('model.pth')
 		if useGPU:
 			device_ids = [0]
 			model = nn.DataParallel(model, device_ids=device_ids).cuda()
@@ -173,30 +169,22 @@ def fastdvdnet_denoiser(vnoisy, sigma, model=None, useGPU=True, gray=False):
 	model.eval()
 
 	with torch.no_grad():
-		# vnoisy = vnoisy.transpose((2,3,0,1)) # [do it in torch] from H x W x F x C to F x C x H x W 
-		vnoisy = torch.from_numpy(vnoisy).type('torch.FloatTensor').to(device)
+		vnoisy = vnoisy.transpose((2,3,0,1)) # from H x W x F x C to F x C x H x W
+		vnoisy = torch.from_numpy(vnoisy).to(device)
 		noisestd = torch.FloatTensor([sigma]).to(device)
-
-		if gray:
-			vnoisy = vnoisy.unsqueeze(3) # unsqueeze the color dimension - [H,W,F] to [H,W,F,C=1]
-		vnoisy = vnoisy.permute(2, 3, 0, 1) # from H x W x F x C to F x C x H x W 
-		# print(vnoisy.finfo, noisestd.finfo)
 
 		# print(torch.max(vnoisy),torch.min(vnoisy))
 		# vnoisy = torch.clamp(vnoisy,0.,1.)
-		outv = fastdvdnet_seqdenoise( seq=vnoisy,\
+		outv = denoise_seq_fastdvdnet(seq=vnoisy,\
 									  noise_std=noisestd,\
-									  windsize=NUM_IN_FR_EXT,\
-									  model=model )
+									  temp_psz=NUM_IN_FR_EXT,\
+									  model_temporal=model)
 		# print(outv.shape)
 		# print(torch.max(outv),torch.min(outv))
-		outv = outv.permute(2, 3, 0, 1) # back from F x C x H x W to H x W x F x C
-		if gray:
-			outv = outv.squeeze(3) # squeeze the color dimension - [H,W,F,C=1] to [H,W,F]
 		outv = outv.data.cpu().numpy()
-		# outv = outv.transpose((2,3,0,1)) # [do it in torch] back from F x C x H x W to H x W x F x C
+		outv = outv.transpose((2,3,0,1)) # back from F x C x H x W to H x W x F x C
 
-	# stop_time = time.time()
+	stop_time = time.time()
 	# print('    FastDVDnet video denoising eclipsed in {:.3f}s.'.format(stop_time-start_time))
 	return outv
 

@@ -1,19 +1,17 @@
-name: dvp
+name: pnpsci
 channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.7.5
-  - pytorch=1.2.0
+  - python=3.7
+  - pytorch
+  - torchvision
+  - cudatoolkit=10.1
   - jupyterlab
   - h5py
-  - tifffile
   - tensorboardX
-  - cython
   - scikit-image
   - scipy
-  - pyopencl
-  - ocl-icd-system
   - pip:
     - opencv-python
 

@@ -1,18 +1,15 @@
 import time
 import math
-import skimage
 import numpy as np
 from skimage.restoration import (denoise_tv_chambolle, denoise_bilateral,
                                  denoise_wavelet, estimate_sigma)
-# from packages.vnlnet.test import vnlnet
+from skimage.measure import (compare_psnr, compare_ssim)
+from packages.vnlnet.test import vnlnet
 from packages.ffdnet.test_ffdnet_ipol import ffdnet_vdenoiser
 from packages.fastdvdnet.test_fastdvdnet import fastdvdnet_denoiser
 from utils import (A_, At_, psnr)
-if skimage.__version__ < '0.18':
-    from skimage.measure import (compare_psnr, compare_ssim)
-else: # skimage.measure deprecated in version 0.18 ( -> skimage.metrics )
-    import skimage.metrics.peak_signal_noise_ratio as compare_psnr
-    import skimage.metrics.structural_similarity   as compare_ssim
+# import skimage.metrics.peak_signal_noise_ratio as psnr
+# import skimage.metrics.structural_similarity as ssim
 
 
 def gap_denoise_bayer(y_bayer, Phi_bayer, _lambda=1, accelerate=True, 
@@ -441,63 +438,8 @@ def admm_denoise_bayer(y_bayer, Phi_bayer, _lambda=1, gamma=0.01,
     return x_bayer, psnr_all
 
 
-def admmdenoise_cacti(meas, mask, A, At, projmeth='admm', v0=None, orig=None, 
-                      iframe=0, nframe=1, MAXB=1., maskdirection='plain',
-                      **args):
-    '''
-    Alternating direction method of multipliers (ADMM) or generalized 
-    alternating projection (GAP) -based denoising (based on the 
-    plug-and-play (PnP) framework) algorithms for video snapshot compressive
-    imaging (SCI) or coded aperture compressive temporal imaging (CACTI, 
-    Llull et al. Opt. Express 2013).
-    '''
-    nrow, ncol, nmask = mask.shape
-    x_ = np.zeros((nrow,ncol,nmask*nframe), dtype=np.float32)
-    psnr_, ssim_, psnrall_ = ([], [], [])
-    begin_time = time.time()
-    # loop over all the coded frames [nframe]
-    for kf in range(nframe):
-        print('%s-%s Reconstruction coded frame block %2d of %2d ...'
-              %(projmeth.upper(), args['denoiser'].upper(), kf+1, nframe))
-        if orig is not None:
-            orig_k = orig[:,:,(kf+iframe)*nmask:(kf+iframe+1)*nmask]/MAXB
-        meas_k = meas[:,:,kf+iframe]/MAXB
-        if v0 is None:
-            v0_k = None
-        else: # initialization according to the direction of the masks [up as calibration]
-            v0_k = v0[:,:,kf*nmask:(kf+1)*nmask]
-            if (maskdirection.lower() == 'updown' and (kf+iframe) % 2 == 1) or \
-               (maskdirection.lower() == 'downup' and (kf+iframe) % 2 == 0):  # down (up as mask)
-               v0_k = v0_k[:,:,::-1]
-
-        mask_sum = np.sum(mask, axis=2)
-        mask_sum[mask_sum==0] = 1
-        if projmeth.lower() == 'admm': # alternating direction method of multipliers (ADMM)-based projection
-            x_k, psnr_k, ssim_k, psnrall_k = admm_denoise(meas_k, mask_sum, A, At, 
-                                                          x0=v0_k, X_orig=orig_k, **args)
-        elif projmeth.lower() == 'gap': # generalized alternating projection (GAP)-based projection
-            x_k, psnr_k, ssim_k, psnrall_k =  gap_denoise(meas_k, mask_sum, A, At, 
-                                                          x0=v0_k, X_orig=orig_k, **args)
-        else:
-            print('Unsupported projection method %s' % projmeth.upper())
-        
-        if (maskdirection.lower() == 'updown' and (kf+iframe) % 2 == 1) or \
-           (maskdirection.lower() == 'downup' and (kf+iframe) % 2 == 0):   # down (up as mask)
-            x_k = x_k[:,:,::-1]
-            psnr_k = psnr_k[::-1]
-            ssim_k = ssim_k[::-1]
-            psnrall_k = psnrall_k[::-1]
-        
-        t_ = time.time() - begin_time
-        x_[:,:,kf*nmask:(kf+1)*nmask] = x_k
-        psnr_.extend(psnr_k)
-        ssim_.extend(ssim_k)
-        psnrall_.append(psnrall_k)
-        
-    return x_, t_, psnr_, ssim_, psnrall_
-
 def gap_denoise(y, Phi_sum, A, At, _lambda=1, accelerate=True, 
-                denoiser='tv', iter_max=50, noise_estimate=False, sigma=None, 
+                denoiser='tv', iter_max=50, noise_estimate=True, sigma=None, 
                 tv_weight=0.1, tv_iter_max=5, multichannel=True, x0=None, 
                 X_orig=None, model=None, show_iqa=True):
     '''
@@ -612,13 +554,11 @@ def gap_denoise(y, Phi_sum, A, At, _lambda=1, accelerate=True,
                     x = denoise_wavelet(x, multichannel=multichannel)
                 else:
                     x = denoise_wavelet(x, sigma=nsig, multichannel=multichannel)
-            # elif denoiser.lower() == 'vnlnet': # Video Non-local net denoising
-            #     x = vnlnet(np.expand_dims(x.transpose(2,0,1),3), nsig)
-            #     x = np.transpose(x.squeeze(3),(1,2,0))
+            elif denoiser.lower() == 'vnlnet': # Video Non-local net denoising
+                x = vnlnet(np.expand_dims(x.transpose(2,0,1),3), nsig)
+                x = np.transpose(x.squeeze(3),(1,2,0))
             elif denoiser.lower() == 'ffdnet': # FFDNet frame-wise video denoising
                 x = ffdnet_vdenoiser(x, nsig, model)
-            elif denoiser.lower() == 'fastdvdnet': # FastDVDnet video denoising
-                x = fastdvdnet_denoiser(x, nsig, model, gray=True)
             else:
                 raise ValueError('Unsupported denoiser {}!'.format(denoiser))
             # [optional] calculate image quality assessment, i.e., PSNR for 
@@ -629,29 +569,21 @@ def gap_denoise(y, Phi_sum, A, At, _lambda=1, accelerate=True,
                     if not noise_estimate and nsig is not None:
                         if nsig < 1:
                             print('  GAP-{0} iteration {1: 3d}, sigma {2: 3g}/255, ' 
-                            'PSNR {3:2.2f} dB.'.format(denoiser.upper(), 
-                            k+1, nsig*255, psnr_all[k]))
+                              'PSNR {3:2.2f} dB.'.format(denoiser.upper(), 
+                               k+1, nsig*255, psnr_all[k]))
                         else:
                             print('  GAP-{0} iteration {1: 3d}, sigma {2: 3g}, ' 
                                 'PSNR {3:2.2f} dB.'.format(denoiser.upper(), 
                                 k+1, nsig, psnr_all[k]))
                     else:
                         print('  GAP-{0} iteration {1: 3d}, ' 
-                            'PSNR {2:2.2f} dB.'.format(denoiser.upper(), 
-                            k+1, psnr_all[k]))
+                              'PSNR {2:2.2f} dB.'.format(denoiser.upper(), 
+                               k+1, psnr_all[k]))
             k = k+1
-    
-    psnr_ = []
-    ssim_ = []
-    nmask = x.shape[2]
-    if X_orig is not None:
-        for imask in range(nmask):
-            psnr_.append(compare_psnr(X_orig[:,:,imask], x[:,:,imask], data_range=1.))
-            ssim_.append(compare_ssim(X_orig[:,:,imask], x[:,:,imask], data_range=1.))
-    return x, psnr_, ssim_, psnr_all
+    return x, psnr_all
 
 def admm_denoise(y, Phi_sum, A, At, _lambda=1, gamma=0.01, 
-                denoiser='tv', iter_max=50, noise_estimate=False, sigma=None, 
+                denoiser='tv', iter_max=50, noise_estimate=True, sigma=None, 
                 tv_weight=0.1, tv_iter_max=5, multichannel=True, x0=None, 
                 X_orig=None, show_iqa=True):
     '''
@@ -761,13 +693,9 @@ def admm_denoise(y, Phi_sum, A, At, _lambda=1, gamma=0.01,
                     theta = denoise_wavelet(x-b, multichannel=multichannel)
                 else:
                     theta = denoise_wavelet(x-b, sigma=nsig, multichannel=multichannel)
-            # elif denoiser.lower() == 'vnlnet': # Video Non-local net denoising
-            #     theta = vnlnet(np.expand_dims((x-b).transpose(2,0,1),3), nsig)
-            #     theta = np.transpose(theta.squeeze(3),(1,2,0))
-            elif denoiser.lower() == 'ffdnet': # FFDNet frame-wise video denoising
-                x = ffdnet_vdenoiser(x, nsig, model)
-            elif denoiser.lower() == 'fastdvdnet': # FastDVDnet video denoising
-                x = fastdvdnet_denoiser(x, nsig, model, gray=True)
+            elif denoiser.lower() == 'vnlnet': # Video Non-local net denoising
+                theta = vnlnet(np.expand_dims((x-b).transpose(2,0,1),3), nsig)
+                theta = np.transpose(theta.squeeze(3),(1,2,0))
             else:
                 raise ValueError('Unsupported denoiser {}!'.format(denoiser))
             b = b - (x-theta) # update residual
@@ -790,15 +718,7 @@ def admm_denoise(y, Phi_sum, A, At, _lambda=1, gamma=0.01,
                               'PSNR {2: 2.2f} dB.'.format(denoiser.upper(), 
                                k+1, psnr_all[k]))
             k = k+1
-    
-    psnr_ = []
-    ssim_ = []
-    nmask = x.shape[2]
-    if X_orig is not None:
-        for imask in range(nmask):
-            psnr_.append(compare_psnr(X_orig[:,:,imask], x[:,:,imask], data_range=1.))
-            ssim_.append(compare_ssim(X_orig[:,:,imask], x[:,:,imask], data_range=1.))
-    return x, psnr_, ssim_, psnr_all
+    return x, psnr_all
 
 def GAP_TV_rec(y,Phi,A, At,Phi_sum, maxiter, step_size, weight, row, col, ColT, X_ori):
     y1 = np.zeros((row,col))

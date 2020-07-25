@@ -32,9 +32,11 @@ addpath(genpath('./utils'));      % utilities
 orig_dir = 'E:/project/CACTI/SCI algorithm/PnP_SCI/matlab/dataset/simdata/benchmark/orig/bm_256_10f/';
 % mask_dir = 'E:/project/CACTI/SCI algorithm/[dataset]/#benchmark/mask/'; % zzh simulation dataset
 %  mask_dir = './dataset/simdata/cacti/cacti_256_10f_1';
-mask_dir = 'E:/project/CACTI/simulation/dataset/mask/cacti_center_circle_dmd_256_10f/';
-
- 
+% mask_dir = 'E:/project/CACTI/simulation/dataset/mask/cacti_row_stripe_dmd_10_10f_256_10f/';
+% mask_dir = 'E:/project/CACTI/simulation/dataset/mask/cacti_row_stripe_dmd_256_10f_256_10f/';
+%  mask_dir = 'E:/project/CACTI/simulation/dataset/mask/cacti_manual_dmd_10_10f_256_10f_conv/';
+mask_dir = 'E:/project/CACTI/simulation/dataset/mask/cacti_manual_dmd_256_10f_256_10f/';
+  
 result_dir  = './results';                   % results
 
 saving_data_flag = 0; % saving result flag
@@ -50,8 +52,11 @@ dataname = 'kobe';
 
 % maskname = 'binary_mask_256_10f';
 % maskname = 'cacti_mask_256_10f_1';
-maskname = 'cacti_mask_center_circle_dmd_256_10f';
-
+% maskname = 'cacti_mask_center_circle_dmd_256_10f';
+% maskname = 'cacti_mask_row_stripe_dmd_10_10f_256_10f';
+% maskname = 'cacti_mask_row_stripe_dmd_256_10f_256_10f';
+% maskname = 'cacti_mask_manual_dmd_10_10f_256_10f_conv';
+maskname = 'cacti_mask_manual_dmd_256_10f_256_10f';
 
 
 origpath = sprintf('%s/%s.mat',orig_dir,dataname);
@@ -73,7 +78,7 @@ if exist(origpath,'file') && exist(maskpath,'file')
 	meas = meas./ mask_max;
 
 else
-    error('File %s does not exist, please check dataset directory!',origpath);
+    error('data file does not exist, please check dataset directory!');
 end
 
 nframe = size(meas, 3); % number of coded frames to be reconstructed

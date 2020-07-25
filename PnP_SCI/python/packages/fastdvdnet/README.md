@@ -24,7 +24,7 @@ The code as is runs in Python +3.6 with the following dependencies:
 
 ### Dependencies
 * [PyTorch v1.0.0](http://pytorch.org/)
-* [NVIDIA DALI](https://github.com/NVIDIA/DALI)
+* [NVIDIA DALI <=0.10](https://github.com/NVIDIA/DALI)
 * [scikit-image](http://scikit-image.org/)
 * [numpy](https://www.numpy.org/)
 * [OpenCV](https://pypi.org/project/opencv-python/)
@@ -61,6 +61,20 @@ train_fastdvdnet.py \
 	--valset_dir <path_to_val_sequences> \
 	--log_dir logs
 ```
+
+#### Mixed-precision training on `itachi` (w/ RTX 2080Ti [11GB]*1)
+```
+python train_fastdvdnet.py --gray --trainset_dir /data/yliu/proj/_dataset/video/DAVIS/DAVIS-2017-trainval-480p/DAVIS/video/480p --valset_dir ./data/eval --max_number_patches 256000 --milestone 40 60 --noise_ival 5 75 --batch_size 80 --fp16 --resume_training --log_dir logs
+```
+#### Mixed-precision training on `gcloud` (w/ Titan V100 [16GB]*4)
+```
+python train_fastdvdnet.py --gray --trainset_dir ~/dataset/DAVIS/480p --valset_dir ./data/eval --noise_ival 5 100 --max_number_patches 500000 --batch_size 96 --fp16 --log_dir logs_spatial
+```
+#### Full-precision training on `tefnut` (w/ Tian Xp [12GB]*4)
+```
+python train_fastdvdnet.py --trainset_dir ~/proj/dataset/DAVIS/ --valset_dir ./data/eval --max_number_patches 500000 --batch_size 64 --resume_training --log_dir logs
+```
+
 
 **NOTES**
 * As the dataloader in based on the DALI library, the training sequences must be provided as mp4 files, all under <path_to_input_mp4s>
