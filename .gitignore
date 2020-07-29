@@ -12,8 +12,9 @@
 # dirs
 bak/
 _bak/
+?bak?/
 /DL-CACTI/
-*discussion*/
+?discussion?/
 
 _trash/
 _release/
