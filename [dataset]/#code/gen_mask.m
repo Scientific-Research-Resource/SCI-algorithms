@@ -7,11 +7,14 @@
 %   Last Modified:  Zhihong Zhang, 2020-05-17
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% setting
+% envir init
+addpath(genpath('E:\project\CACTI\SCI algorithm\[toolbox]'));
+
 % path setting
 % root path
-root_dir = 'E:\project\CACTI\simulation\CI algorithm\E2E_CNN\data_simu\mask\';
-mask_name = 'combine_binary_mask_256_10f.mat';
-mask_info_name = 'combine_binary_mask_256_10f_info.mat';
+root_dir = 'E:\project\CACTI\SCI algorithm\[dataset]\#benchmark\mask\tmp\';
+mask_name = 'combine_binary_mask_256_10f_2_uniform.mat';
+mask_info_name = 'combine_binary_mask_256_10f_info_2_uniform.mat';
 
 
 % param setting
@@ -20,8 +23,10 @@ mask_size = [256 256];
 Cr = 10; % compressive ratio of snapshot
 % save name for a Cr patch
 mask_key = 'mask';
-mask_type = 1; % 1-binary mask, 2-gray mask
-combine_mask_flag = 1; % 0-not combine mask, 1-random combine mask, 2-specific combine mask
+mask_type = 3; % 1-binary init mask, 2-gray init mask, 3-load mask
+init_mask_path = 'E:\project\CACTI\SCI algorithm\[dataset]\#benchmark\mask\binary_mask_256_10f.mat'; % for load init mask
+
+combine_mask_flag = 2; % 0-not combine mask, 1-random combine mask, 2-specific combine mask
 
 %% generate mask
 % init mask
@@ -31,6 +36,9 @@ if mask_type==1
 elseif  mask_type==2
 	% 2-gray mask
 	init_mask = gray_mask([mask_size Cr]);
+elseif  mask_type==3
+	init_mask = load(init_mask_path);
+	init_mask = init_mask.mask;
 end
 
 % combine_matrix
@@ -42,6 +50,16 @@ elseif combine_mask_flag==1
 	combine_matrix = single(binary_mask(Cr));	
 elseif combine_mask_flag==2
 	%combine2: specific combine mask
+	combine_matrix = [1,1,1,0,1,0,0,1,0,0;
+					  0,1,1,1,0,1,0,1,0,0;
+					  0,0,1,1,1,1,1,0,0,0;
+					  0,0,0,1,1,1,1,1,0,0;
+					  0,0,0,0,1,1,1,1,1,0;
+					  0,0,0,0,0,1,1,1,1,1;
+					  1,0,0,0,0,0,1,1,1,1;
+					  1,0,0,0,1,0,0,1,1,1;
+					  1,1,1,0,0,0,0,0,1,1;
+					  1,1,0,1,0,1,0,0,0,1];
 end
 % evaluate
 rank_combine_matrix = rank(combine_matrix);

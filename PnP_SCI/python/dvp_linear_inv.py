@@ -650,10 +650,20 @@ def gap_denoise(y, Phi_sum, A, At, _lambda=1, accelerate=True,
             ssim_.append(compare_ssim(X_orig[:,:,imask], x[:,:,imask], data_range=1.))
     return x, psnr_, ssim_, psnr_all
 
-def admm_denoise(y, Phi_sum, A, At, _lambda=1, gamma=0.01, 
+# def admm_denoise(y, Phi_sum, A, At, _lambda=1, gamma=0.01, 
+#                 denoiser='tv', iter_max=50, noise_estimate=False, sigma=None, 
+#                 tv_weight=0.1, tv_iter_max=5, multichannel=True, x0=None, 
+#                 X_orig=None, show_iqa=True):
+def admm_denoise(y, Phi_sum, A, At, _lambda=1, gamma=0.0, 
                 denoiser='tv', iter_max=50, noise_estimate=False, sigma=None, 
-                tv_weight=0.1, tv_iter_max=5, multichannel=True, x0=None, 
+                tv_weight=0.1, tv_iter_max=5, multichannel=True, x0=None, model=None,
                 X_orig=None, show_iqa=True):
+    
+
+# def gap_denoise(y, Phi_sum, A, At, _lambda=1, accelerate=True, 
+#                 denoiser='tv', iter_max=50, noise_estimate=False, sigma=None, 
+#                 tv_weight=0.1, tv_iter_max=5, multichannel=True, x0=None, 
+#                 X_orig=None, model=None, show_iqa=True):
     '''
     Alternating direction method of multipliers (ADMM)[1]-based denoising 
     regularization for snapshot compressive imaging (SCI).

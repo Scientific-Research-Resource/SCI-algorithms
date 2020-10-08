@@ -39,8 +39,10 @@ mask_dir = 'E:/project/CACTI/simulation/dataset/mask/cacti_manual_dmd_256_10f_25
   
 result_dir  = './results';                   % results
 
-saving_data_flag = 0; % saving result flag
-tv_init_flag = 1; % use gap-tv recon as initial image for gap-ffdnet
+test_algo_flag = [1 2 4];		% choose algorithms: 0-all, 1-gaptv, 2-gap-ffdnet, 3-ista-tv, 4-gap-tv+ffdnet, [1,4] means test algorithms 1&4 
+saving_data_flag = 1;	% save the recon result
+tv_init_flag = 0;		% use gap-tv recon as initial image for gap-ffdnet
+show_res_flag = 0;
 
 % [1] load dataset
 % dataname = 'aerial'; % data name
@@ -51,6 +53,8 @@ dataname = 'kobe';
 % dataname = 'traffic'; 
 
 % maskname = 'binary_mask_256_10f';
+% maskname = 'combine_binary_mask_256_10f';
+% maskname = 'combine_binary_mask_256_10f_2_uniform';
 % maskname = 'cacti_mask_256_10f_1';
 % maskname = 'cacti_mask_center_circle_dmd_256_10f';
 % maskname = 'cacti_mask_row_stripe_dmd_10_10f_256_10f';
@@ -91,6 +95,7 @@ para.MAXB   = MAXB;
 % [2] apply PnP-SCI for reconstruction
 para.Mfunc  = @(z) A_xy(z,mask);
 para.Mtfunc = @(z) At_xy_nonorm(z,mask);
+para.gradF  = @(z) gradf(z, meas/MAXB, mask); % zzh: for ista
 
 para.Phisum = sum(mask.^2,3);
 para.Phisum(para.Phisum==0) = 1;
@@ -104,48 +109,139 @@ para.acc      =    1; % enable acceleration
 para.flag_iqa = true; % enable image quality assessments in iterations
 
 % [2.1] GAP-TV
-para.denoiser = 'tv'; % TV denoising
-para.maxiter  = 100; % maximum iteration
-% para.tvweight = 0.07*255/MAXB; % weight for TV denoising, original
-% para.tviter   = 5; % number of iteration for TV denoising, original
+if ismember(0,test_algo_flag) || ismember(1,test_algo_flag)
+	para.denoiser = 'tv'; % TV denoising
+	para.tvm = 'ITV3D_FGP';  % tv denoiser
+% 	para.tvm = 'ATV_FGP';  % tv denoiser
+% 	para.tvm = 'ATV_ClipA';  % tv denoiser
+	para.maxiter  = 100; % maximum iteration
+	% para.tvweight = 0.07*255/MAXB; % weight for TV denoising, original
+	% para.tviter   = 5; % number of iteration for TV denoising, original
 
-para.tvweight = 0.07*255/MAXB; % weight for TV denoising, test
-para.tviter   = 5; % number of iteration for TV denoising, test
+	para.tvweight = 0.05*255/MAXB; % weight for TV denoising, test
+	para.tviter   = 5; % number of iteration for TV denoising, test
 
-[vgaptv,psnr_gaptv,ssim_gaptv,tgaptv,psnrall_tv] = ...
-    gapdenoise_cacti(mask,meas,orig,[],para);
+	[vgaptv,psnr_gaptv,ssim_gaptv,tgaptv,psnrall_gaptv] = ...
+		gapdenoise_cacti(mask,meas,orig,[],para);
 
-fprintf('GAP-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
-    upper(para.denoiser),mean(psnr_gaptv),mean(ssim_gaptv),tgaptv);
+	fprintf('GAP-%s-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
+		upper(para.denoiser),upper(para.tvm),mean(psnr_gaptv),mean(ssim_gaptv),tgaptv);
+	disp('===== GAP-TV Finished! =====')
+end
 
 % [2.2] GAP-FFDNet
-para.denoiser = 'ffdnet'; % FFDNet denoising
-load(fullfile('models','FFDNet_gray.mat'),'net');
-para.net = vl_simplenn_tidy(net);
-para.useGPU = true;
-if para.useGPU
-  para.net = vl_simplenn_move(para.net, 'gpu') ;
+if ismember(0,test_algo_flag) || ismember(2,test_algo_flag)
+	para.denoiser = 'ffdnet'; % FFDNet denoising
+	load(fullfile('models','FFDNet_gray.mat'),'net');
+
+	para.net = vl_simplenn_tidy(net);
+	para.useGPU = true;
+	if para.useGPU
+	  para.net = vl_simplenn_move(para.net, 'gpu') ;
+	end
+	para.ffdnetvnorm_init = true; % use normalized video for the first 10 iterations
+	para.ffdnetvnorm = false; % normalize the video before FFDNet video denoising
+
+	% para.sigma   = [50 25 12  6]/MAXB; % default, for kobe
+	% para.maxiter = [10 10 10 10]; % default, for kobe
+	  para.sigma   = [35 15 12  6]/MAXB; %   for test_kobe_binary
+	  para.maxiter = [10 10 10 10];
+	% para.sigma   = [12 6]/MAXB; %   for test
+	% para.maxiter = [10 10 ];
+
+	if tv_init_flag
+		% use gap-tv result as the initialized input
+		[vgapffdnet,psnr_gapffdnet,ssim_gapffdnet,tgapffdnet,psnrall_ffdnet] = ...
+			gapdenoise_cacti(mask,meas,orig,istaptv,para); 
+	else
+		[vgapffdnet,psnr_gapffdnet,ssim_gapffdnet,tgapffdnet,psnrall_ffdnet] = ...
+			gapdenoise_cacti(mask,meas,orig,[],para);
+	end
+	
+	fprintf('GAP-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
+		upper(para.denoiser),mean(psnr_gapffdnet),mean(ssim_gapffdnet),tgapffdnet);
+	disp('===== GAP-FFDNet Finished! =====')
+end						  
+
+
+% [2.3] ISTA-TV
+if ismember(0,test_algo_flag) || ismember(3,test_algo_flag)
+	% denoiser
+ 	para.denoiser = 'tv'; % TV denoising
+% 	para.denoiser = 'ffdnet';
+% 	para.denoiser = 'vbm4d';
+
+	if strcmp(para.denoiser, 'tv')
+		% tv params
+		para.tvweight = 0.15*255/MAXB; % weight for TV denoising, test
+		para.tviter   = 5; % number of iteration for TV denoising, test
+		para.maxiter  = 200; % maximum iteration
+		para.lambda  = 0.3; % regularization factor
+	elseif(strcmp(para.denoiser, 'ffdnet'))
+		% ffdnet params
+		load(fullfile('models','FFDNet_gray.mat'),'net');
+
+		para.net = vl_simplenn_tidy(net);
+		para.useGPU = true;
+		if para.useGPU
+		  para.net = vl_simplenn_move(para.net, 'gpu') ;
+		end
+		para.ffdnetvnorm_init = true; % use normalized video for the first 10 iterations
+		para.ffdnetvnorm = false; % normalize the video before FFDNet video denoising
+% 		para.sigma   = [50 25 12  6]/MAXB; % default, for kobe
+% 		para.maxiter = [30 20 10 10]; % default, for kobe
+		para.sigma   = [20 10 8 6]/MAXB; % default, for kobe
+		para.maxiter = [30 20 20 15]; % default, for kobe
+		para.lambda  = 0.2; % regularization facto
+	elseif(strcmp(para.denoiser, 'vbm4d'))
+		para.maxiter = 170; % maximum iteration
+		para.lambda  = 0.2; % regularization facto
+	end
+	
+	
+	[istatv,psnr_istatv,ssim_istatv,tistatv,psnrall_istatv] = ...
+		istadenoise_cacti(mask,meas,orig,[],para);
+
+	fprintf('ISTA-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
+		upper(para.denoiser),mean(psnr_istatv),mean(ssim_istatv),tistatv);
+	disp('===== ISTA-TV Finished! =====')
 end
-para.ffdnetvnorm_init = true; % use normalized video for the first 10 iterations
-para.ffdnetvnorm = false; % normalize the video before FFDNet video denoising
-para.sigma   = [50 25 12  6]/MAXB; % default, for kobe
-para.maxiter = [10 10 10 10];
 
-% para.sigma   = [25 15 ]/MAXB; %   for test
-% para.maxiter = [10 10 ];
+% [2.4] GAP-JOINT
+if ismember(0,test_algo_flag) || ismember(4,test_algo_flag)
+	
+	para.denoiser = 'tv+ffdnet'; % FFDNet denoising
+	para.tvm = 'ITV3D_FGP';  % tv denoiser
+	para.intvm = 'ITV2D_cham';  % ineer tv denoiser (multi-denoise situation)
+	load(fullfile('models','FFDNet_gray.mat'),'net');
 
-if tv_init_flag
-	% use gap-tv result as the initialized input
-	[vgapffdnet,psnr_gapffdnet,ssim_gapffdnet,tgapffdnet,psnrall_ffdnet] = ...
-		gapdenoise_cacti(mask,meas,orig,vgaptv,para); 
-else
-	[vgapffdnet,psnr_gapffdnet,ssim_gapffdnet,tgapffdnet,psnrall_ffdnet] = ...
-	    gapdenoise_cacti(mask,meas,orig,[],para);
+	para.net = vl_simplenn_tidy(net);
+	para.useGPU = true;
+	if para.useGPU
+	  para.net = vl_simplenn_move(para.net, 'gpu') ;
+	end
+	para.ffdnetvnorm_init = true; % use normalized video for the first 10 iterations
+	para.ffdnetvnorm = false; % normalize the video before FFDNet video denoising
+
+	para.tviter =100;   % 1st period gaptv iteration
+	para.intviter = 5;  % inner gaptv iteration
+	para.mu = 0.25;
+	para.iter =150;
+	para.tvweight = 0.05;
+	para.tvm = 'ITV3D_FGP';
+	 
+	para.sigma   = [50 20 10 6]./MAXB;  %   for test_kobe_binary
+	para.maxiter = [20 40 100 200];
+
+	
+	[vgapjoint,psnr_gapjoint,ssim_gapjoint,tgapjoint,psnrall_joint] = ...
+		gap_joint_denoise_cacti(mask,meas,orig,[],para);
+	
+	fprintf('GAP-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
+		upper(para.denoiser),mean(psnr_gapjoint),mean(ssim_gapjoint),tgapjoint);
+	disp('===== GAP-JOINT Finished! =====')
 end
 
-
-fprintf('GAP-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
-    upper(para.denoiser),mean(psnr_gapffdnet),mean(ssim_gapffdnet),tgapffdnet);
 
 % [3] save as the result .mat file 
 if saving_data_flag
@@ -154,12 +250,21 @@ if saving_data_flag
 		mkdir(matdir);
 	end
 
-	saved_name = [matdir '/pnpsci-' dataname '-' maskname '-' num2str(nframe*nmask) '.mat'];
+	% save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat']);
 	% zzh
-	if ~exist([matdir '/pnpsci-' dataname num2str(nframe*nmask) '.mat'], 'file')
-		save(saved_name);
+	if ~exist([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat'], 'file')
+		save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat']);
 	else
-		save(saved_name, '-append');
+		save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat'], '-append');
 	end
 end
-% save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat']);
+
+% [4] show  result
+if show_res_flag
+	result = vgapjoint;
+	figure; 
+	for nm = 1:5
+		subplot(2,5,nm); imshow(result(:,:,nm)); title(psnr(result(:,:,nm), single(orig(:,:,nm))./255))
+		subplot(2,5,nm+5); imshow(result(:,:,nm+5)); title(psnr(result(:,:,nm+5), single(orig(:,:,nm+5))./255))
+	end
+end

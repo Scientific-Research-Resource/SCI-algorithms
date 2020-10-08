@@ -18,6 +18,7 @@ tic
 for kf = 1:nframe
     fprintf('GAP-%s Reconstruction frame-block %d of %d ...\n',...
         upper(para.denoiser),kf,nframe);
+	
     if ~isempty(orig)
         para.orig = orig(:,:,(kf-1+iframe-1)*nmask+(1:nmask))/MAXB;
     end
@@ -44,7 +45,8 @@ for kf = 1:nframe
                 error('Unsupported mask direction %s!',lower(maskdirection));
         end
         
-    end
+	end
+	tic;
     if strcmp(para.denoiser,'wnnm') && isfield(para,'wnnm_int') && para.wnnm_int % GAP-WNNM integrated
         if isfield(para,'flag_iqa') && ~para.flag_iqa % ImQualAss disabled
             v = gapwnnm_int(y,para);
@@ -61,7 +63,7 @@ for kf = 1:nframe
         if isfield(para,'flag_iqa') && ~para.flag_iqa % ImQualAss disabled
             v = gapdenoise(y,para);
         else
-            [v,psnrall(kf,:)] = gapdenoise(y,para);
+            [v,~] = gapdenoise(y,para);
         end
     end
     switch maskdirection
@@ -81,9 +83,11 @@ for kf = 1:nframe
             end
         otherwise 
             error('Unsupported mask direction %s!',lower(maskdirection));
-    end
+	end
+	t_=toc;
+	 fprintf('The Reconstruction time of each frame is  %0.2f s ...\n',t_/nmask);
 end
-t_ = toc;
+% t_ = toc;
 % image quality assessments
 psnr_ = zeros([1 nmask*nframe]);
 ssim_ = zeros([1 nmask*nframe]);

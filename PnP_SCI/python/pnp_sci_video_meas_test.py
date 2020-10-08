@@ -27,9 +27,12 @@ from utils import (A_, At_)
 # %%
 # [0] environment configuration
 # datasetdir = './dataset/cacti' # dataset
-datasetdir = './dataset/benchmark/data/combine_binary_mask_256_10f/bm_256_10f'
+datasetdir = './dataset/benchmark/data/binary_mask_256_10f/bm_256_10f'
+# datasetdir = './dataset/benchmark/data/combine_binary_mask_256_10f/bm_256_10f'
 # datasetdir = '../gapDenoise/dataset/cacti' # dataset
 resultsdir = './results' # results
+
+save_flag = 0
 
 # datname = 'kobe32'        # name of the dataset
 # datname = 'traffic48'     # name of the dataset
@@ -88,11 +91,13 @@ mask_sum[mask_sum==0] = 1
 ## [2.3] GAP/ADMM-TV
 ### [2.3.1] GAP-TV
 projmeth = 'gap' # projection method
-_lambda = 1 # regularization factor
+_lambda = 1 # regularization factor, [original set]
+# _lambda = 1.5
 accelerate = True # enable accelerated version of GAP
 denoiser = 'tv' # total variation (TV)
 iter_max = 40 # maximum number of iterations
-tv_weight = 0.3 # TV denoising weight (larger for smoother but slower)
+# tv_weight = 0.3 # TV denoising weight (larger for smoother but slower) [original set]
+tv_weight = 0.5 
 tv_iter_max = 5 # TV denoising maximum number of iterations each
 
 vgaptv,tgaptv,psnr_gaptv,ssim_gaptv,psnrall_gaptv = admmdenoise_cacti(meas, mask, A, At,
@@ -110,25 +115,28 @@ print('{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format(
 
 # %%
 ### [2.3.2] ADMM-TV
-projmeth = 'admm' # projection method
-_lambda = 1 # regularization factor
-gamma = 0.01 # parameter in ADMM projection (greater for more noisy data)
-denoiser = 'tv' # total variation (TV)
-iter_max = 40 # maximum number of iterations
-tv_weight = 0.3 # TV denoising weight (larger for smoother but slower)
-tv_iter_max = 5 # TV denoising maximum number of iterations each
+# projmeth = 'admm' # projection method
+# _lambda = 1 # regularization factor, [original set]
+# # _lambda = 1.5
+# # gamma = 0.01 # parameter in ADMM projection (greater for more noisy data), [original set]
+# gamma = 0
+# denoiser = 'tv' # total variation (TV)
+# iter_max = 40 # maximum number of iterations
+# # tv_weight = 0.3 # TV denoising weight (larger for smoother but slower) [original set]
+# tv_weight = 0.5 
+# tv_iter_max = 5 # TV denoising maximum number of iterations each
 
-vadmmtv,tadmmtv,psnr_admmtv,ssim_admmtv,psnrall_admmtv = admmdenoise_cacti(meas, mask, A, At,
-                                          projmeth=projmeth, v0=None, orig=orig,
-                                          iframe=iframe, nframe=nframe,
-                                          MAXB=MAXB, maskdirection='plain',
-                                          _lambda=_lambda, gamma=gamma,
-                                          denoiser=denoiser, iter_max=iter_max, 
-                                          tv_weight=tv_weight, 
-                                          tv_iter_max=tv_iter_max)
+# vadmmtv,tadmmtv,psnr_admmtv,ssim_admmtv,psnrall_admmtv = admmdenoise_cacti(meas, mask, A, At,
+#                                           projmeth=projmeth, v0=None, orig=orig,
+#                                           iframe=iframe, nframe=nframe,
+#                                           MAXB=MAXB, maskdirection='plain',
+#                                           _lambda=_lambda, gamma=gamma,
+#                                           denoiser=denoiser, iter_max=iter_max, 
+#                                           tv_weight=tv_weight, 
+#                                           tv_iter_max=tv_iter_max)
 
-print('{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format(
-    projmeth.upper(), denoiser.upper(), mean(psnr_admmtv), mean(ssim_admmtv), tadmmtv))
+# print('{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format(
+#     projmeth.upper(), denoiser.upper(), mean(psnr_admmtv), mean(ssim_admmtv), tadmmtv))
 
 
 # %%
@@ -138,7 +146,8 @@ from packages.ffdnet.models import FFDNet
 ## [2.5] GAP/ADMM-FFDNet
 ### [2.5.1] GAP-FFDNet (FFDNet-based frame-wise video denoising)
 projmeth = 'gap' # projection method
-_lambda = 1 # regularization factor
+_lambda = 1 # regularization factor, [original set]
+# _lambda = 1.5
 accelerate = True # enable accelerated version of GAP
 denoiser = 'ffdnet' # video non-local network 
 noise_estimate = False # disable noise estimation for GAP
@@ -181,13 +190,61 @@ print('{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format(
     projmeth.upper(), denoiser.upper(), mean(psnr_gapffdnet), mean(ssim_gapffdnet), tgapffdnet))
 
 
+### [2.5.2] ADMM-FFDNet (FFDNet-based frame-wise video denoising)
+# projmeth = 'admm' # projection method
+# _lambda = 1 # regularization factor, [original set]
+# # _lambda = 1.5
+# accelerate = True # enable accelerated version of GAP
+# denoiser = 'ffdnet' # video non-local network 
+# noise_estimate = False # disable noise estimation for GAP
+# sigma    = [50/255, 25/255, 12/255, 6/255] # pre-set noise standard deviation
+# iter_max = [10, 10, 10, 10] # maximum number of iterations
+# # sigma    = [12/255, 6/255] # pre-set noise standard deviation
+# # iter_max = [10,10] # maximum number of iterations
+# useGPU = True # use GPU
+
+# # pre-load the model for FFDNet image denoising
+# in_ch = 1
+# model_fn = 'packages/ffdnet/models/net_gray.pth'
+# # Absolute path to model file
+# # model_fn = os.path.join(os.path.abspath(os.path.dirname(__file__)), model_fn)
+
+# # Create model
+# net = FFDNet(num_input_channels=in_ch)
+# # Load saved weights
+# if useGPU:
+#     state_dict = torch.load(model_fn)
+#     device_ids = [0]
+#     model = torch.nn.DataParallel(net, device_ids=device_ids).cuda()
+# else:
+#     state_dict = torch.load(model_fn, map_location='cpu')
+#     # CPU mode: remove the DataParallel wrapper
+#     state_dict = remove_dataparallel_wrapper(state_dict)
+#     model = net
+# model.load_state_dict(state_dict)
+# model.eval() # evaluation mode
+
+# vgapffdnet,tgapffdnet,psnr_gapffdnet,ssim_gapffdnet,psnrall_gapffdnet = admmdenoise_cacti(meas, mask, A, At,
+#                                           projmeth=projmeth, v0=None, orig=orig,
+#                                           iframe=iframe, nframe=nframe,
+#                                           MAXB=MAXB, maskdirection='plain',
+#                                           _lambda=_lambda,
+#                                           denoiser=denoiser, model=model, 
+#                                           iter_max=iter_max, sigma=sigma)
+
+# print('{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format(
+#     projmeth.upper(), denoiser.upper(), mean(psnr_gapffdnet), mean(ssim_gapffdnet), tgapffdnet))
+
+
 # %%
+## [2.6] GAP/ADMM-FastDVDnet
 import torch
 from packages.fastdvdnet.models import FastDVDnet
 
-## [2.2] GAP-FastDVDnet
+### [2.6.1] GAP-FastDVDnet
 projmeth = 'gap' # projection method
-_lambda = 1 # regularization factor
+_lambda = 1 # regularization factor, [original set]
+# _lambda = 1.5
 accelerate = True # enable accelerated version of GAP
 denoiser = 'fastdvdnet' # video non-local network 
 noise_estimate = False # disable noise estimation for GAP
@@ -227,6 +284,48 @@ vgapfastdvdnet,tgapfastdvdnet,psnr_gapfastdvdnet,ssim_gapfastdvdnet,psnrall_gapf
 print('{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format(
     projmeth.upper(), denoiser.upper(), mean(psnr_gapfastdvdnet), mean(ssim_gapfastdvdnet), tgapfastdvdnet))
 
+### [2.6.2] ADMM-FastDVDnet
+projmeth = 'admm' # projection method
+_lambda = 1 # regularization factor, [original set]
+# _lambda = 1.5
+accelerate = True # enable accelerated version of GAP
+denoiser = 'fastdvdnet' # video non-local network 
+noise_estimate = False # disable noise estimation for GAP
+sigma    = [100/255, 50/255, 25/255, 12/255] # pre-set noise standard deviation
+iter_max = [20, 20, 20, 20] # maximum number of iterations
+# sigma    = [12/255] # pre-set noise standard deviation
+# iter_max = [20] # maximum number of iterations
+useGPU = True # use GPU
+
+# pre-load the model for fastdvdnet image denoising
+NUM_IN_FR_EXT = 5 # temporal size of patch
+model = FastDVDnet(num_input_frames=NUM_IN_FR_EXT,num_color_channels=1)
+
+# Load saved weights
+state_temp_dict = torch.load('./packages/fastdvdnet/model_gray.pth')
+if useGPU:
+    device_ids = [0]
+    # model = torch.nn.DataParallel(model, device_ids=device_ids).cuda()
+    model = model.cuda()
+# else:
+    # # CPU mode: remove the DataParallel wrapper
+    # state_temp_dict = remove_dataparallel_wrapper(state_temp_dict)
+    
+model.load_state_dict(state_temp_dict)
+
+# Sets the model in evaluation mode (e.g. it removes BN)
+model.eval()
+
+vgapfastdvdnet,tgapfastdvdnet,psnr_gapfastdvdnet,ssim_gapfastdvdnet,psnrall_gapfastdvdnet = admmdenoise_cacti(meas, mask, A, At,
+                                          projmeth=projmeth, v0=None, orig=orig,
+                                          iframe=iframe, nframe=nframe,
+                                          MAXB=MAXB, maskdirection='plain',
+                                          _lambda=_lambda,
+                                          denoiser=denoiser, model=model, 
+                                          iter_max=iter_max, sigma=sigma)
+
+print('{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format(
+    projmeth.upper(), denoiser.upper(), mean(psnr_gapfastdvdnet), mean(ssim_gapfastdvdnet), tgapfastdvdnet))
 
 # %%
 # [3.3] result demonstration of GAP-Denoise
@@ -272,26 +371,27 @@ nmask = mask.shape[2]
 # plt.plot(psnrall_gapdenoise)
 # plt.show()
 
-savedmatdir = resultsdir + '/savedmat/cacti/'
-if not os.path.exists(savedmatdir):
-    os.makedirs(savedmatdir)
-# sio.savemat('{}gap{}_{}{:d}.mat'.format(savedmatdir,denoiser.lower(),datname,nmask),
-#             {'vgapdenoise':vgapdenoise},{'psnr_gapdenoise':psnr_gapdenoise})
-sio.savemat('{}gap{}_{}_{:d}_sigma{:d}.mat'.format(savedmatdir,denoiser.lower(),datname,nmask,int(sigma[-1]*MAXB)),
-            {'vgaptv':vgaptv, 
-             'psnr_gaptv':psnr_gaptv,
-             'ssim_gaptv':ssim_gaptv,
-             'psnrall_tv':psnrall_gaptv,
-             'tgaptv':tgaptv,
-             'vgapffdnet':vgapffdnet, 
-             'psnr_gapffdnet':psnr_gapffdnet,
-             'ssim_gapffdnet':ssim_gapffdnet,
-             'psnrall_ffdnet':psnrall_gapffdnet,
-             'tgapffdnet':tgapffdnet,
-             'vgapfastdvdnet':vgapfastdvdnet, 
-             'psnr_gapfastdvdnet':psnr_gapfastdvdnet,
-             'ssim_gapfastdvdnet':ssim_gapfastdvdnet,
-             'psnrall_fastdvdnet':psnrall_gapfastdvdnet,
-             'tgapfastdvdnet':tgapfastdvdnet})
+if save_flag:
+    savedmatdir = resultsdir + '/savedmat/cacti/'
+    if not os.path.exists(savedmatdir):
+        os.makedirs(savedmatdir)
+    # sio.savemat('{}gap{}_{}{:d}.mat'.format(savedmatdir,denoiser.lower(),datname,nmask),
+    #             {'vgapdenoise':vgapdenoise},{'psnr_gapdenoise':psnr_gapdenoise})
+    sio.savemat('{}gap{}_{}_{:d}_sigma{:d}.mat'.format(savedmatdir,denoiser.lower(),datname,nmask,int(sigma[-1]*MAXB)),
+                {'vgaptv':vgaptv, 
+                'psnr_gaptv':psnr_gaptv,
+                'ssim_gaptv':ssim_gaptv,
+                'psnrall_tv':psnrall_gaptv,
+                'tgaptv':tgaptv,
+                'vgapffdnet':vgapffdnet, 
+                'psnr_gapffdnet':psnr_gapffdnet,
+                'ssim_gapffdnet':ssim_gapffdnet,
+                'psnrall_ffdnet':psnrall_gapffdnet,
+                'tgapffdnet':tgapffdnet,
+                'vgapfastdvdnet':vgapfastdvdnet, 
+                'psnr_gapfastdvdnet':psnr_gapfastdvdnet,
+                'ssim_gapfastdvdnet':ssim_gapfastdvdnet,
+                'psnrall_fastdvdnet':psnrall_gapfastdvdnet,
+                'tgapfastdvdnet':tgapfastdvdnet})
 
 

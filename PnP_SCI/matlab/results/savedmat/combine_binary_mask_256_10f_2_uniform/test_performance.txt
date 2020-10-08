@@ -1,0 +1,17 @@
+# combine_binary_mask_2_uniform
+
+bm_256_10f:
+GAP-TV
+		aerial	crash	drop	kobe	runner	traffic	[average]
+psnr							25.44
+ssim							0.8132
+
+GAP-FFDNET
+		aerial	crash	drop	kobe	runner	traffic	[average]
+psnr							23.46
+ssim							0.7176
+
+GAP-TV+FFDNET
+		aerial	crash	drop	kobe	runner	traffic	[average]
+psnr							26.62
+ssim							0.8484

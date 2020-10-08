@@ -35,6 +35,7 @@ sigma    = 10/255;  % noise deviation
 acc      = 1;       % enable acceleration
 tvweight = 0.07;    % weight for TV denoising
 tviter   = 5;       % number of iteration for TV denoising
+tvm = 'ATV_ClipA';	% tv denoiser
 nosestim = true;    % enable noise estimation (if possible)
 flag_iqa = true;    % flag of showing image quality assessments (be sure 
                     %  to turn it off for benchmark)
@@ -49,6 +50,7 @@ if isfield(opt,'maxiter'),   maxiter = opt.maxiter;  end
 if isfield(opt,'acc'),           acc = opt.acc;      end
 if isfield(opt,'tvweight'), tvweight = opt.tvweight; end
 if isfield(opt,'tviter'),     tviter = opt.tviter;   end
+if isfield(opt,'tvm'),			 tvm = opt.tvm;		 end
 if isfield(opt,'nosestim'), nosestim = opt.nosestim; end
 if isfield(opt,'sigma'),       sigma = opt.sigma;    end
 if isfield(opt,'flag_iqa'), flag_iqa = opt.flag_iqa; end
@@ -85,7 +87,30 @@ for isig = 1:length(maxiter) % extension for a series of noise levels
         % [1.2] Denoising to match the video prior
         switch lower(denoiser)
             case 'tv' % TV denoising
-                v = TV_denoising(v,tvweight,tviter);
+                % v = TV_denoising(v,tvweight,tviter);
+				% zzh: more tv denoisers
+				switch tvm
+					case 'ATV_ClipA'
+						v         =   TV_denoising(v,  tvweight,5);  
+					case 'ATV_ClipB'
+						v         =    TV_denoising_clip_LB(v,  tvweight,5); 
+					   %  f         =    TV_denoising_ClipB(f,  para.tvweight,2e-2,50,5); 
+					case 'ATV_cham'
+						v         =     tvdenoise_cham_ATV2D(v,  1/tvweight,5);  
+					case 'ATV_FGP'
+						v         =     fgp_denoise_ATV2D(v, tvweight,2);  
+					case 'ITV2D_cham'
+						v         =     tvdenoise_cham_ITV2D(v,  1/tvweight,5);  
+					case 'ITV2D_FGP'
+						v         =     fgp_denoise_ITV2D(v,  tvweight,2);  
+					case 'ITV3D_cham'
+						v         =     tvdenoise_cham_ITV3D(v,  1/tvweight,5);  
+					case 'ITV3D_FGP'
+						v         =     fgp_denoise_ITV3D(v,  tvweight,2);  
+					otherwise
+						error('no such tvdenoiser');
+				end
+
             case 'vbm3d' % VBM3D denoising (normalization required)
                 [~,v] = VBM3D(v,nsigma,0,0); % nsigma
             case 'vbm4d' % VBM4D denoising
@@ -111,15 +136,23 @@ for isig = 1:length(maxiter) % extension for a series of noise levels
                     end
                 end
                 v = ffdnet_vdenoise(v,[],opt); % opt.sigma
+			case 'tv_ffdnet' % tv + ffdnet joint denoising
+				
             otherwise
                 error('Unsupported denoiser %s!',denoiser);
-        end
+		end
+		
         % [1.3] save and show intermediate results of psnr (and ssim)
         if flag_iqa && isfield(opt,'orig') && (~isempty(opt.orig))
             psnrall(k) = psnr(double(v),double(opt.orig)); % record all psnr
             if (mod(k,5)==0) 
-                fprintf('  GAP-%s iteration % 4d, sigma % 3d, PSNR %2.2f dB.\n',...
-                    upper(opt.denoiser),k,nsigma*255,psnrall(k));
+				if strcmp(opt.denoiser,'tv')
+					fprintf('  GAP-%s-%s iteration % 4d, sigma -, PSNR %2.2f dB.\n',...
+						upper(denoiser),upper(tvm),k,psnrall(k));
+				else
+					fprintf('  GAP-%s iteration % 4d, sigma % 3d, PSNR %2.2f dB.\n',...
+						upper(denoiser),k,nsigma*255,psnrall(k));
+				end
             end
         end
         k = k+1;

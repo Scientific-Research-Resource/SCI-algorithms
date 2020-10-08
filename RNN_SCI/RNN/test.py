@@ -55,10 +55,10 @@ mask_path = "../Data/data_simu/mask"
 test_path = "../Data/data_simu/testing_truth/bm_256_10f"  # simulation benchmark data for comparison
 
 ## param
-pretrained_model = 'pretrained_model'
-mask_name = 'combine_binary_mask_256_10f.mat';
+pretrained_model = 'binary_mask_256_10f_ZiyiMeng'
+mask_name = 'binary_mask_256_10f.mat';
 Cr = 10
-last_train = 81
+last_train = 82
 max_iter = 100
 batch_size = 3
 learning_rate = 0.0003
