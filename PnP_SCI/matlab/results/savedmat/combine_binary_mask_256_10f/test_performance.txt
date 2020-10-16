@@ -13,5 +13,5 @@ ssim	0.6603	0.6930	0.8944	0.6190	0.7439	0.4921	0.6838
 
 * GAP-TV+FFDNET
 		aerial	crash	drop	kobe	runner	traffic	[average]
-psnr	22.34	22.65	31.40	24.41	26.65	19.11	24.4267
+psnr	22.34	22.65	31.40	24.88	26.65	19.11	24.4267
 ssim									0.8730	0.6047

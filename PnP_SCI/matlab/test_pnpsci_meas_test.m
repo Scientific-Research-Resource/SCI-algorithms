@@ -35,7 +35,7 @@ datasetdir = './dataset/simdata/benchmark/data/combine_binary_mask_256_10f/bm_25
 % datasetdir = './dataset/simdata/cacti/cacti_256_10f_1';
 resultdir  = './results';                   % results
 
-test_algo_flag = [1, 4];		% choose algorithms: 0-all, 1-gaptv, 2-gap-ffdnet, 3-ista-tv, 4-gap-tv+ffdnet
+test_algo_flag = [1,4];		% choose algorithms: 0-all, 1-gaptv, 2-gap-ffdnet, 3-ista-tv, 4-gap-tv+ffdnet
 saving_data_flag = 0;	% save the recon result
 tv_init_flag = 0;		% use gap-tv recon as initial image for gap-ffdnet
 show_res_flag = 0;
@@ -96,12 +96,12 @@ para.flag_iqa = true; % enable image quality assessments in iterations
 if ismember(0,test_algo_flag) || ismember(1,test_algo_flag)
 	para.denoiser = 'tv'; % TV denoising
 % 	para.tvm = 'ITV3D_FGP';  % tv denoiser
-	para.tvm = 'original';  % tv denoiser
+	para.tvm = 'ATV_ClipA';  % tv denoiser
 	para.maxiter  = 100; % maximum iteration
 	% para.tvweight = 0.07*255/MAXB; % weight for TV denoising, original
 	% para.tviter   = 5; % number of iteration for TV denoising, original
 
-	para.tvweight = 0.07*255/MAXB; % weight for TV denoising, test
+	para.tvweight = 0.15*255/MAXB; % weight for TV denoising, test
 	para.tviter   = 5; % number of iteration for TV denoising, test
 
 	[vgaptv,psnr_gaptv,ssim_gaptv,tgaptv,psnrall_gaptv] = ...

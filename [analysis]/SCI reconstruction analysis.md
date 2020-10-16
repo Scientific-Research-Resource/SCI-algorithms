@@ -21,39 +21,27 @@
 
 
 
-3. **reconstruction performance comparison** between E2E_CNN, RNN-SCI and PnP (psnr/ssim)
+3. Reconstruction performance comparison between **E2E_CNN, RNN-SCI and PnP**(psnr/ssim)
 
 - test set: 
   - test_256_10f (traffic3  train3  tuk-tuk7  upside-down4  walking12)
-  - mask: combine_binary_mask_256_10f , combine_gray_mask_256_10f
 
 | method  | binary mask    | combined binary mask |   gray mask    | combined gray mask |
 | :-----: | -------------- | :------------------: | :------------: | :----------------: |
 | E2E_CNN | 24.6777/0.7657 |    22.8083/0.6933    | 23.7212/0.7217 |   22.3240/0.6698   |
 - test set: 
   - bm_256_10f (aerial	crash	drop	kobe	runner	traffic)
-  - mask: combine_binary_mask_256_10f, combine_gray_mask_256_10f
 
-|    method     | binary mask    | combined binary mask |   gray mask   | combined gray mask |
-| :-----------: | -------------- | :------------------: | :-----------: | :----------------: |
-|    E2E_CNN    | 29.003/0.9037  |    27.628/0.8730     | 28.791/0.8855 |   27.7606/0.872    |
-|    RNN-SCI    | 32.059/0.9400  |    29.957/0.9095     |               |                    |
-|  GAP-FFDNET   | 28.3517/0.8641 |     20.84/0.6838     |               |                    |
-| GAP-TV+FFDNET |                |       24.4267/       |               |                    |
-|    GAP_TV     | 26.45/0.8374   |     23.09/0.7998     |               |                    |
+|      method       | binary mask    | combined binary mask | combine_binary_mask_256_10f_2_uniform |   gray mask   | combined gray mask |
+| :---------------: | -------------- | :------------------: | :-----------------------------------: | :-----------: | :----------------: |
+|      E2E_CNN      | 29.003/0.9037  |    27.628/0.8730     |                                       | 28.791/0.8855 |   27.7606/0.872    |
+|      RNN-SCI      | 32.059/0.9400  |    29.957/0.9095     |                                       |               |                    |
+|      GAP_TV       | 26.45/0.8374   |     23.09/0.7998     |             25.59/0.8091              |               |                    |
+|    GAP-FFDNET     | 28.3517/0.8641 |     20.84/0.6838     |                                       |               |                    |
+|   GAP-TV+FFDNET   |                |     24.41/0.7521     |                                       |               |                    |
+| GAP-TV+FASTDVDNET |                |     28.10/0.8625     |            29.1583/0.8880             |               |                    |
 
-test set: 
 
-- bm_256_10f (aerial	crash	drop	kobe	runner	traffic)
-- mask: combine_binary_mask_256_10f_2_uniform
-
-|    method     |  binary mask   | combined binary mask |
-| :-----------: | :------------: | :------------------: |
-|    E2E_CNN    | 29.003/0.9037  |                      |
-|    RNN-SCI    | 32.059/0.9400  |                      |
-|  GAP-FFDNET   | 28.3517/0.8641 |                      |
-| GAP-TV+FFDNET |                |                      |
-|    GAP_TV     |  26.45/0.8374  |                      |
 
 Note：
 

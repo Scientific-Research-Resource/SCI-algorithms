@@ -1,0 +1,53 @@
+# combine_binary_mask_256_10f_2_uniform
+* use optimal parametes for each data
+
+bm_256_10f:
+---------
+GAP-TV
+		aerial	crash	drop	kobe	runner	traffic	[average]
+psnr	24.05	24.14	31.85	25.35	28.27	19.88	25.59
+ssim	0.7857	0.7953	0.9465	0.8016	0.8818	0.6438	0.8091
+
+
+
+---------
+GAP-TV+FFDNET
+		aerial	crash	drop	kobe	runner	traffic	[average]
+psnr	
+ssim	
+
+
+
+
+---------
+GAP-TV+FASTDVDNET
+		aerial	crash	drop	kobe	runner	traffic	[average]
+psnr	26.33	26.79	38.39	28.13	32.58	22.73	29.1583
+ssim	0.8524	0.8889	0.9821	0.8866	0.9402	0.778	0.8880
+
+
+
+param log：
+GAP-TV：
+    projmeth = 'gap' # projection method
+    _lambda = 1 # regularization factor, [original set]
+    accelerate = True # enable accelerated version of GAP
+    denoiser = 'tv' # total variation (TV)
+    iter_max = 100 # maximum number of iterations
+    tv_weight = 0.25 # TV denoising weight (larger for smoother but slower) [kobe:0.25; ]
+    tv_iter_max = 5 # TV denoising maximum number of iterations each
+
+GAP-TV+FASTDVDNET
+    projmeth = 'gap' # projection method
+    _lambda = 1 # regularization factor, [original set]
+    accelerate = True # enable accelerated version of GAP
+    denoiser = 'tv+fastdvdnet' # video non-local network 
+    noise_estimate = False # disable noise estimation for GAP
+    sigma1    = None # pre-set noise standard deviation for 1st period denoise 
+    iter_max1 = 100 # maximum number of iterations for 1st period denoise   
+    sigma2    = [100/255, 50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
+    iter_max2 = [60, 100, 150] # maximum number of iterations for 2nd period denoise     
+    # sigma2    = [50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
+    # iter_max2 = [20, 20] # maximum number of iterations for 2nd period denoise   
+    tv_iter_max = 5 # TV denoising maximum number of iterations each
+    tv_weight = 0.25 # TV denoising weight (larger for smoother but slower) [kobe:0.25]

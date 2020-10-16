@@ -1,0 +1,3 @@
+info_log:
+conda environment:
+    windows: dvp
