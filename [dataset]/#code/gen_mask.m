@@ -4,7 +4,7 @@
 %
 %   --------
 %   Created:        Zhihong Zhang <z_zhi_hong@163.com>, 2020-05-17
-%   Last Modified:  Zhihong Zhang, 2020-05-17
+%   Last Modified:  Zhihong Zhang, 2020-10-21
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% setting
 % envir init
@@ -13,17 +13,18 @@ addpath(genpath('E:\project\CACTI\SCI algorithm\[toolbox]'));
 % path setting
 % root path
 root_dir = 'E:\project\CACTI\SCI algorithm\[dataset]\#benchmark\mask\tmp\';
-mask_name = 'combine_binary_mask_256_10f_2_uniform.mat';
-mask_info_name = 'combine_binary_mask_256_10f_info_2_uniform.mat';
+mask_name = 'combine_shift_binary_mask_256_10f.mat';
+mask_info_name = 'combine_shift_binary_mask_256_10f_info.mat';
 
 
 % param setting
 % mask_size = [512 512]; 
 mask_size = [256 256]; 
 Cr = 10; % compressive ratio of snapshot
+blk_sz = [3,4]; % for shifting mask: shifting pixel range
 % save name for a Cr patch
 mask_key = 'mask';
-mask_type = 3; % 1-binary init mask, 2-gray init mask, 3-load mask
+mask_type = 4; % 1-binary init mask, 2-gray init mask, 3-load mask, 4-shift binary mask
 init_mask_path = 'E:\project\CACTI\SCI algorithm\[dataset]\#benchmark\mask\binary_mask_256_10f.mat'; % for load init mask
 
 combine_mask_flag = 2; % 0-not combine mask, 1-random combine mask, 2-specific combine mask
@@ -37,8 +38,14 @@ elseif  mask_type==2
 	% 2-gray mask
 	init_mask = gray_mask([mask_size Cr]);
 elseif  mask_type==3
+	% 3-load mask
 	init_mask = load(init_mask_path);
 	init_mask = init_mask.mask;
+elseif  mask_type==4
+	% 4-shfit mask
+	src_mask = binary_mask(mask_size+5);
+	init_mask = shift_mask(src_mask, mask_size, blk_sz, 'range');
+	init_mask = init_mask(:,:,1:Cr);
 end
 
 % combine_matrix

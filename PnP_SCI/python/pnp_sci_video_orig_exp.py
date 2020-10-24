@@ -27,49 +27,76 @@ from scipy.io.matlab.miobase import get_matfile_version
 import torch
 from packages.ffdnet.models import FFDNet
 from packages.fastdvdnet.models import FastDVDnet
+import argparse
 
 
+#%%
+# [script_engine argparse]
+parser = argparse.ArgumentParser()
+parser.add_argument("--tv_weight", type=float)
+parser.add_argument("--orig_name", type=str)
+parser.add_argument("--scale", type=str)
+parser.add_argument("--Cr", type=int)
+args = parser.parse_args()
 
 # %%
 # [0] environment configuration
 ## [0.1] path and data name
-orig_dir = './dataset/benchmark/orig/bm_256_10f'
-mask_dir = './dataset/benchmark/mask' # mask dataset
+root_dir = 'E:/project/CACTI/experiment/simulation'
+orig_dir = root_dir + '/dataset/simu_data/gray/orig'
+mask_dir = root_dir + '/dataset/simu_data/gray/mask' # mask dataset
 
-resultsdir = './results' # results dir
+resultsdir = root_dir + '/results/tmp' # results dir
 
+'''
 # orig_name = 'aerial'                # name of 'orig'
 # orig_name = 'crash'
 # orig_name = 'drop'
 # orig_name = 'kobe'            
 # orig_name = 'runner'
-orig_name = 'traffic'    
+# orig_name = 'traffic'    
+'''
+
+# orig_name = 'football'
+# orig_name = 'messi';
+# orig_name = 'hummingbird'
+# orig_name = 'swinger'
+# orig_name = 'ReadySteadyGo'
+# orig_name = 'Jockey'
+# orig_name = 'YachtRide'
+orig_name = args.orig_name
 
 # mask_name = 'binary_mask_256_10f'    # name of 'mask'
-# mask_name = 'combine_binary_mask_256_10f'    # name of 'mask'
-# mask_name = 'combine_binary_mask_256_10f_2_uniform'
-mask_name = 'combine_shift_binary_mask_256_10f'
+mask_name = 'multiplex_shift_binary_mask'
 
+# scale = '256'
+# scale = '512'
+# scale = '1024'
+scale = args.scale
 
-origpath = orig_dir + '/' + orig_name + '.mat' # path of the .mat orig file
-maskpath = mask_dir + '/' + mask_name + '.mat' # path of the .mat mask file
+# Cr = 10 # compress rate
+# Cr = 20 # compress rate
+Cr = args.Cr
+
+origpath = orig_dir + '/' + orig_name + "_" + scale + '.mat' # path of the .mat orig file
+maskpath = mask_dir + '/' + mask_name + "_" + scale +  "_" + str(Cr) + 'f.mat' # path of the .mat mask file
 
 
 ## [0.2] flags
+script_engine_flag = 1 # use script)engine
 show_res_flag = 1           # show results
-save_res_flag = 1          # save results
+save_res_flag = 0          # save results
 # choose algorithms: 
 # 'all', 'gaptv', 'admmtv', 'gapffdnet', 'admmffdnet', 
 # 'gapfastdvdnet', 'admmfastdvdnet', 'gaptv+ffdnet', 'gaptv+fastdvdnet'
 # test_algo_flag = ['all']
-# test_algo_flag = ['gaptv']
+test_algo_flag = ['gaptv']
 # test_algo_flag = ['gaptv+ffdnet']			
 # test_algo_flag = ['gaptv+fastdvdnet']	
 # test_algo_flag = ['gaptv', 'gaptv+ffdnet']
-test_algo_flag = ['gaptv', 'gaptv+fastdvdnet']	
+# test_algo_flag = ['gaptv', 'gaptv+fastdvdnet']	
 # test_algo_flag = ['gaptv+ffdnet', 'gaptv+fastdvdnet']	
 # test_algo_flag = ['gaptv', 'gaptv+ffdnet', 'gaptv+fastdvdnet']	
-
 
 
 # %%
@@ -109,15 +136,16 @@ if meas.ndim<3:
     # print(meas.shape)
 # print('meas, mask, orig:', meas.shape, mask.shape, orig.shape)
 
-  
+orig_frame=48
 iframe = 0
-nframe = 1
+nframe = norig//nmask
 MAXB = 255.
 
 # common parameters and pre-calculation for PnP
 # define forward model and its transpose
 A  = lambda x :  A_(x, mask) # forward model function handle
 At = lambda y : At_(y, mask) # transpose of forward model
+
 
 
 # %%
@@ -129,7 +157,8 @@ if ('all' in test_algo_flag) or ('gaptv' in test_algo_flag):
     accelerate = True # enable accelerated version of GAP
     denoiser = 'tv' # total variation (TV)
     iter_max = 100 # maximum number of iterations
-    tv_weight = 0.25 # TV denoising weight (larger for smoother but slower) [kobe:0.25; ]
+    # tv_weight = 0.25 # TV denoising weight (larger for smoother but slower) [kobe:0.25; ]
+    tv_weight = args.tv_weight
     tv_iter_max = 5 # TV denoising maximum number of iterations each
 
     vgaptv,tgaptv,psnr_gaptv,ssim_gaptv,psnrall_gaptv = admmdenoise_cacti(meas, mask, A, At,
@@ -146,6 +175,17 @@ if ('all' in test_algo_flag) or ('gaptv' in test_algo_flag):
     show_n_save_res(vgaptv,tgaptv,psnr_gaptv,ssim_gaptv,psnrall_gaptv, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+orig_name, MAXB, show_res_flag, save_res_flag)
 
+# save finetune result
+if script_engine_flag:
+    log_file = os.path.join(resultsdir,test_algo_flag[0]+'_'+orig_name+'_'+
+                            scale+'_Cr'+str(Cr)+'_finetune.txt')
+    if os.path.exists(log_file):
+        open_mode = 'a'
+    else:
+        open_mode = 'w'
+    with open(log_file,open_mode) as f:
+        f.writelines("tv_weight: {:.4f}, PSNR {:2.2f} dB, SSIM {:.4f}\n".format(tv_weight, mean(psnr_gaptv), mean(ssim_gaptv)))
+    
 # %%
 ### [2.1.2] ADMM-TV
 if ('all' in test_algo_flag) or ('admmtv' in test_algo_flag):
@@ -444,7 +484,7 @@ if ('all' in test_algo_flag) or ('gaptv+fastdvdnet' in test_algo_flag):
     # sigma2    = [50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
     # iter_max2 = [20, 20] # maximum number of iterations for 2nd period denoise   
     tv_iter_max = 5 # TV denoising maximum number of iterations each
-    tv_weight = 0.25 # TV denoising weight (larger for smoother but slower) [kobe:0.25]
+    tv_weight = 0.25 # TV denoising weight for 1st and 2nd denoising (larger for smoother but slower) [kobe:0.25]
     # sigma    = [12/255] # pre-set noise standard deviation
     # iter_max = [20] # maximum number of iterations
     useGPU = True # use GPU
@@ -483,5 +523,5 @@ if ('all' in test_algo_flag) or ('gaptv+fastdvdnet' in test_algo_flag):
                         projmeth+denoiser+'_'+orig_name, MAXB, show_res_flag, save_res_flag)
       
 # show res
-if show_res_flag:
-    plt.show()
+# if show_res_flag:
+#     plt.show()
