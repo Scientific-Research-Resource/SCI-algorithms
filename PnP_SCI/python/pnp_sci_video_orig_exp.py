@@ -84,7 +84,7 @@ maskpath = mask_dir + '/' + mask_name + "_" + scale +  "_" + str(Cr) + 'f.mat' #
 
 ## [0.2] flags
 script_engine_flag = 1 # use script)engine
-show_res_flag = 1           # show results
+show_res_flag = 0           # show results
 save_res_flag = 0          # save results
 # choose algorithms: 
 # 'all', 'gaptv', 'admmtv', 'gapffdnet', 'admmffdnet', 
@@ -137,8 +137,10 @@ if meas.ndim<3:
 # print('meas, mask, orig:', meas.shape, mask.shape, orig.shape)
 
 orig_frame=48
-iframe = 0
-nframe = norig//nmask
+iframe = 0                  # from which frame of meas to recon
+# iframe = 1
+nframe = 1                
+# nframe = norig//nmask       # how many frame of meas to recon
 MAXB = 255.
 
 # common parameters and pre-calculation for PnP

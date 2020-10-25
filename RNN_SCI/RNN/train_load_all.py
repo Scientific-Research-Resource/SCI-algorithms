@@ -29,7 +29,7 @@ zhcheng@stu.xidian.edu.cn
 
 """
 
-from dataLoadess import OrigTrainDataset
+from dataLoadess import AllOrigTrainDataset
 from torch.utils.data import DataLoader
 from models import forward_rnn, cnn1, backrnn
 from utils import generate_masks, time2file_name
@@ -45,7 +45,6 @@ import numpy as np
 from torch.autograd import Variable
 from skimage.metrics import structural_similarity as ssim
 
-
 ### environ
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 if not torch.cuda.is_available():
@@ -54,14 +53,14 @@ if not torch.cuda.is_available():
 ### setting
 ## path
 #data_path = "../Data/data_simu/training_truth/data_augment_256_10f"  # traning data from DAVIS2017
-train_data_path = "E:/project/CACTI/SCI algorithm/E2E_CNN/data_simu/training_truth/data_augment_256_10f"  # traning data from DAVIS2017
+train_data_path = "/data/zzh/project/E2E_CNN/data_simu/training_truth/data_augment_256_10f"  # traning data from DAVIS2017
 mask_path = "../Data/data_simu/mask"
 test_path = "../Data/data_simu/testing_truth/bm_256_10f"  # simulation benchmark data for comparison
 
 
 ## param
 pretrained_model = ''
-mask_name = 'combine_binary_mask_256_10f.mat'
+mask_name = 'cacti_mask_256_10f_1.mat'
 Cr = 10
 last_train = 0
 max_iter = 100
@@ -75,7 +74,7 @@ mode = 'train'  # train or test
 
 ## data set
 mask, mask_s = generate_masks(mask_path, mask_name)
-dataset = OrigTrainDataset(train_data_path, mask_path+'/'+mask_name)
+dataset = AllOrigTrainDataset(train_data_path, mask_path+'/'+mask_name)
 
 train_data_loader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=True)
 
@@ -104,9 +103,8 @@ def test(test_path, epoch, result_path, logger):
     psnr_forward = torch.zeros(len(test_list))
     psnr_backward = torch.zeros(len(test_list))
     ssim_forward = torch.zeros(len(test_list))
-    ssim_backward = torch.zeros(len(test_list))   
-    
-    
+    ssim_backward = torch.zeros(len(test_list))
+
     # load test data
     for i in range(len(test_list)):
         # load orig pic
@@ -172,7 +170,7 @@ def test(test_path, epoch, result_path, logger):
             psnr_2 = 0
             ssim_1 = 0
             ssim_2 = 0
-            
+
             for ii in range(meas.shape[0] * Cr):
                 out_pic_forward = out_pic1[ii // Cr, ii % Cr, :, :]
                 out_pic_backward = out_pic2[ii // Cr, ii % Cr, :, :]
@@ -197,6 +195,7 @@ def test(test_path, epoch, result_path, logger):
             ssim_forward[i] = ssim_1
             ssim_backward[i] = ssim_2
 
+            # test performance
             if sign == 1:
                 if epoch % 5 == 0 or (epoch > 50 and epoch % 2 == 0):
                     a = test_list[i]

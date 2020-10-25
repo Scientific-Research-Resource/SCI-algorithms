@@ -117,7 +117,7 @@ def test(test_path, epoch, result_path):
 
         # calc meas
         pic_gt = np.zeros([pic.shape[2] // Cr, Cr, 256, 256])
-        for jj in range(pic.shape[2]):
+        for jj in range(pic.shape[2] // Cr*Cr):
             if jj % Cr == 0:
                 meas_t = np.zeros([256, 256])
                 n = 0
