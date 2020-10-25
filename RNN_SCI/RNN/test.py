@@ -58,6 +58,7 @@ test_path = "../Data/data_simu/testing_truth/bm_256_10f"  # simulation benchmark
 pretrained_model = 'binary_mask_256_10f_ZiyiMeng'
 mask_name = 'binary_mask_256_10f.mat';
 Cr = 10
+block_size = 256
 last_train = 82
 max_iter = 100
 batch_size = 3
@@ -70,7 +71,7 @@ mask, mask_s = generate_masks(mask_path, mask_name)
 
 
 ## model set
-first_frame_net = cnn1().cuda()
+first_frame_net = cnn1(Cr+1).cuda()
 rnn1 = forward_rnn().cuda()
 rnn2 = backrnn().cuda()
 
@@ -116,10 +117,10 @@ def test(test_path, epoch, result_path):
         pic = pic / 255
 
         # calc meas
-        pic_gt = np.zeros([pic.shape[2] // Cr, Cr, 256, 256])
+        pic_gt = np.zeros([pic.shape[2] // Cr, Cr, block_size, block_size])
         for jj in range(pic.shape[2] // Cr*Cr):
             if jj % Cr == 0:
-                meas_t = np.zeros([256, 256])
+                meas_t = np.zeros([block_size, block_size])
                 n = 0
             pic_t = pic[:, :, jj]
             mask_t = mask[n, :, :]
@@ -148,10 +149,10 @@ def test(test_path, epoch, result_path):
         meas_re = torch.unsqueeze(meas_re, 1)
         
         with torch.no_grad():
-            h0 = torch.zeros(meas.shape[0], 20, 256, 256).cuda()
-            xt1 = first_frame_net(meas, mask, meas.shape[0], meas_re)
-            out_pic1,h1 = rnn1(xt1, meas, mask, meas.shape[0], h0, mode, meas_re)
-            out_pic2 = rnn2(out_pic1[:, 9, :, :], meas, mask, meas.shape[0], h1, mode, meas_re)        #  out_pic1[:, fn-1, :, :]
+            h0 = torch.zeros(meas.shape[0], 20, block_size, block_size).cuda()
+            xt1 = first_frame_net(meas, mask, meas.shape[0], meas_re, block_size, Cr)
+            out_pic1,h1 = rnn1(xt1, meas, mask, meas.shape[0], h0, mode, meas_re, block_size, Cr)
+            out_pic2 = rnn2(out_pic1[:, 9, :, :], meas, mask, meas.shape[0], h1, mode, meas_re, block_size, Cr)        #  out_pic1[:, fn-1, :, :]
         
         # calculate psnr and ssim
             psnr_1 = 0

@@ -58,17 +58,17 @@ class forward_rnn(nn.Module):
         self.res_part1 = res_part(50, 50)
         self.res_part2 = res_part(50, 50)
 
-    def forward(self, xt1, meas, mask, batch_size, h, mode, meas_re):
+    def forward(self, xt1, meas, mask, batch_size, h, mode, meas_re, block_size, Cr):
         ht = h
         xt = xt1
 
         out = xt1
-        for i in range(9):                                                                 # range(fn-1):
-            d1 = torch.zeros(batch_size, 256, 256).cuda()
-            d2 = torch.zeros(batch_size, 256, 256).cuda()
+        for i in range(Cr-1):                                                                 # range(fn-1):
+            d1 = torch.zeros(batch_size, block_size, block_size).cuda()
+            d2 = torch.zeros(batch_size, block_size, block_size).cuda()
             for ii in range(i + 1):
                 d1 = d1 + torch.mul(mask[ii, :, :], out[:, ii, :, :])
-            for ii in range(i + 2, 10):                                                    # range(i + 2, fn):
+            for ii in range(i + 2, Cr):                                                    # range(i + 2, fn):
                 d2 = d2 + torch.mul(mask[ii, :, :], torch.squeeze(meas_re))
             x1 = self.conv_x(torch.cat([meas_re, torch.unsqueeze(meas - d1 - d2, 1)], dim=1))
 
@@ -88,9 +88,9 @@ class cnn1(nn.Module):
     # 输入meas concat mask
     # 3 下采样
 
-    def __init__(self):
+    def __init__(self, inch):
         super(cnn1, self).__init__()
-        self.conv1 = nn.Conv2d(11, 32, kernel_size=5, stride=1, padding=2)                   # nn.Conv2d( (fn+1), 32, ...  
+        self.conv1 = nn.Conv2d(inch, 32, kernel_size=5, stride=1, padding=2)                   # nn.Conv2d( (fn+1), 32, ...  
         self.relu1 = nn.LeakyReLU(inplace=True)
         self.conv2 = nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1)
         self.relu2 = nn.LeakyReLU(inplace=True)
@@ -115,8 +115,8 @@ class cnn1(nn.Module):
         self.relu9 = nn.LeakyReLU(inplace=True)
         self.conv10 = nn.Conv2d(128, 128, kernel_size=1, stride=1)
 
-    def forward(self, x, mask, batch_size, meas_re):
-        maskt = mask.expand([batch_size, 10, 256, 256])
+    def forward(self, x, mask, batch_size, meas_re, block_size, Cr):
+        maskt = mask.expand([batch_size, Cr, block_size, block_size])
         maskt = maskt.mul(meas_re)
         xt = torch.cat([meas_re, maskt], dim=1)
         data = xt
@@ -184,21 +184,21 @@ class backrnn(nn.Module):
 
         # self.first = first_frame()
 
-    def forward(self, xt8, meas, mask, batch_size, h, mode, meas_re):
+    def forward(self, xt8, meas, mask, batch_size, h, mode, meas_re, block_size, Cr):
         ht = h
 
         xt = xt8
         xt = torch.unsqueeze(xt, 1)
 
-        out = torch.zeros(batch_size, 10, 256, 256).cuda()              # (batch_size, fn, 256, 256)
-        out[:, 9, :, :] = xt[:, 0, :, :]                                # out[:, fn-1, :, :] = xt[:, 0, :, :]
-        for i in range(9):                                              # range(fn-1):
-            d1 = torch.zeros(batch_size, 256, 256).cuda()
-            d2 = torch.zeros(batch_size, 256, 256).cuda()
+        out = torch.zeros(batch_size, Cr, block_size, block_size).cuda()              # (batch_size, fn, block_size, block_size)
+        out[:, Cr-1, :, :] = xt[:, 0, :, :]                                # out[:, fn-1, :, :] = xt[:, 0, :, :]
+        for i in range(Cr-1):                                              # range(fn-1):
+            d1 = torch.zeros(batch_size, block_size, block_size).cuda()
+            d2 = torch.zeros(batch_size, block_size, block_size).cuda()
             for ii in range(i + 1):
-                d1 = d1 + torch.mul(mask[9 - ii, :, :], out[:, 9 - ii, :, :].clone())                # mask[(fn-1) - ii, :, :]  out...
-            for ii in range(i + 2, 10):
-                d2 = d2 + torch.mul(mask[9 - ii, :, :], torch.squeeze(meas_re))                      # mask[(fn-1) - ii, :, :]
+                d1 = d1 + torch.mul(mask[Cr-1 - ii, :, :], out[:, Cr-1 - ii, :, :].clone())                # mask[(fn-1) - ii, :, :]  out...
+            for ii in range(i + 2, Cr):
+                d2 = d2 + torch.mul(mask[Cr-1 - ii, :, :], torch.squeeze(meas_re))                      # mask[(fn-1) - ii, :, :]
             x1 = self.conv_x(torch.cat([meas_re, torch.unsqueeze(meas - d1 - d2, 1)], dim=1))
 
             x2 = self.extract_feature1(xt)

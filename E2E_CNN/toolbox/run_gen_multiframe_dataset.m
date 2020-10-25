@@ -22,16 +22,16 @@ raw_dataset_dir = '..\data_raw\DAVIS-2017-Unsupervised-trainval\full_resolution\
 raw_data_filetype = '*.jpg';
 
 % save_path
-root_dir = '..\';
-train_dir = 'data_simu\training_truth\data_augment_512_10f\';
-test_dir = 'data_simu\testing_truth\test_512_10f\';
-valid_dir = 'data_simu\valid_truth\valid_512_10f\';
+root_dir = 'R:\#dataset\cacti\DAVIS2017\';
+train_dir = 'training_truth\data_augment_256_20f\';
+test_dir = 'testing_truth\test_256_20f\';
+valid_dir = 'valid_truth\valid_256_20f\';
 
 
 % param setting
-Cr = 10; % compressive ratio of snapshot
-save_img_sz = [512 512]; % patch size
-% save_img_sz = [256 256]; % patch size
+Cr = 20; % compressive ratio of snapshot
+% save_img_sz = [512 512]; % patch size
+save_img_sz = [256 256]; % patch size
 var_name = 'patch_save'; % save name for a Cr patch
 
 % total num: 90 videos, 6208 images

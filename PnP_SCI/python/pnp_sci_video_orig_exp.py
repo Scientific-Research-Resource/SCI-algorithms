@@ -175,7 +175,8 @@ if ('all' in test_algo_flag) or ('gaptv' in test_algo_flag):
     print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gaptv), mean(ssim_gaptv), tgaptv)+'-'*20)
     show_n_save_res(vgaptv,tgaptv,psnr_gaptv,ssim_gaptv,psnrall_gaptv, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+orig_name, MAXB, show_res_flag, save_res_flag)
+                        projmeth+denoiser+'_'+orig_name+'_'+scale+'_Cr'+str(Cr), MAXB, 
+                        show_res_flag, save_res_flag,tv_weight=tv_weight, iter_max = iter_max)
 
 # save finetune result
 if script_engine_flag:
