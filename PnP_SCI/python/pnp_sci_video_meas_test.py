@@ -114,7 +114,9 @@ if ('all' in test_algo_flag) or ('gaptv' in test_algo_flag):
     print('{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gaptv), mean(ssim_gaptv), tgaptv))
     show_n_save_res(vgaptv,tgaptv,psnr_gaptv,ssim_gaptv,psnrall_gaptv, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+datname, MAXB, show_res_flag, save_res_flag)
+                        projmeth+denoiser+'_'+datname,  iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        show_res_flag=show_res_flag, save_res_flag=save_res_flag,
+                        tv_weight=tv_weight, iter_max = iter_max)
 
 # %%
 ### [2.1.2] ADMM-TV
@@ -142,7 +144,9 @@ if ('all' in test_algo_flag) or ('admmtv' in test_algo_flag):
     print('{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_admmtv), mean(ssim_admmtv), tadmmtv))
     show_n_save_res(vadmmtv,tadmmtv,psnr_admmtv,ssim_admmtv,psnrall_admmtv, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+datname, MAXB, show_res_flag, save_res_flag)
+                        projmeth+denoiser+'_'+datname,  iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        show_res_flag=show_res_flag, save_res_flag=save_res_flag,
+                        tv_weight=tv_weight, iter_max = iter_max)
 
 # %%
 import torch
@@ -195,7 +199,9 @@ if ('all' in test_algo_flag) or ('gapffdnet' in test_algo_flag):
     print('{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gapffdnet), mean(ssim_gapffdnet), tgapffdnet))
     show_n_save_res(vgapffdnet,tgapffdnet,psnr_gapffdnet,ssim_gapffdnet,psnrall_gapffdnet, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+datname, MAXB, show_res_flag, save_res_flag)
+                        projmeth+denoiser+'_'+datname,  iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        show_res_flag=show_res_flag, save_res_flag=save_res_flag,
+                        iter_max = iter_max, sigma=sigma)
 
 ### [2.2.2] ADMM-FFDNet (FFDNet-based frame-wise video denoising)
 if ('all' in test_algo_flag) or ('admmffdnet' in test_algo_flag):
@@ -239,12 +245,12 @@ if ('all' in test_algo_flag) or ('admmffdnet' in test_algo_flag):
                                               _lambda=_lambda,
                                               denoiser=denoiser, model=model, 
                                               iter_max=iter_max, sigma=sigma)
-
-    print('{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format(
-        projmeth.upper(), denoiser.upper(), mean(psnr_admmffdnet), mean(ssim_admmffdnet), tadmmffdnet))
+    print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
+        projmeth.upper(), denoiser.upper(), mean(psnr_admmffdnet), mean(ssim_admmffdnet), tadmmffdnet)+'-'*20)
     show_n_save_res(vadmmffdnet,tadmmffdnet,psnr_admmffdnet,ssim_admmffdnet,psnrall_admmffdnet, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+datname, MAXB, show_res_flag, save_res_flag)
-
+                        projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        show_res_flag=show_res_flag, save_res_flag=save_res_flag,
+                        iter_max = iter_max, sigma=sigma)
 # %%
 ## [2.3] GAP/ADMM-FastDVDnet
 import torch
@@ -294,8 +300,10 @@ if ('all' in test_algo_flag) or ('gapfastdvdnet' in test_algo_flag):
     print('{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gapfastdvdnet), mean(ssim_gapfastdvdnet), tgapfastdvdnet))
     show_n_save_res(vgapfastdvdnet,tgapfastdvdnet,psnr_gapfastdvdnet,ssim_gapfastdvdnet,psnrall_gapfastdvdnet, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+datname, MAXB, show_res_flag, save_res_flag)
-    
+                        projmeth+denoiser+'_'+datname,  iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        show_res_flag=show_res_flag, save_res_flag=save_res_flag,
+                        iter_max = iter_max, sigma=sigma)
+     
 ### [2.3.2] ADMM-FastDVDnet
 if ('all' in test_algo_flag) or ('admmffdnet' in test_algo_flag):
     projmeth = 'admm' # projection method
@@ -340,7 +348,128 @@ if ('all' in test_algo_flag) or ('admmffdnet' in test_algo_flag):
     print('{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_admmfastdvdnet), mean(ssim_admmfastdvdnet), tadmmfastdvdnet))
     show_n_save_res(vadmmfastdvdnet,tadmmfastdvdnet,psnr_admmfastdvdnet,ssim_admmfastdvdnet,psnrall_admmfastdvdnet, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+datname, MAXB, show_res_flag, save_res_flag)
+                        projmeth+denoiser+'_'+datname,  iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        show_res_flag=show_res_flag, save_res_flag=save_res_flag,
+                        iter_max = iter_max, sigma=sigma)
+# %%
+## [2.4] GAP/ADMM-gaptv+ffdnet
+### [2.4.1] GAP-TV+FFDNET
+if ('all' in test_algo_flag) or ('gaptv+ffdnet' in test_algo_flag):
+    projmeth = 'gap' # projection method
+    _lambda = 1 # regularization factor, [original set]
+    accelerate = True # enable accelerated version of GAP
+    denoiser = 'tv+ffdnet' # video non-local network 
+    noise_estimate = False # disable noise estimation for GAP
+    sigma1    = None # pre-set noise standard deviation for 1st period denoise 
+    iter_max1 = 100 # maximum number of iterations for 1st period denoise   
+    sigma2    = [50/255, 20/255, 10/255, 6/255] # pre-set noise standard deviation for 2nd period denoise 
+    iter_max2 = [20, 40, 100, 50] # maximum number of iterations for 2nd period denoise    
+    # sigma2    = [50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
+    # iter_max2 = [20, 20] # maximum number of iterations for 2nd period denoise   
+    tv_iter_max = 5 # TV denoising maximum number of iterations each
+    tv_weight = 0.25 # TV denoising weight (larger for smoother but slower)
+    tvm = 'tv_chambolle'
+    # sigma    = [12/255, 6/255] # pre-set noise standard deviation
+    # iter_max = [10,10] # maximum number of iterations
+    useGPU = True # use GPU
+    
+    # pre-load the model for FFDNet image denoising
+    in_ch = 1
+    model_fn = 'packages/ffdnet/models/net_gray.pth'
+    # Absolute path to model file
+    # model_fn = os.path.join(os.path.abspath(os.path.dirname(__file__)), model_fn)
 
+    # Create model
+    net = FFDNet(num_input_channels=in_ch)
+    # Load saved weights
+    if useGPU:
+        state_dict = torch.load(model_fn)
+        device_ids = [0]
+        model = torch.nn.DataParallel(net, device_ids=device_ids).cuda()
+    else:
+        state_dict = torch.load(model_fn, map_location='cpu')
+        # CPU mode: remove the DataParallel wrapper
+        state_dict = remove_dataparallel_wrapper(state_dict)
+        model = net
+    model.load_state_dict(state_dict)
+    model.eval() # evaluation mode
+    
+    vgaptvffdnet,tgaptvffdnet,psnr_gaptvffdnet,ssim_gaptvffdnet,psnrall_gaptvffdnet = joint_admmdenoise_cacti(meas, mask, A, At,
+                                            projmeth=projmeth, v0=None, orig=orig,
+                                            iframe=iframe, nframe=nframe,
+                                            MAXB=MAXB, maskdirection='plain',
+                                            _lambda=_lambda, accelerate=accelerate,
+                                            denoiser=denoiser, iter_max1=iter_max1, iter_max2=iter_max2,
+                                            tv_weight=tv_weight, tv_iter_max=tv_iter_max, 
+                                            model=model, sigma1=sigma1, sigma2=sigma2, tvm='tv_chambolle')
+                                            
+
+    print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
+        projmeth.upper(), denoiser.upper(), mean(psnr_gaptvffdnet), mean(ssim_gaptvffdnet), tgaptvffdnet)+'-'*20)
+    show_n_save_res(vgaptvffdnet,tgaptvffdnet,psnr_gaptvffdnet,ssim_gaptvffdnet,psnrall_gaptvffdnet, orig, nmask, resultsdir, 
+                        projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        show_res_flag=show_res_flag, save_res_flag=save_res_flag,
+                        tv_weight=tv_weight, iter_max1=iter_max1, iter_max2=iter_max2, sigma1=sigma1, sigma2=sigma2)
+  
+
+# %%
+## [2.5] GAP/ADMM-gaptv+fastdvdnet
+import torch
+from packages.fastdvdnet.models import FastDVDnet
+
+### [2.5.1] GAP-TV+FASTDVDNET
+if ('all' in test_algo_flag) or ('gaptv+fastdvdnet' in test_algo_flag):
+    projmeth = 'gap' # projection method
+    _lambda = 1 # regularization factor, [original set]
+    accelerate = True # enable accelerated version of GAP
+    denoiser = 'tv+fastdvdnet' # video non-local network 
+    noise_estimate = False # disable noise estimation for GAP
+    sigma1    = None # pre-set noise standard deviation for 1st period denoise 
+    iter_max1 = 100 # maximum number of iterations for 1st period denoise   
+    sigma2    = [100/255, 50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
+    iter_max2 = [60, 100, 150] # maximum number of iterations for 2nd period denoise    
+    # sigma2    = [50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
+    # iter_max2 = [20, 20] # maximum number of iterations for 2nd period denoise   
+    tv_iter_max = 5 # TV denoising maximum number of iterations each
+    tv_weight = 0.25 # TV denoising weight (larger for smoother but slower) [kobe:0.25]
+    # sigma    = [12/255] # pre-set noise standard deviation
+    # iter_max = [20] # maximum number of iterations
+    useGPU = True # use GPU
+
+    # pre-load the model for fastdvdnet image denoising
+    NUM_IN_FR_EXT = 5 # temporal size of patch
+    model = FastDVDnet(num_input_frames=NUM_IN_FR_EXT,num_color_channels=1)
+
+    # Load saved weights
+    state_temp_dict = torch.load('./packages/fastdvdnet/model_gray.pth')
+    if useGPU:
+        device_ids = [0]
+        # model = torch.nn.DataParallel(model, device_ids=device_ids).cuda()
+        model = model.cuda()
+    # else:
+        # # CPU mode: remove the DataParallel wrapper
+        # state_temp_dict = remove_dataparallel_wrapper(state_temp_dict)
+        
+    model.load_state_dict(state_temp_dict)
+
+    # Sets the model in evaluation mode (e.g. it removes BN)
+    model.eval()
+
+    vgaptvfastdvdnet,tgaptvfastdvdnet,psnr_gaptvfastdvdnet,ssim_gaptvfastdvdnet,psnrall_gaptvfastdvdnet = joint_admmdenoise_cacti(meas, mask, A, At,
+                                            projmeth=projmeth, v0=None, orig=orig,
+                                            iframe=iframe, nframe=nframe,
+                                            MAXB=MAXB, maskdirection='plain',
+                                            _lambda=_lambda, accelerate=accelerate,
+                                            denoiser=denoiser, iter_max1=iter_max1, iter_max2=iter_max2,
+                                            tv_weight=tv_weight, tv_iter_max=tv_iter_max, 
+                                            model=model, sigma1=sigma1, sigma2=sigma2, tvm='tv_chambolle')
+
+    print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
+        projmeth.upper(), denoiser.upper(), mean(psnr_gaptvfastdvdnet), mean(ssim_gaptvfastdvdnet), tgaptvfastdvdnet)+'-'*20)
+    show_n_save_res(vgaptvfastdvdnet,tgaptvfastdvdnet,psnr_gaptvfastdvdnet,ssim_gaptvfastdvdnet,psnrall_gaptvfastdvdnet, orig, nmask, resultsdir, 
+                        projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        show_res_flag=show_res_flag, save_res_flag=save_res_flag,
+                        tv_weight=tv_weight, iter_max1=iter_max1, iter_max2=iter_max2, sigma1=sigma1, sigma2=sigma2)
+      
 if show_res_flag:
     plt.show()

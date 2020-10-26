@@ -15,10 +15,10 @@ Crs = [10,20]
 
 opti_tv_weight_table = {'256_Cr10': 0.20,
                    '256_Cr20': 0.15,
-                   '512_Cr10': 0.30,
-                   '512_Cr20': 0.1,
-                   '1024_Cr10': 0.,
-                   '1024_Cr20': 0.}
+                   '512_Cr10': 0.25,
+                   '512_Cr20': 0.10,
+                   '1024_Cr10': 0.10,
+                   '1024_Cr20': 0.10}
         
 # [1] gaptv_finetune
 if engine_flag=='gaptv_finetune':   
@@ -37,14 +37,14 @@ if engine_flag=='gaptv_finetune':
 # [2] gaptv_cacti
 if engine_flag == 'gaptv_cacti':
     for scale in scales:
-        for orig_name in orig_names:
-            for Cr in Crs:
+        for Cr in Crs:
+            for orig_name in orig_names:
                 print("python pnp_sci_video_orig_exp.py \
                 --orig_name {} --scale {} --Cr {} --tv_weight {:.2f}"
                 .format(orig_name, scale, Cr, opti_tv_weight_table[scale+'_Cr'+str(Cr)]))
-            os.system("python pnp_sci_video_orig_exp.py \
-                --orig_name {} --scale {} --Cr {} --tv_weight {:.2f}"
-                .format(orig_name, scale, Cr, opti_tv_weight_table[scale+'_Cr'+str(Cr)]))               
+                os.system("python pnp_sci_video_orig_exp.py \
+                    --orig_name {} --scale {} --Cr {} --tv_weight {:.2f}"
+                    .format(orig_name, scale, Cr, opti_tv_weight_table[scale+'_Cr'+str(Cr)]))               
 
 
 # [3] pnp-cacti

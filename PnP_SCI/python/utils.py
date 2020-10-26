@@ -58,9 +58,9 @@ def show_n_save_res(vdenoise,tdenoise,psnr_denoise,ssim_denoise,psnrall_denoise,
                 plt.subplot(Cr//row_num, row_num, nt+1)
                 plt.imshow(orig_k[:,:,nt], cmap=plt.cm.gray, vmin=0, vmax=1)
                 plt.axis('off')
-                plt.title('Ground truth: Frame #{0:d}'.format(nt+1), fontsize=12)
+                plt.title('Ground truth: Frame #{0:d}'.format((kf+iframe)*Cr+nt+1), fontsize=12)
             plt.subplots_adjust(wspace=0.02, hspace=0.02, bottom=0, top=1, left=0, right=1)
-            plt.savefig('{}{}_Cr{:d}_orig.png'.format(savedfigdir,save_name,Cr)) 
+            plt.savefig('{}{}_kmeas{:d}_orig.png'.format(savedfigdir,save_name,kf+iframe)) 
 
             fig = plt.figure(figsize=fig_sz)
             PSNR_rec = np.zeros(Cr)
@@ -68,41 +68,42 @@ def show_n_save_res(vdenoise,tdenoise,psnr_denoise,ssim_denoise,psnrall_denoise,
                 plt.subplot(Cr//row_num, row_num, nt+1)
                 plt.imshow(vdenoise[:,:,nt], cmap=plt.cm.gray, vmin=0, vmax=1)
                 plt.axis('off')
-                plt.title('Frame #{0:d} ({1:2.2f} dB)'.format(nt+1,psnr_denoise[nt]), fontsize=12)
+                plt.title('Frame #{0:d} ({1:2.2f} dB)'.format((kf+iframe)*Cr+nt+1,psnr_denoise[nt]), fontsize=12)
                 
             # print('Mean PSNR {:2.2f} dB.'.format(mean(psnr_denoise)))
             # plt.title('-{} mean PSNR {:2.2f} dB'.format(denoiser.upper(),np.mean(PSNR_rec)))
             plt.subplots_adjust(wspace=0.02, hspace=0.02, bottom=0, top=1, left=0, right=1)
             plt.savefig('{}{}_kmeas{:d}_vdenoise.png'.format(savedfigdir,save_name,kf+iframe)) 
 
-
             plt.figure()
-            # plt.rcParams["font.family"] = 'monospace'
-            # plt.rcParams["font.size"] = "20"
-            plt.plot(psnr_denoise)
-            # plt.plot(psnr_denoise,color='black')
-            plt.savefig('{}{}_kmeas{:d}_psnr_framewise.png'.format(savedfigdir,save_name,kf+iframe)) 
-
-
-            plt.figure()
-            plt.plot(*psnrall_denoise, 'r')
+            plt.plot(psnrall_denoise[kf], 'r')
             plt.savefig('{}{}_kmeas{:d}_psnr_all.png'.format(savedfigdir,save_name,kf+iframe)) 
+        
+        plt.figure()
+        # plt.rcParams["font.family"] = 'monospace'
+        # plt.rcParams["font.size"] = "20"
+        plt.plot(psnr_denoise)
+        # plt.plot(psnr_denoise,color='black')
+        plt.savefig('{}{}_psnr_framewise.png'.format(savedfigdir,save_name)) 
 
-            plt.ioff()
+
+        plt.ioff()
         
     # save res
     if save_res_flag:
         savedmatdir = resultsdir + '/savedmat/cacti/'
         if not os.path.exists(savedmatdir):
             os.makedirs(savedmatdir)
-        sio.savemat('{}{}.mat'.format(savedmatdir,save_name),
+        print('Results saved to: {}{}_kmeas{:d}_{:d}.mat\n'.format(savedmatdir,save_name,iframe,iframe+nframe-1))
+        sio.savemat('{}{}_kmeas{:d}_{:d}.mat'.format(savedmatdir,save_name,iframe,iframe+nframe-1),
                     {'vdenoise':vdenoise, 
                     'psnr_denoise':psnr_denoise,
                     'ssim_denoise':ssim_denoise,
                     'psnrall_denoise':psnrall_denoise,
+                    'psnr_mean':mean(psnr_denoise),
                     'tdenoise':tdenoise,
-                    **kwargs
-                    # 'tv_weight': tv_weight,
-                    # 'iter_max':iter_max,
-                    # 'sigma':sigma                    
+                    'iframe':iframe,
+                    'nframe':nframe,
+                    'Cr':Cr,
+                    **kwargs                 
                     })   

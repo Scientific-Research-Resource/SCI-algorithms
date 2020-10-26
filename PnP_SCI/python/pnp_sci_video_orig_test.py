@@ -144,7 +144,9 @@ if ('all' in test_algo_flag) or ('gaptv' in test_algo_flag):
     print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gaptv), mean(ssim_gaptv), tgaptv)+'-'*20)
     show_n_save_res(vgaptv,tgaptv,psnr_gaptv,ssim_gaptv,psnrall_gaptv, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+orig_name, MAXB, show_res_flag, save_res_flag)
+                        projmeth+denoiser+'_'+orig_name, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        show_res_flag=show_res_flag, save_res_flag=save_res_flag,
+                        tv_weight=tv_weight, iter_max = iter_max)
 
 # %%
 ### [2.1.2] ADMM-TV
@@ -222,7 +224,9 @@ if ('all' in test_algo_flag) or ('gapffdnet' in test_algo_flag):
     print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gapffdnet), mean(ssim_gapffdnet), tgapffdnet)+'-'*20)
     show_n_save_res(vgapffdnet,tgapffdnet,psnr_gapffdnet,ssim_gapffdnet,psnrall_gapffdnet, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+orig_name, MAXB, show_res_flag, save_res_flag)
+                        projmeth+denoiser+'_'+orig_name, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        show_res_flag=show_res_flag, save_res_flag=save_res_flag,
+                        iter_max = iter_max, sigma=sigma)
 
 ### [2.2.2] ADMM-FFDNet (FFDNet-based frame-wise video denoising)
 if ('all' in test_algo_flag) or ('admmffdnet' in test_algo_flag):
@@ -270,7 +274,9 @@ if ('all' in test_algo_flag) or ('admmffdnet' in test_algo_flag):
     print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_admmffdnet), mean(ssim_admmffdnet), tadmmffdnet)+'-'*20)
     show_n_save_res(vadmmffdnet,tadmmffdnet,psnr_admmffdnet,ssim_admmffdnet,psnrall_admmffdnet, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+orig_name, MAXB, show_res_flag, save_res_flag)
+                        projmeth+denoiser+'_'+orig_name, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        show_res_flag=show_res_flag, save_res_flag=save_res_flag,
+                        iter_max = iter_max, sigma=sigma)
 
 # %%
 ## [2.3] GAP/ADMM-FastDVDnet
@@ -318,7 +324,9 @@ if ('all' in test_algo_flag) or ('gapfastdvdnet' in test_algo_flag):
     print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gapfastdvdnet), mean(ssim_gapfastdvdnet), tgapfastdvdnet)+'-'*20)
     show_n_save_res(vgapfastdvdnet,tgapfastdvdnet,psnr_gapfastdvdnet,ssim_gapfastdvdnet,psnrall_gapfastdvdnet, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+orig_name, MAXB, show_res_flag, save_res_flag)
+                        projmeth+denoiser+'_'+orig_name, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        show_res_flag=show_res_flag, save_res_flag=save_res_flag,
+                        iter_max = iter_max, sigma=sigma)
     
 ### [2.3.2] ADMM-FastDVDnet
 if ('all' in test_algo_flag) or ('admmffdnet' in test_algo_flag):
@@ -364,7 +372,9 @@ if ('all' in test_algo_flag) or ('admmffdnet' in test_algo_flag):
     print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_admmfastdvdnet), mean(ssim_admmfastdvdnet), tadmmfastdvdnet)+'-'*20)
     show_n_save_res(vadmmfastdvdnet,tadmmfastdvdnet,psnr_admmfastdvdnet,ssim_admmfastdvdnet,psnrall_admmfastdvdnet, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+orig_name, MAXB, show_res_flag, save_res_flag)
+                        projmeth+denoiser+'_'+orig_name, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        show_res_flag=show_res_flag, save_res_flag=save_res_flag,
+                        iter_max = iter_max, sigma=sigma)
 
 # %%
 ## [2.4] GAP/ADMM-gaptv+ffdnet
@@ -422,7 +432,9 @@ if ('all' in test_algo_flag) or ('gaptv+ffdnet' in test_algo_flag):
     print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gaptvffdnet), mean(ssim_gaptvffdnet), tgaptvffdnet)+'-'*20)
     show_n_save_res(vgaptvffdnet,tgaptvffdnet,psnr_gaptvffdnet,ssim_gaptvffdnet,psnrall_gaptvffdnet, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+orig_name, MAXB, show_res_flag, save_res_flag)
+                        projmeth+denoiser+'_'+orig_name, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        show_res_flag=show_res_flag, save_res_flag=save_res_flag,
+                        tv_weight=tv_weight, iter_max1=iter_max1, iter_max2=iter_max2, sigma1=sigma1, sigma2=sigma2)
   
 
 # %%
@@ -480,7 +492,9 @@ if ('all' in test_algo_flag) or ('gaptv+fastdvdnet' in test_algo_flag):
     print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gaptvfastdvdnet), mean(ssim_gaptvfastdvdnet), tgaptvfastdvdnet)+'-'*20)
     show_n_save_res(vgaptvfastdvdnet,tgaptvfastdvdnet,psnr_gaptvfastdvdnet,ssim_gaptvfastdvdnet,psnrall_gaptvfastdvdnet, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+orig_name, MAXB, show_res_flag, save_res_flag)
+                        projmeth+denoiser+'_'+orig_name, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        show_res_flag=show_res_flag, save_res_flag=save_res_flag,
+                        tv_weight=tv_weight, iter_max1=iter_max1, iter_max2=iter_max2, sigma1=sigma1, sigma2=sigma2)
       
 # show res
 if show_res_flag:

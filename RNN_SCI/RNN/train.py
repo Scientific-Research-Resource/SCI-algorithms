@@ -54,10 +54,10 @@ if not torch.cuda.is_available():
 ### setting
 ## path
 #data_path = "../Data/data_simu/training_truth/data_augment_256_10f"  # traning data from DAVIS2017
-train_data_path = "E:/project/CACTI/SCI algorithm/E2E_CNN/data_simu/training_truth/data_augment_256_10f"  # traning data from DAVIS2017
+#  "E:/project/CACTI/SCI algorithm/E2E_CNN/data_simu/training_truth/data_augment_256_10f"  # traning data from DAVIS2017
 mask_path = "../Data/data_simu/mask"
 test_path = "../Data/data_simu/testing_truth/bm_256_10f"  # simulation benchmark data for comparison
-
+train_data_path =test_path
 
 ## param
 pretrained_model = ''
@@ -154,9 +154,9 @@ def test(test_path, epoch, result_path, logger):
         
         with torch.no_grad():
             h0 = torch.zeros(meas.shape[0], 20, block_size, block_size).cuda()
-            xt1 = first_frame_net(meas, mask, meas.shape[0], meas_re, block_size)
-            out_pic1,h1 = rnn1(xt1, meas, mask, meas.shape[0], h0, mode, meas_re, block_size)
-            out_pic2 = rnn2(out_pic1[:, 9, :, :], meas, mask, meas.shape[0], h1, mode, meas_re, block_size)        #  out_pic1[:, fn-1, :, :]
+            xt1 = first_frame_net(meas, mask, meas.shape[0], meas_re, block_size, Cr)
+            out_pic1,h1 = rnn1(xt1, meas, mask, meas.shape[0], h0, mode, meas_re, block_size, Cr)
+            out_pic2 = rnn2(out_pic1[:, 9, :, :], meas, mask, meas.shape[0], h1, mode, meas_re, block_size, Cr)        #  out_pic1[:, fn-1, :, :]
         
         # calculate psnr and ssim
             psnr_1 = 0
