@@ -1,6 +1,5 @@
 
 from my_tools import *
-import torch.nn.functional as F
 
 
 class forward_rnn(nn.Module):
@@ -29,18 +28,18 @@ class forward_rnn(nn.Module):
         self.res_part1 = res_part(50, 50)
         self.res_part2 = res_part(50, 50)
 
-    def forward(self, xt1, meas, mask, h, meas_re, block_size, cs_rate):
+    def forward(self, xt1, meas, mask, h, meas_re, block_size, Cr):
         ht = h
         xt = xt1
 
         out = xt1
         batch_size = meas.shape[0]
-        for i in range(cs_rate - 1):
+        for i in range(Cr - 1):
             d1 = torch.zeros(batch_size, block_size, block_size).cuda()
             d2 = torch.zeros(batch_size, block_size, block_size).cuda()
             for ii in range(i + 1):
                 d1 = d1 + torch.mul(mask[ii, :, :], out[:, ii, :, :])
-            for ii in range(i + 2, cs_rate):
+            for ii in range(i + 2, Cr):
                 d2 = d2 + torch.mul(mask[ii, :, :], torch.squeeze(meas_re))
             x1 = self.conv_x(torch.cat([meas_re, torch.unsqueeze(meas - d1 - d2, 1)], dim=1))
 
@@ -87,9 +86,9 @@ class cnn1(nn.Module):
 
         self.att1 = self_attention(128)
 
-    def forward(self, mask, meas_re, block_size, cs_rate):
+    def forward(self, mask, meas_re, block_size, Cr):
         batch_size = meas_re.shape[0]
-        maskt = mask.expand([batch_size, cs_rate, block_size, block_size])
+        maskt = mask.expand([batch_size, Cr, block_size, block_size])
         maskt = maskt.mul(meas_re)
         xt = torch.cat([meas_re, maskt], dim=1)
         data = xt
@@ -151,21 +150,21 @@ class backrnn(nn.Module):
         self.res_part1 = res_part(50, 50)
         self.res_part2 = res_part(50, 50)
 
-    def forward(self, xt8, meas, mask, h, meas_re, block_size, cs_rate):
+    def forward(self, xt8, meas, mask, h, meas_re, block_size, Cr):
         ht = h
 
-        xt = xt8[:, cs_rate - 1, :, :]
+        xt = xt8[:, Cr - 1, :, :]
         xt = torch.unsqueeze(xt, 1)
         batch_size = meas.shape[0]
-        out = torch.zeros(batch_size, cs_rate, block_size, block_size).cuda()
-        out[:, cs_rate - 1, :, :] = xt
-        for i in range(cs_rate - 1):
+        out = torch.zeros(batch_size, Cr, block_size, block_size).cuda()
+        out[:, Cr - 1, :, :] = xt[:, 0, :, :]
+        for i in range(Cr - 1):
             d1 = torch.zeros(batch_size, block_size, block_size).cuda()
             d2 = torch.zeros(batch_size, block_size, block_size).cuda()
             for ii in range(i + 1):
-                d1 = d1 + torch.mul(mask[cs_rate - 1 - ii, :, :], out[:, cs_rate - 1 - ii, :, :].clone())
-            for ii in range(i + 2, cs_rate):
-                d2 = d2 + torch.mul(mask[cs_rate - 1 - ii, :, :], torch.squeeze(meas_re))
+                d1 = d1 + torch.mul(mask[Cr - 1 - ii, :, :], out[:, Cr - 1 - ii, :, :].clone())
+            for ii in range(i + 2, Cr):
+                d2 = d2 + torch.mul(mask[Cr - 1 - ii, :, :], torch.squeeze(meas_re))
             x1 = self.conv_x(torch.cat([meas_re, torch.unsqueeze(meas - d1 - d2, 1)], dim=1))
 
             x2 = self.extract_feature1(xt)
@@ -176,6 +175,6 @@ class backrnn(nn.Module):
             ht = self.h_h(h)
             xt = self.up_feature1(h)
 
-            out[:, cs_rate - 2 - i, :, :] = xt[:, 0, :, :]
+            out[:, Cr - 2 - i, :, :] = xt[:, 0, :, :]
 
         return out

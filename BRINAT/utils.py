@@ -1,16 +1,30 @@
-
 import torch
 import scipy.io as scio
 import numpy as np
 
 
-def generate_masks(mask_path):
-    mask = scio.loadmat(mask_path + '/mask.mat')
+def generate_masks(mask_path, mask_name = 'mask.mat'): # zzh
+    mask = scio.loadmat(mask_path + '/' + mask_name)
     mask = mask['mask']
     mask = np.transpose(mask, [2, 0, 1])
+
     mask_s = np.sum(mask, axis=0)
-    index = np.where(mask_s == 0)
-    mask_s[index] = 1
+
+    # replace 0 to avoid nan value
+    if (mask - mask.astype(np.int32)).any():
+        # for float mask
+        index = np.where(mask_s == 0)
+        mask_s[index] = 0.1 # zzh: this value is chosen empirically
+        # print('float mask') #[debug]
+    else:
+        # for binary mask
+        index = np.where(mask_s == 0)
+        mask_s[index] = 1
+        mask_s = mask_s.astype(np.uint8) 
+        # print('binary mask') #[debug]
+        
+    # print('\nmask: {}'.format(mask_path + '/' + mask_name)) #[debug]
+
     mask = torch.from_numpy(mask)
     mask = mask.float()
     mask = mask.cuda()

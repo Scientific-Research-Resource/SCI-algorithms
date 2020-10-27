@@ -31,14 +31,68 @@ import argparse
 
 
 #%%
-# [script_engine argparse]
+# [*] script_engine argparse]
+## define
 parser = argparse.ArgumentParser()
-parser.add_argument("--tv_weight", type=float, default=0.25) #, default='0.25'
-parser.add_argument("--orig_name", type=str, default='football')
-parser.add_argument("--scale", type=str, default='256')
-parser.add_argument("--Cr", type=int, default='10')
+parser.add_argument("--orig_name", type=str)
+parser.add_argument("--scale", type=str)
+parser.add_argument("--Cr", type=int)
+parser.add_argument("--mask_name", type=str)
+parser.add_argument("--result_path", type=str)
+parser.add_argument("--iframe", type=int)
+parser.add_argument("--nframe", type=int)
+parser.add_argument("--MAXB", type=int)
+parser.add_argument("--show_res_flag", type=int)
+parser.add_argument("--save_res_flag", type=int)
+parser.add_argument("--test_algo_flag", type=str)
+# parser.add_argument("--iter_max", type=int, default=100)
+parser.add_argument("--tv_weight", type=float) #, default='0.20'
+# parser.add_argument("--sigma", type=int, default=[])
+parser.add_argument("--iter_max1", type=int) # scalar
+parser.add_argument("--sigma1", type=float)# scalar
+parser.add_argument("--iter_max2", nargs='+', type=int) # list
+parser.add_argument("--sigma2", nargs='+', type=float)  # list
+
+# parser.add_argument("--orig_name", type=str, default='football')
+# parser.add_argument("--scale", type=str, default='256')
+# parser.add_argument("--Cr", type=int, default='10')
+# parser.add_argument("--mask_name", type=int, default='multiplex_shift_binary_mask')
+# parser.add_argument("--result_path", type=str, default='/results/tmp')
+# parser.add_argument("--iframe", type=int, default=0)
+# parser.add_argument("--nframe", type=int, default=1)
+# parser.add_argument("--MAXB", type=int, default=255)
+# parser.add_argument("--show_res_flag", type=int, default=0)
+# parser.add_argument("--save_res_flag", type=int, default=0)
+# parser.add_argument("--test_algo_flag", type=str, default='gaptv')
+# # parser.add_argument("--iter_max", type=int, default=100)
+# parser.add_argument("--tv_weight", type=float, default=0.20) #, default='0.20'
+# # parser.add_argument("--sigma", type=int, default=[])
+# parser.add_argument("--iter_max1", type=int, default=100)
+# parser.add_argument("--sigma1", type=int, default=[])
+# parser.add_argument("--iter_max2", type=int, default=[])
+# parser.add_argument("--sigma2", type=int, default=[])
+
+## assign
 args = parser.parse_args()
 
+orig_name = args.orig_name
+scale = args.scale
+Cr = args.Cr
+mask_name = args.mask_name
+result_path = args.result_path
+iframe = args.iframe                 # from which frame of meas to recon            
+nframe = args.nframe       # how many frame of meas to recon
+MAXB = args.MAXB
+show_res_flag = args.show_res_flag
+save_res_flag = args. save_res_flag        # save results
+test_algo_flag = args.test_algo_flag # choose algorithms: 
+# iter_max = args.iter_max
+tv_weight = args.tv_weight
+# sigma = args.sigma
+iter_max1 = args.iter_max1
+sigma1 = args.sigma1
+iter_max2 = args.iter_max2
+sigma2 = args.sigma2
 # %%
 # [0] environment configuration
 ## [0.1] path and data name
@@ -46,58 +100,13 @@ root_dir = 'E:/project/CACTI/experiment/simulation'
 orig_dir = root_dir + '/dataset/simu_data/gray/orig'
 mask_dir = root_dir + '/dataset/simu_data/gray/mask' # mask dataset
 
-# resultsdir = root_dir + '/results/tmp' # results dir
-resultsdir = root_dir + '/results/exp1_multiscale/gaptv/'+str(args.scale)
-
-'''
-# orig_name = 'aerial'                # name of 'orig'
-# orig_name = 'crash'
-# orig_name = 'drop'
-# orig_name = 'kobe'            
-# orig_name = 'runner'
-# orig_name = 'traffic'    
-'''
-
-# orig_name = 'football'
-# orig_name = 'messi';
-# orig_name = 'hummingbird'
-# orig_name = 'swinger'
-# orig_name = 'ReadySteadyGo'
-# orig_name = 'Jockey'
-# orig_name = 'YachtRide'
-orig_name = args.orig_name
-
-# mask_name = 'binary_mask_256_10f'    # name of 'mask'
-mask_name = 'multiplex_shift_binary_mask'
-
-# scale = '256'
-# scale = '512'
-# scale = '1024'
-scale = args.scale
-
-# Cr = 10 # compress rate
-# Cr = 20 # compress rate
-Cr = args.Cr
+resultsdir = root_dir + result_path # results dir
 
 origpath = orig_dir + '/' + orig_name + "_" + scale + '.mat' # path of the .mat orig file
 maskpath = mask_dir + '/' + mask_name + "_" + scale +  "_" + str(Cr) + 'f.mat' # path of the .mat mask file
 
-
 ## [0.2] flags
-engine_flag= None           # 'gaptv_finetune', 
-show_res_flag = 1           # show results
-save_res_flag = 1          # save results
-# choose algorithms: 
-# 'all', 'gaptv', 'admmtv', 'gapffdnet', 'admmffdnet', 
-# 'gapfastdvdnet', 'admmfastdvdnet', 'gaptv+ffdnet', 'gaptv+fastdvdnet'
-# test_algo_flag = ['all']
-test_algo_flag = ['gaptv']
-# test_algo_flag = ['gaptv+ffdnet']			
-# test_algo_flag = ['gaptv+fastdvdnet']	
-# test_algo_flag = ['gaptv', 'gaptv+ffdnet']
-# test_algo_flag = ['gaptv', 'gaptv+fastdvdnet']	
-# test_algo_flag = ['gaptv+ffdnet', 'gaptv+fastdvdnet']	
-# test_algo_flag = ['gaptv', 'gaptv+ffdnet', 'gaptv+fastdvdnet']	
+log_result_flag= None           # 'gaptv_finetune', 
 
 
 # %%
@@ -137,30 +146,22 @@ if meas.ndim<3:
     # print(meas.shape)
 # print('meas, mask, orig:', meas.shape, mask.shape, orig.shape)
 
-iframe = 0                  # from which frame of meas to recon
-# iframe = 1
-# nframe = 1                
-nframe = norig//nmask       # how many frame of meas to recon
-MAXB = 255.
-
 # common parameters and pre-calculation for PnP
 # define forward model and its transpose
 A  = lambda x :  A_(x, mask) # forward model function handle
 At = lambda y : At_(y, mask) # transpose of forward model
 
 
-
 # %%
 ## [2.1] GAP/ADMM-TV
 ### [2.1.1] GAP-TV
-if ('all' in test_algo_flag) or ('gaptv' in test_algo_flag):
+if test_algo_flag == 'gaptv':
     projmeth = 'gap' # projection method
     _lambda = 1 # regularization factor, [original set]
     accelerate = True # enable accelerated version of GAP
     denoiser = 'tv' # total variation (TV)
-    iter_max = 100 # maximum number of iterations
+    # iter_max = 100 # maximum number of iterations
     # tv_weight = 0.25 # TV denoising weight (larger for smoother but slower) [kobe:0.25; ]
-    tv_weight = args.tv_weight
     tv_iter_max = 5 # TV denoising maximum number of iterations each
 
     vgaptv,tgaptv,psnr_gaptv,ssim_gaptv,psnrall_gaptv = admmdenoise_cacti(meas, mask, A, At,
@@ -168,7 +169,7 @@ if ('all' in test_algo_flag) or ('gaptv' in test_algo_flag):
                                             iframe=iframe, nframe=nframe,
                                             MAXB=MAXB, maskdirection='plain',
                                             _lambda=_lambda, accelerate=accelerate,
-                                            denoiser=denoiser, iter_max=iter_max, 
+                                            denoiser=denoiser, iter_max=iter_max1, 
                                             tv_weight=tv_weight, 
                                             tv_iter_max=tv_iter_max)
 
@@ -177,10 +178,10 @@ if ('all' in test_algo_flag) or ('gaptv' in test_algo_flag):
     show_n_save_res(vgaptv,tgaptv,psnr_gaptv,ssim_gaptv,psnrall_gaptv, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+orig_name+'_'+scale+'_Cr'+str(Cr), iframe=iframe,
                         nframe=nframe, MAXB=MAXB, show_res_flag=show_res_flag, save_res_flag=save_res_flag,
-                        tv_weight=tv_weight, iter_max = iter_max)
+                        tv_weight=tv_weight, iter_max = iter_max1)
 
 # save finetune result
-if engine_flag=='gaptv_finetune':
+if log_result_flag=='gaptv_finetune':
     log_file = os.path.join(resultsdir,test_algo_flag[0]+'_'+orig_name+'_'+
                             scale+'_Cr'+str(Cr)+'_finetune.txt')
     if os.path.exists(log_file):
@@ -192,16 +193,16 @@ if engine_flag=='gaptv_finetune':
     
 # %%
 ### [2.1.2] ADMM-TV
-if ('all' in test_algo_flag) or ('admmtv' in test_algo_flag):
+if test_algo_flag == 'admmtv':
     projmeth = 'admm' # projection method
     _lambda = 1 # regularization factor, [original set]
     # _lambda = 1.5
     # gamma = 0.01 # parameter in ADMM projection (greater for more noisy data), [original set]
     gamma = 0
     denoiser = 'tv' # total variation (TV)
-    iter_max = 40 # maximum number of iterations
-    # tv_weight = 0.3 # TV denoising weight (larger for smoother but slower) [original set]
-    tv_weight = 0.5 
+    # iter_max = 40 # maximum number of iterations
+    # # tv_weight = 0.3 # TV denoising weight (larger for smoother but slower) [original set]
+    # tv_weight = 0.5 
     tv_iter_max = 5 # TV denoising maximum number of iterations each
 
     vadmmtv,tadmmtv,psnr_admmtv,ssim_admmtv,psnrall_admmtv = admmdenoise_cacti(meas, mask, A, At,
@@ -209,7 +210,7 @@ if ('all' in test_algo_flag) or ('admmtv' in test_algo_flag):
                                             iframe=iframe, nframe=nframe,
                                             MAXB=MAXB, maskdirection='plain',
                                             _lambda=_lambda, gamma=gamma,
-                                            denoiser=denoiser, iter_max=iter_max, 
+                                            denoiser=denoiser, iter_max=iter_max1, 
                                             tv_weight=tv_weight, 
                                             tv_iter_max=tv_iter_max)
 
@@ -218,20 +219,20 @@ if ('all' in test_algo_flag) or ('admmtv' in test_algo_flag):
     show_n_save_res(vadmmtv,tadmmtv,psnr_admmtv,ssim_admmtv,psnrall_admmtv, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+orig_name+'_'+scale+'_Cr'+str(Cr), iframe=iframe,
                         nframe=nframe, MAXB=MAXB, show_res_flag=show_res_flag, save_res_flag=save_res_flag,
-                        tv_weight=tv_weight, iter_max = iter_max)
+                        tv_weight=tv_weight, iter_max = iter_max1)
 
 # %%
 ## [2.2] GAP/ADMM-FFDNet
 ### [2.2.1] GAP-FFDNet (FFDNet-based frame-wise video denoising)
-if ('all' in test_algo_flag) or ('gapffdnet' in test_algo_flag):
+if test_algo_flag == 'gapffdnet':
     projmeth = 'gap' # projection method
     _lambda = 1 # regularization factor, [original set]
     # _lambda = 1.5
     accelerate = True # enable accelerated version of GAP
     denoiser = 'ffdnet' # video non-local network 
     noise_estimate = False # disable noise estimation for GAP
-    sigma    = [50/255, 25/255, 12/255, 6/255] # pre-set noise standard deviation
-    iter_max = [10, 10, 10, 10] # maximum number of iterations
+    # sigma    = [50/255, 25/255, 12/255, 6/255] # pre-set noise standard deviation
+    # iter_max = [10, 10, 10, 10] # maximum number of iterations
     # sigma    = [12/255, 6/255] # pre-set noise standard deviation
     # iter_max = [10,10] # maximum number of iterations
     useGPU = True # use GPU
@@ -263,25 +264,25 @@ if ('all' in test_algo_flag) or ('gapffdnet' in test_algo_flag):
                                             MAXB=MAXB, maskdirection='plain',
                                             _lambda=_lambda, accelerate=accelerate,
                                             denoiser=denoiser, model=model, 
-                                            iter_max=iter_max, sigma=sigma)
+                                            iter_max=iter_max2, sigma=sigma2)
 
     print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gapffdnet), mean(ssim_gapffdnet), tgapffdnet)+'-'*20)
     show_n_save_res(vgapffdnet,tgapffdnet,psnr_gapffdnet,ssim_gapffdnet,psnrall_gapffdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+orig_name+'_'+scale+'_Cr'+str(Cr), iframe=iframe,
                         nframe=nframe, MAXB=MAXB, show_res_flag=show_res_flag, save_res_flag=save_res_flag,
-                        tv_weight=tv_weight, sigma=sigma, iter_max = iter_max)
+                        sigma=sigma2, iter_max = iter_max2)
 
 ### [2.2.2] ADMM-FFDNet (FFDNet-based frame-wise video denoising)
-if ('all' in test_algo_flag) or ('admmffdnet' in test_algo_flag):
+if test_algo_flag == 'admmffdnet':
     projmeth = 'admm' # projection method
     _lambda = 1 # regularization factor, [original set]
     # _lambda = 1.5
     accelerate = True # enable accelerated version of GAP
     denoiser = 'ffdnet' # video non-local network 
     noise_estimate = False # disable noise estimation for GAP
-    sigma    = [50/255, 25/255, 12/255, 6/255] # pre-set noise standard deviation
-    iter_max = [10, 10, 10, 10] # maximum number of iterations
+    # sigma    = [50/255, 25/255, 12/255, 6/255] # pre-set noise standard deviation
+    # iter_max = [10, 10, 10, 10] # maximum number of iterations
     # sigma    = [12/255, 6/255] # pre-set noise standard deviation
     # iter_max = [10,10] # maximum number of iterations
     useGPU = True # use GPU
@@ -313,27 +314,27 @@ if ('all' in test_algo_flag) or ('admmffdnet' in test_algo_flag):
                                               MAXB=MAXB, maskdirection='plain',
                                               _lambda=_lambda,
                                               denoiser=denoiser, model=model, 
-                                              iter_max=iter_max, sigma=sigma)
+                                              iter_max=iter_max2, sigma=sigma2)
 
     print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_admmffdnet), mean(ssim_admmffdnet), tadmmffdnet)+'-'*20)
     show_n_save_res(vadmmffdnet,tadmmffdnet,psnr_admmffdnet,ssim_admmffdnet,psnrall_admmffdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+orig_name+'_'+scale+'_Cr'+str(Cr), iframe=iframe,
                         nframe=nframe, MAXB=MAXB, show_res_flag=show_res_flag, save_res_flag=save_res_flag,
-                        tv_weight=tv_weight, sigma=sigma, iter_max = iter_max)
+                        sigma=sigma2, iter_max = iter_max2)
 
 # %%
 ## [2.3] GAP/ADMM-FastDVDnet
 ### [2.3.1] GAP-FastDVDnet
-if ('all' in test_algo_flag) or ('gapfastdvdnet' in test_algo_flag):
+if test_algo_flag == 'gapfastdvdnet':
     projmeth = 'gap' # projection method
     _lambda = 1 # regularization factor, [original set]
     # _lambda = 1.5
     accelerate = True # enable accelerated version of GAP
     denoiser = 'fastdvdnet' # video non-local network 
     noise_estimate = False # disable noise estimation for GAP
-    sigma    = [100/255, 50/255, 25/255, 12/255] # pre-set noise standard deviation
-    iter_max = [20, 20, 20, 20] # maximum number of iterations
+    # sigma    = [100/255, 50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
+    # iter_max = [60, 100, 150] # maximum number of iterations for 2nd period denoise    
     # sigma    = [12/255] # pre-set noise standard deviation
     # iter_max = [20] # maximum number of iterations
     useGPU = True # use GPU
@@ -363,25 +364,25 @@ if ('all' in test_algo_flag) or ('gapfastdvdnet' in test_algo_flag):
                                             MAXB=MAXB, maskdirection='plain',
                                             _lambda=_lambda, accelerate=accelerate, 
                                             denoiser=denoiser, model=model, 
-                                            iter_max=iter_max, sigma=sigma)
+                                            iter_max=iter_max2, sigma=sigma2)
 
     print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gapfastdvdnet), mean(ssim_gapfastdvdnet), tgapfastdvdnet)+'-'*20)
     show_n_save_res(vgapfastdvdnet,tgapfastdvdnet,psnr_gapfastdvdnet,ssim_gapfastdvdnet,psnrall_gapfastdvdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+orig_name+'_'+scale+'_Cr'+str(Cr), iframe=iframe,
                         nframe=nframe, MAXB=MAXB, show_res_flag=show_res_flag, save_res_flag=save_res_flag,
-                        tv_weight=tv_weight, sigma=sigma, iter_max = iter_max)
+                        sigma=sigma2, iter_max = iter_max2)
     
 ### [2.3.2] ADMM-FastDVDnet
-if ('all' in test_algo_flag) or ('admmffdnet' in test_algo_flag):
+if test_algo_flag == 'admmffdnet':
     projmeth = 'admm' # projection method
     _lambda = 1 # regularization factor, [original set]
     # _lambda = 1.5
     accelerate = True # enable accelerated version of GAP
     denoiser = 'fastdvdnet' # video non-local network 
     noise_estimate = False # disable noise estimation for GAP
-    sigma    = [100/255, 50/255, 25/255, 12/255] # pre-set noise standard deviation
-    iter_max = [20, 20, 20, 20] # maximum number of iterations
+    # sigma    = [100/255, 50/255, 25/255, 12/255] # pre-set noise standard deviation
+    # iter_max = [20, 20, 20, 20] # maximum number of iterations
     # sigma    = [12/255] # pre-set noise standard deviation
     # iter_max = [20] # maximum number of iterations
     useGPU = True # use GPU
@@ -411,28 +412,28 @@ if ('all' in test_algo_flag) or ('admmffdnet' in test_algo_flag):
                                             MAXB=MAXB, maskdirection='plain',
                                             _lambda=_lambda,
                                             denoiser=denoiser, model=model, 
-                                            iter_max=iter_max, sigma=sigma)
+                                            iter_max=iter_max2, sigma=sigma2)
 
     print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_admmfastdvdnet), mean(ssim_admmfastdvdnet), tadmmfastdvdnet)+'-'*20)
     show_n_save_res(vadmmfastdvdnet,tadmmfastdvdnet,psnr_admmfastdvdnet,ssim_admmfastdvdnet,psnrall_admmfastdvdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+orig_name+'_'+scale+'_Cr'+str(Cr), iframe=iframe,
                         nframe=nframe, MAXB=MAXB, show_res_flag=show_res_flag, save_res_flag=save_res_flag,
-                        tv_weight=tv_weight, sigma=sigma, iter_max = iter_max)
+                        sigma=sigma2, iter_max = iter_max2)
 
 # %%
 ## [2.4] GAP/ADMM-gaptv+ffdnet
 ### [2.4.1] GAP-TV+FFDNET
-if ('all' in test_algo_flag) or ('gaptv+ffdnet' in test_algo_flag):
+if test_algo_flag=='gaptv+ffdnet':
     projmeth = 'gap' # projection method
     _lambda = 1 # regularization factor, [original set]
     accelerate = True # enable accelerated version of GAP
     denoiser = 'tv+ffdnet' # video non-local network 
     noise_estimate = False # disable noise estimation for GAP
-    sigma1    = None # pre-set noise standard deviation for 1st period denoise 
-    iter_max1 = 100 # maximum number of iterations for 1st period denoise   
-    sigma2    = [50/255, 20/255, 10/255, 6/255] # pre-set noise standard deviation for 2nd period denoise 
-    iter_max2 = [20, 40, 100, 50] # maximum number of iterations for 2nd period denoise    
+    # sigma1    = None # pre-set noise standard deviation for 1st period denoise 
+    # iter_max1 = 100 # maximum number of iterations for 1st period denoise   
+    # sigma2    = [50/255, 20/255, 10/255, 6/255] # pre-set noise standard deviation for 2nd period denoise 
+    # iter_max2 = [20, 40, 100, 50] # maximum number of iterations for 2nd period denoise    
     # sigma2    = [50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
     # iter_max2 = [20, 20] # maximum number of iterations for 2nd period denoise   
     tv_iter_max = 5 # TV denoising maximum number of iterations each
@@ -487,16 +488,16 @@ import torch
 from packages.fastdvdnet.models import FastDVDnet
 
 ### [2.5.1] GAP-TV+FASTDVDNET
-if ('all' in test_algo_flag) or ('gaptv+fastdvdnet' in test_algo_flag):
+if test_algo_flag=='gaptv+fastdvdnet':
     projmeth = 'gap' # projection method
     _lambda = 1 # regularization factor, [original set]
     accelerate = True # enable accelerated version of GAP
     denoiser = 'tv+fastdvdnet' # video non-local network 
     noise_estimate = False # disable noise estimation for GAP
-    sigma1    = None # pre-set noise standard deviation for 1st period denoise 
-    iter_max1 = 100 # maximum number of iterations for 1st period denoise   
-    sigma2    = [100/255, 50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
-    iter_max2 = [60, 100, 150] # maximum number of iterations for 2nd period denoise    
+    # sigma1    = None # pre-set noise standard deviation for 1st period denoise 
+    # iter_max1 = 100 # maximum number of iterations for 1st period denoise   
+    # sigma2    = [100/255, 50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
+    # iter_max2 = [60, 100, 150] # maximum number of iterations for 2nd period denoise    
     # sigma2    = [50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
     # iter_max2 = [20, 20] # maximum number of iterations for 2nd period denoise   
     tv_iter_max = 5 # TV denoising maximum number of iterations each

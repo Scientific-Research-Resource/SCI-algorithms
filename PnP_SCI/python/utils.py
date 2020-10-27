@@ -52,6 +52,7 @@ def show_n_save_res(vdenoise,tdenoise,psnr_denoise,ssim_denoise,psnrall_denoise,
         # fig
         for kf in range(nframe):
             orig_k = orig[:,:,(kf+iframe)*Cr:(kf+iframe+1)*Cr]/MAXB
+            vdenoise_k = vdenoise[:,:,(kf+iframe)*Cr:(kf+iframe+1)*Cr]
             plt.ion()
             fig = plt.figure(figsize=fig_sz)
             for nt in range(Cr):
@@ -66,7 +67,7 @@ def show_n_save_res(vdenoise,tdenoise,psnr_denoise,ssim_denoise,psnrall_denoise,
             PSNR_rec = np.zeros(Cr)
             for nt in range(Cr):
                 plt.subplot(Cr//row_num, row_num, nt+1)
-                plt.imshow(vdenoise[:,:,nt], cmap=plt.cm.gray, vmin=0, vmax=1)
+                plt.imshow(vdenoise_k[:,:,nt], cmap=plt.cm.gray, vmin=0, vmax=1)
                 plt.axis('off')
                 plt.title('Frame #{0:d} ({1:2.2f} dB)'.format((kf+iframe)*Cr+nt+1,psnr_denoise[nt]), fontsize=12)
                 
@@ -106,4 +107,4 @@ def show_n_save_res(vdenoise,tdenoise,psnr_denoise,ssim_denoise,psnrall_denoise,
                     'nframe':nframe,
                     'Cr':Cr,
                     **kwargs                 
-                    })   
+                    })
