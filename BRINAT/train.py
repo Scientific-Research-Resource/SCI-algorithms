@@ -17,21 +17,23 @@ from skimage.metrics import structural_similarity as ssim
 
 
 ### environ
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 if not torch.cuda.is_available():
     raise Exception('NO GPU!')
 
 ### setting
 ## path
-#train_data_path = "/data/zzh/project/E2E_CNN/data_simu/training_truth/data_augment_256_10f"  # traning data from DAVIS2017
+train_data_path = "/data/zzh/project/E2E_CNN/data_simu/training_truth/data_augment_256_20f"  # traning data from DAVIS2017
+# train_data_path = '/data/zzh/project/RNN_SCI/Data/data_simu/testing_truth/bm_256_10f/' # for test
 mask_path = "/data/zzh/project/RNN_SCI/Data/data_simu/exp_mask"
-test_path = '/data/zzh/project/RNN_SCI/Data/data_simu/testing_truth/bm_256_10f/'   # simulation benchmark data for comparison
-train_data_path =test_path # for test
+test_path = '/data/zzh/project/RNN_SCI/Data/data_simu/testing_truth/bm_256_20f/'   # simulation benchmark data for comparison
+# test_path = "/data/zzh/project/RNN_SCI/Data/data_simu/testing_truth/exp_256"  # experiment simulation benchmark data for comparison
+
 
 ## param
 pretrained_model = ''
-mask_name = 'multiplex_shift_binary_mask_256_10f.mat'
-Cr = 10
+mask_name = 'multiplex_shift_binary_mask_256_20f.mat'
+Cr =20
 block_size = 256
 last_train = 0
 max_iter = 100
@@ -39,7 +41,7 @@ batch_size = 1
 learning_rate = 0.0003
 lr_decay = 0.95
 lr_decay_step = 3   # epoch interval for learning rate decay
-checkpoint_step = 5 # epoch interval for save checkpoints
+checkpoint_step = 1 # epoch interval for save checkpoints
 
 
 ## data set

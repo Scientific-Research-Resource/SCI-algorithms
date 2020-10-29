@@ -106,7 +106,8 @@ mask_dir = root_dir + '/dataset/simu_data/gray/mask' # mask dataset
 resultsdir = root_dir + result_path # results dir
 
 origpath = orig_dir + '/' + orig_name + "_" + scale + '.mat' # path of the .mat orig file
-maskpath = mask_dir + '/' + mask_name + "_" + scale +  "_" + str(Cr) + 'f.mat' # path of the .mat mask file
+# maskpath = mask_dir + '/' + mask_name + "_" + scale +  "_" + str(Cr) + 'f.mat' # path of the .mat mask file
+maskpath = mask_dir + '/' + mask_name + "_" + scale +  "_" + str(Cr) + 'f_info.mat' # path of the .mat mask file
 
 ## [0.2] flags
 
@@ -117,7 +118,8 @@ if get_matfile_version(_open_file(maskpath, appendmat=True)[0])[0] < 2: # MATLAB
     origfile = sio.loadmat(origpath) # for '-v7.2' and below .mat file (MATLAB)
     maskfile = sio.loadmat(maskpath)
     orig = np.array(origfile['orig'])
-    mask = np.array(maskfile['mask'])
+    # mask = np.array(maskfile['mask']) % for 
+    mask = np.array(maskfile['non_norm_mask'])
     mask = np.float32(mask)
     orig = np.float32(orig)
 else: # MATLAB .mat v7.3
@@ -127,7 +129,8 @@ else: # MATLAB .mat v7.3
         
     with h5py.File(maskpath, 'r') as maskfile: # for '-v7.3' .mat file (MATLAB)
         # print(list(file.keys()))
-        mask = np.array(maskfile['mask'])
+        # mask = np.array(maskfile['mask'])
+        mask = np.array(maskfile['non_norm_mask'])
         mask = np.float32(mask).transpose((2,1,0))    
 
 #  calc meas
@@ -162,7 +165,7 @@ if test_algo_flag == 'gaptv':
     _lambda = 1 # regularization factor, [original set]
     accelerate = True # enable accelerated version of GAP
     denoiser = 'tv' # total variation (TV)
-    # iter_max = 100 # maximum number of iterations
+    iter_max = 40 # maximum number of iterations
     # tv_weight = 0.25 # TV denoising weight (larger for smoother but slower) [kobe:0.25; ]
     tv_iter_max = 5 # TV denoising maximum number of iterations each
 
@@ -183,14 +186,15 @@ if test_algo_flag == 'gaptv':
                         tv_weight=tv_weight, iter_max = iter_max1)
     
     if log_result_flag:
-        log_file = os.path.join(resultsdir,test_algo_flag+'_'+
+        log_file = os.path.join(resultsdir,mask_name+'_'+
                                 scale+'_Cr'+str(Cr)+'_finetune.txt')
         if os.path.exists(log_file):
             open_mode = 'a'
         else:
             open_mode = 'w'
         with open(log_file,open_mode) as f:
-            f.writelines("{:15} PSNR {:2.2f} dB, SSIM {:.4f}, time {:.4f}\n".format(orig_name, mean(psnr_gaptv), mean(ssim_gaptv), tgaptv))    
+            f.writelines("tv_weight {:5.2f}, {:15} PSNR {:2.2f} dB, time {:.4f}\n".format(tv_weight, orig_name, mean(psnr_gaptv), tgaptv))       # tv_weight_finetune
+            # f.writelines("{:15} PSNR {:2.2f} dB, SSIM {:.4f}, time {:.4f}\n".format(orig_name, mean(psnr_gaptv), mean(ssim_gaptv), tgaptv))   # exp_finetune  
 # %%
 ### [2.1.2] ADMM-TV
 if test_algo_flag == 'admmtv':

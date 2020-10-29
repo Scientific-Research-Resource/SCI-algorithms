@@ -52,8 +52,8 @@ def show_n_save_res(vdenoise,tdenoise,psnr_denoise,ssim_denoise,psnrall_denoise,
         # fig
         for kf in range(nframe):
             orig_k = orig[:,:,(kf+iframe)*Cr:(kf+iframe+1)*Cr]/MAXB
-            vdenoise_k = vdenoise[:,:,(kf+iframe)*Cr:(kf+iframe+1)*Cr]
-            plt.ion()
+            vdenoise_k = vdenoise[:,:,kf*Cr:(kf+1)*Cr]
+            # plt.ion() # interactive mode
             fig = plt.figure(figsize=fig_sz)
             for nt in range(Cr):
                 plt.subplot(Cr//row_num, row_num, nt+1)
@@ -88,7 +88,7 @@ def show_n_save_res(vdenoise,tdenoise,psnr_denoise,ssim_denoise,psnrall_denoise,
         plt.savefig('{}{}_psnr_framewise.png'.format(savedfigdir,save_name)) 
 
 
-        plt.ioff()
+        # plt.ioff()
         
     # save res
     if save_res_flag:
