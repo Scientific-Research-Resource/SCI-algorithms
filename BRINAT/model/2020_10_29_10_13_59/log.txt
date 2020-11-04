@@ -1,5 +1,0 @@
-2020-10-29 10:13:59,473 - INFO: Code: train.py
-2020-10-29 10:13:59,473 - INFO: mask: /data/zzh/project/RNN_SCI/Data/data_simu/exp_mask/multiplex_shift_binary_mask_256_10f.mat
-2020-10-29 18:12:32,327 - INFO: only forward rnn result (psnr/ssim): 23.9675/0.8256   backward rnn result: 24.3842/0.8417
-2020-10-29 18:12:32,327 - INFO: ===> Epoch 1 Complete: Avg. Loss: 0.00869855 time: 28712.87
-2020-10-29 18:12:32,364 - INFO: Checkpoint saved to ./model/2020_10_29_10_13_59/first_frame_net_model_epoch_1.pth

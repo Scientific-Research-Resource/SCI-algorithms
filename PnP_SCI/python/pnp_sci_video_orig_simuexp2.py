@@ -165,7 +165,7 @@ if test_algo_flag == 'gaptv':
     _lambda = 1 # regularization factor, [original set]
     accelerate = True # enable accelerated version of GAP
     denoiser = 'tv' # total variation (TV)
-    iter_max = 40 # maximum number of iterations
+    # iter_max = 100 # maximum number of iterations
     # tv_weight = 0.25 # TV denoising weight (larger for smoother but slower) [kobe:0.25; ]
     tv_iter_max = 5 # TV denoising maximum number of iterations each
 

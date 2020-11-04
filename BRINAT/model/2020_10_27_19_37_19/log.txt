@@ -1,6 +1,0 @@
-2020-10-27 19:37:19,384 - INFO: Code: train.py
-2020-10-27 19:37:19,384 - INFO: mask: /data/zzh/project/RNN_SCI/Data/data_simu/exp_mask/multiplex_shift_binary_mask_256_10f.mat
-2020-10-28 03:58:49,126 - INFO: only forward rnn result (psnr/ssim): 23.7443/0.8333   backward rnn result: 24.9249/0.8637
-2020-10-28 03:58:49,148 - INFO: ===> Epoch 1 Complete: Avg. Loss: 0.00861120 time: 30089.76
-2020-10-28 12:20:59,982 - INFO: only forward rnn result (psnr/ssim): 25.8990/0.8772   backward rnn result: 26.8976/0.8971
-2020-10-28 12:20:59,983 - INFO: ===> Epoch 2 Complete: Avg. Loss: 0.00520569 time: 60220.60

@@ -110,192 +110,11 @@ def gap_joint_denoise(y, Phi_sum, A, At, x0=None, X_orig=None, denoiser='tv+ffdn
     
     # [2] 2nd period denoising: gap tv+ffdnet multistep denoising
     print('*** 2nd period denoising ***')
-    x, psnr, ssim, psnrall =  gap_multistep_denoise(y, Phi_sum, A, At, x0=x, 
-                                          X_orig=X_orig, denoiser=denoiser,iter_max=iter_max2,sigma = sigma2,**args) 
+    x, psnr, ssim, psnrall =  gap_multistep_denoise(y, Phi_sum, A, At, 
+                                          x0=x, X_orig=X_orig, denoiser=denoiser,iter_max=iter_max2,sigma = sigma2,**args) 
 
     return x, psnr, ssim, psnrall
 
-def admm_multistep_denoise(y, Phi_sum, A, At, _lambda=1, gamma=0.0, 
-                denoiser='tv', iter_max=50, noise_estimate=False, sigma=None, 
-                tv_weight=0.1, tv_iter_max=5, multichannel=True, x0=None, model=None, X_orig=None, show_iqa=True, tvm='tv_chambolle'):
-    '''
-    ADMM-based multistep denoise
-
-    Parameters
-    ----------
-    y : two-dimensional (2D) ndarray of ints, uints or floats
-        Input single measurement of the snapshot compressive imager (SCI).
-    Phi : three-dimensional (3D) ndarray of ints, uints or floats, omitted
-        Input sensing matrix of SCI with the third dimension as the 
-        time-variant, spectral-variant, volume-variant, or angular-variant 
-        masks, where each mask has the same pixel resolution as the snapshot
-        measurement.
-    Phi_sum : 2D ndarray
-        Sum of the sensing matrix `Phi` along the third dimension.
-    A : function
-        Forward model of SCI, where multiple encoded frames are collapsed into
-        a single measurement.
-    At : function
-        Transpose of the forward model.
-    proj_meth : {'admm' or 'gap'}, optional
-        Projection method of the data term. Alternating direction method of 
-        multipliers (ADMM)[1] and generalizedv alternating projection (GAP)[2]
-        are used, where ADMM for noisy data, especially real data and GAP for 
-        noise-free data.
-    gamma : float, optional
-        Parameter in the ADMM projection, where more noisy measurements require
-        greater gamma.
-    denoiser : string, optional
-        Denoiser used as the regularization imposing on the prior term of the 
-        reconstruction.
-    _lambda : float, optional
-        Regularization factor balancing the data term and the prior term, 
-        where larger `_lambda` imposing more constrains on the prior term. 
-    iter_max : int or uint, optional 
-        Maximum number of iterations.
-    accelerate : boolean, optional
-        Enable acceleration in GAP.
-    noise_estimate : boolean, optional
-        Enable noise estimation in the denoiser.
-    sigma : one-dimensional (1D) ndarray of ints, uints or floats
-        Input noise standard deviation for the denoiser if and only if noise 
-        estimation is disabled(i.e., noise_estimate==False). The scale of sigma 
-        is [0, 255] regardless of the the scale of the input measurement and 
-        masks.
-    tv_weight : float, optional
-        weight in total variation (TV) denoising.
-    x0 : 3D ndarray 
-        Start point (initialized value) for the iteration process of the 
-        reconstruction.
-
-    Returns
-    -------
-    x : 3D ndarray
-        Reconstructed 3D scene captured by the SCI system.
-
-    References
-    ----------
-    .. [1] S. Boyd, N. Parikh, E. Chu, B. Peleato, and J. Eckstein, 
-           "Distributed Optimization and Statistical Learning via the 
-           Alternating Direction Method of Multipliers," Foundations and 
-           Trends® in Machine Learning, vol. 3, no. 1, pp. 1-122, 2011.
-    .. [2] X. Yuan, "Generalized alternating projection based total variation 
-           minimization for compressive sensing," in IEEE International 
-           Conference on Image Processing (ICIP), 2016, pp. 2539-2543.
-    .. [3] Y. Liu, X. Yuan, J. Suo, D. Brady, and Q. Dai, "Rank Minimization 
-           for Snapshot Compressive Imaging," IEEE Transactions on Pattern 
-           Analysis and Machine Intelligence, doi:10.1109/TPAMI.2018.2873587, 
-           2018.
-
-    Code credit
-    -----------
-    Xin Yuan, Bell Labs, xyuan@bell-labs.com, created Aug 7, 2018.
-    Yang Liu, Tsinghua University, y-liu16@mails.tsinghua.edu.cn, 
-      updated Jan 22, 2019.
-
-    See Also
-    --------
-    gap_denoise
-    '''
-    # [0] initialization
-    if x0 is None:
-        x0 = At(y) # default start point (initialized value)
-    if not isinstance(sigma, list):
-        sigma = [sigma]
-    if not isinstance(iter_max, list):
-        iter_max = [iter_max] * len(sigma)
-    # [1] start iteration for reconstruction
-    x = x0 # initialization
-    theta = x0
-    b = np.zeros_like(x0)
-    psnr_all = []
-    k = 0
-    for idx, nsig in enumerate(sigma): # iterate all noise levels
-        for it in range(iter_max[idx]):
-            # Euclidean projection
-            yb = A(theta+b)
-            x = (theta+b) + _lambda*(At((y-yb)/(Phi_sum+gamma))) # ADMM 
-            # switch denoiser 
-            if denoiser.lower() == 'tv+ffdnet': # total variation (TV) + ffdnet denoising
-                if nsig== 1 and it==1:
-                    print(' --- tv+ffdnet_denoising ---')
-                    
-                # [.0] pre-denoise
-                # x = denoise_tv_chambolle(x, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)
-                # [.1] denoise_step1: tv denoising
-                try:
-                    if tvm == 'tv_chambolle':
-                        theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)
-                    elif tvm == 'ITV3D_FGP':
-                        theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)
-                    elif tvm == 'ITV2D_cham':
-                        theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)                  
-                    else:
-                        raise TypeError("no such tv denoiser")
-                except TypeError as e:
-                    print("Exception: ",repr(e))
-                  
-                # [.2] denoise_step2: ffdnet_denoising
-                theta = ffdnet_vdenoiser(theta, nsig, model)
-                # theta = ffdnet_vdenoiser(x-b, nsig, model)     
-                            
-            elif denoiser.lower() == 'tv+fastdvdnet':
-                if nsig== 1 and it==1:
-                    print(' --- tv+ffdnet_denoising ---')
-                # [.0] pre-denoise
-                # x = denoise_tv_chambolle(x, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)                
-                # [.1] denoise_step1: tv denoising
-                try:
-                    if tvm == 'tv_chambolle':
-                        theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)
-                    elif tvm == 'ITV3D_FGP':
-                        theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)
-                    elif tvm == 'ITV2D_cham':
-                        theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)                  
-                    else:
-                        raise TypeError("no such tv denoiser")
-                except TypeError as e:
-                    print("Exception: ",repr(e))
-                  
-                # [.2] denoise_step2: ffdnet_denoising
-                theta = fastdvdnet_denoiser(theta, nsig, model, gray=True)
-                # theta = fastdvdnet_denoiser(x-b, nsig, model, gray=True)                  
-                    
-            else:
-                raise ValueError('Unsupported denoiser {}!'.format(denoiser))
-            
-            theta = np.clip(theta,0,1) # [zzh] 
-            
-            b = b - (x-theta) # update residual
-            
-            # [optional] calculate image quality assessment, i.e., PSNR for 
-            # every five iterations
-            if show_iqa and X_orig is not None:
-                psnr_all.append(psnr(X_orig, x))
-                if (k+1)%5 == 0:
-                    if not noise_estimate and nsig is not None:
-                        if nsig < 1:
-                            print('  ADMM-{0} iteration {1: 3d}, sigma {2: 3g}/255, ' 
-                              'PSNR {3:2.2f} dB.'.format(denoiser.upper(), 
-                               k+1, nsig*255, psnr_all[k]))
-                        else:
-                            print('  ADMM-{0} iteration {1: 3d}, sigma {2: 3g}, ' 
-                                'PSNR {3:2.2f} dB.'.format(denoiser.upper(), 
-                                k+1, nsig, psnr_all[k]))
-                    else:
-                        print('  ADMM-{0} iteration {1: 3d}, ' 
-                              'PSNR {2: 2.2f} dB.'.format(denoiser.upper(), 
-                               k+1, psnr_all[k]))
-            k = k+1
-    
-    psnr_ = []
-    ssim_ = []
-    nmask = x.shape[2]
-    if X_orig is not None:
-        for imask in range(nmask):
-            psnr_.append(compare_psnr(X_orig[:,:,imask], x[:,:,imask], data_range=1.))
-            ssim_.append(compare_ssim(X_orig[:,:,imask], x[:,:,imask], data_range=1.))
-    return x, psnr_, ssim_, psnr_all
 
 
 
@@ -456,6 +275,7 @@ def gap_multistep_denoise(y, Phi_sum, A, At, _lambda=1, accelerate=True,
                 
             else:
                 raise ValueError('Unsupported denoiser {}!'.format(denoiser))
+            
             # [optional] calculate image quality assessment, i.e., PSNR for 
             # every five iterations
             if show_iqa and X_orig is not None:
@@ -591,11 +411,11 @@ def admm_denoise(y, Phi_sum, A, At, _lambda=1, gamma=0.0,
             if denoiser.lower() == 'tv': # total variation (TV) denoising
                 try:
                     if tvm == 'tv_chambolle':
-                        theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)
+                        x = denoise_tv_chambolle(x, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)
                     elif tvm == 'ITV3D_FGP':
-                        theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)
+                        x = denoise_tv_FGP_ITV3D(x, tv_weight, n_iter_max=tv_iter_max)
                     elif tvm == 'ITV2D_cham':
-                        theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)                   
+                        x = denoise_tv_cham_ITV2D(x, tv_weight, n_iter_max=tv_iter_max)                        
                     else:
                         raise TypeError("no such tv denoiser")
                 except TypeError as e:
@@ -609,16 +429,11 @@ def admm_denoise(y, Phi_sum, A, At, _lambda=1, gamma=0.0,
             #     theta = vnlnet(np.expand_dims((x-b).transpose(2,0,1),3), nsig)
             #     theta = np.transpose(theta.squeeze(3),(1,2,0))
             elif denoiser.lower() == 'ffdnet': # FFDNet frame-wise video denoising
-                # x = ffdnet_vdenoiser(x, nsig, model)                  # [zzh] original
-                theta = ffdnet_vdenoiser(x-b, nsig, model)              # [zzh] new code from xinyuan(1/3)
+                x = ffdnet_vdenoiser(x, nsig, model)
             elif denoiser.lower() == 'fastdvdnet': # FastDVDnet video denoising
-                # x = fastdvdnet_denoiser(x, nsig, model, gray=True)    # [zzh] original
-                theta = fastdvdnet_denoiser(x-b, nsig, model, gray=True) # [zzh] new code from xinyuan(2/3)
+                x = fastdvdnet_denoiser(x, nsig, model, gray=True)
             else:
                 raise ValueError('Unsupported denoiser {}!'.format(denoiser))
-            
-            theta = np.clip(theta,0,1) # [zzh] new code from xinyuan(3/3)
-            
             b = b - (x-theta) # update residual
             # [optional] calculate image quality assessment, i.e., PSNR for 
             # every five iterations

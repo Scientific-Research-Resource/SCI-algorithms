@@ -1,6 +1,5 @@
-
 from my_tools import *
-
+# import numpy as np #[debug]
 
 class forward_rnn(nn.Module):
 
@@ -34,12 +33,12 @@ class forward_rnn(nn.Module):
 
         out = xt1
         batch_size = meas.shape[0]
-        for i in range(Cr - 1):
+        for i in range(Cr - 1):                                                                 # range(fn-1):
             d1 = torch.zeros(batch_size, block_size, block_size).cuda()
             d2 = torch.zeros(batch_size, block_size, block_size).cuda()
             for ii in range(i + 1):
                 d1 = d1 + torch.mul(mask[ii, :, :], out[:, ii, :, :])
-            for ii in range(i + 2, Cr):
+            for ii in range(i + 2, Cr):                                                    # range(i + 2, fn):
                 d2 = d2 + torch.mul(mask[ii, :, :], torch.squeeze(meas_re))
             x1 = self.conv_x(torch.cat([meas_re, torch.unsqueeze(meas - d1 - d2, 1)], dim=1))
 
@@ -56,10 +55,12 @@ class forward_rnn(nn.Module):
 
 
 class cnn1(nn.Module):
+    # 输入meas concat mask
+    # 3 下采样
 
-    def __init__(self, in_ch):
+    def __init__(self, inch):
         super(cnn1, self).__init__()
-        self.conv1 = nn.Conv2d(in_ch, 32, kernel_size=5, stride=1, padding=2)
+        self.conv1 = nn.Conv2d(inch, 32, kernel_size=5, stride=1, padding=2)                   # nn.Conv2d( (fn+1), 32, ...  
         self.relu1 = nn.LeakyReLU(inplace=True)
         self.conv2 = nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1)
         self.relu2 = nn.LeakyReLU(inplace=True)
@@ -84,14 +85,17 @@ class cnn1(nn.Module):
         self.relu9 = nn.LeakyReLU(inplace=True)
         self.conv10 = nn.Conv2d(128, 128, kernel_size=1, stride=1)
 
-        self.att1 = self_attention(128)
-
     def forward(self, mask, meas_re, block_size, Cr):
         batch_size = meas_re.shape[0]
         maskt = mask.expand([batch_size, Cr, block_size, block_size])
         maskt = maskt.mul(meas_re)
         xt = torch.cat([meas_re, maskt], dim=1)
         data = xt
+
+        # [debug] check for nan value
+        # if torch.any((torch.isnan(data))):
+            # print('There are nan values:{}'.format(np.where(data.cpu().numpy())))
+
         out = self.conv1(data)
 
         out = self.relu1(out)
@@ -110,8 +114,6 @@ class cnn1(nn.Module):
         out = self.relu9(out)
         out = self.conv10(out)
         out = self.res_part3(out)
-
-        out = self.att1(out)
 
         out = self.conv5(out)
         out = self.relu5(out)
@@ -150,21 +152,22 @@ class backrnn(nn.Module):
         self.res_part1 = res_part(50, 50)
         self.res_part2 = res_part(50, 50)
 
+
     def forward(self, xt8, meas, mask, h, meas_re, block_size, Cr):
         ht = h
 
         xt = xt8[:, Cr - 1, :, :]
         xt = torch.unsqueeze(xt, 1)
         batch_size = meas.shape[0]
-        out = torch.zeros(batch_size, Cr, block_size, block_size).cuda()
-        out[:, Cr - 1, :, :] = xt[:, 0, :, :]
-        for i in range(Cr - 1):
+        out = torch.zeros(batch_size, Cr, block_size, block_size).cuda()              # (batch_size, fn, block_size, block_size)
+        out[:, Cr - 1, :, :] = xt[:, 0, :, :]                               # out[:, fn-1, :, :] = xt[:, 0, :, :]
+        for i in range(Cr - 1):                                              # range(fn-1):
             d1 = torch.zeros(batch_size, block_size, block_size).cuda()
             d2 = torch.zeros(batch_size, block_size, block_size).cuda()
             for ii in range(i + 1):
-                d1 = d1 + torch.mul(mask[Cr - 1 - ii, :, :], out[:, Cr - 1 - ii, :, :].clone())
+                d1 = d1 + torch.mul(mask[Cr - 1 - ii, :, :], out[:, Cr - 1 - ii, :, :].clone())                # mask[(fn-1) - ii, :, :]  out...
             for ii in range(i + 2, Cr):
-                d2 = d2 + torch.mul(mask[Cr - 1 - ii, :, :], torch.squeeze(meas_re))
+                d2 = d2 + torch.mul(mask[Cr - 1 - ii, :, :], torch.squeeze(meas_re))                      # mask[(fn-1) - ii, :, :]
             x1 = self.conv_x(torch.cat([meas_re, torch.unsqueeze(meas - d1 - d2, 1)], dim=1))
 
             x2 = self.extract_feature1(xt)
@@ -175,6 +178,6 @@ class backrnn(nn.Module):
             ht = self.h_h(h)
             xt = self.up_feature1(h)
 
-            out[:, Cr - 2 - i, :, :] = xt[:, 0, :, :]
+            out[:, Cr - 2 - i, :, :] = xt[:, 0, :, :]                         # out[:, (fn-2) - i, :, :]
 
         return out

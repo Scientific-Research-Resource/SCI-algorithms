@@ -5,6 +5,7 @@ import torch
 import scipy.io as scio
 import datetime
 import os
+import time
 import numpy as np
 from skimage.metrics import structural_similarity as ssim
 
@@ -56,7 +57,8 @@ def test(test_path, epoch, result_path):
     psnr_backward = torch.zeros(len(test_list))
     ssim_forward = torch.zeros(len(test_list))
     ssim_backward = torch.zeros(len(test_list))   
-    
+    time_forward = torch.zeros(len(test_list))
+    time_backward = torch.zeros(len(test_list))    
     
     # load test data
     for i in range(len(test_list)):
@@ -104,11 +106,18 @@ def test(test_path, epoch, result_path):
         meas_re = torch.unsqueeze(meas_re, 1)
         
         with torch.no_grad():
+            time_start=time.time() # timer
             h0 = torch.zeros(meas.shape[0], 20, block_size, block_size).cuda()
             xt1 = first_frame_net(mask, meas_re, block_size, Cr)
             out_pic1,h1 = rnn1(xt1, meas, mask, h0, meas_re, block_size, Cr)
+            time_end1=time.time()
             out_pic2 = rnn2(out_pic1, meas, mask, h1, meas_re, block_size, Cr)        #  out_pic1[:, fn-1, :, :]
-        
+            time_end2=time.time()
+            
+            time_forward[i] = time_end1 - time_start
+            time_backward[i] = time_end2 - time_start
+            print('forward_time: {:.2f}, backward_time: {:.2f}'.format(time_forward[i].item(),time_backward[i].item()))
+                        
         # calculate psnr and ssim
             psnr_1 = 0
             psnr_2 = 0
@@ -148,8 +157,8 @@ def test(test_path, epoch, result_path):
                 out_pic2 = out_pic2.cpu()
                 scio.savemat(name1, {'pic': out_pic1.numpy()})
                 scio.savemat(name2, {'pic': out_pic2.numpy()})
-    print("only forward rnn result (psnr/ssim): {:.4f}/{:.4f}   backward rnn result: {:.4f}/{:.4f}"\
-        .format(torch.mean(psnr_forward), torch.mean(ssim_forward), torch.mean(psnr_backward), torch.mean(ssim_backward)))
+    print("only forward rnn result (psnr/ssim/time): {:.4f}/{:.4f}/{:.2f}  backward rnn result: {:.4f}/{:.4f}/{:.2f}"\
+        .format(torch.mean(psnr_forward), torch.mean(ssim_forward), torch.mean(time_forward), torch.mean(psnr_backward), torch.mean(ssim_backward), torch.mean(time_backward)))
 
 
 
