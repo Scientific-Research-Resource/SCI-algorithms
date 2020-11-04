@@ -9,6 +9,7 @@
 *.rar
 *.pyc
 *.png
+*.pth
 
 # dirs
 bak/
