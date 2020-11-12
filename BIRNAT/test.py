@@ -17,11 +17,8 @@ if not torch.cuda.is_available():
 
 ### setting
 ## path
-#train_data_path = "/data/zzh/project/E2E_CNN/data_simu/training_truth/data_augment_256_10f"  # traning data from DAVIS2017
 mask_path = "/data/zzh/project/RNN_SCI/Data/data_simu/exp_mask"
 test_path = '/data/zzh/project/RNN_SCI/Data/data_simu/testing_truth/bm_256_10f/'   # simulation benchmark data for comparison
-# test_path = '/data/zzh/project/RNN_SCI/Data/data_simu/testing_truth/exp_256'
-train_data_path =test_path # for test
 
 ## param
 pretrained_model = '2020_10_27_17_59_23'
@@ -45,7 +42,8 @@ if last_train != 0:
         './model/' + pretrained_model + "/first_frame_net_model_epoch_{}.pth".format(last_train))
     rnn1 = torch.load('./model/' + pretrained_model + "/rnn1_model_epoch_{}.pth".format(last_train))
     rnn2 = torch.load('./model/' + pretrained_model + "/rnn2_model_epoch_{}.pth".format(last_train))
-
+    print('pre-trained model: \'{} - No. {} epoch\' loaded!'.format(pretrained_model, last_train))
+    
 loss = nn.MSELoss()
 loss.cuda()
 

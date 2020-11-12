@@ -223,21 +223,21 @@ def admm_multistep_denoise(y, Phi_sum, A, At, _lambda=1, gamma=0.0,
                 # [.0] pre-denoise
                 # x = denoise_tv_chambolle(x, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)
                 # [.1] denoise_step1: tv denoising
-                try:
-                    if tvm == 'tv_chambolle':
-                        theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)
-                    elif tvm == 'ITV3D_FGP':
-                        theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)
-                    elif tvm == 'ITV2D_cham':
-                        theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)                  
-                    else:
-                        raise TypeError("no such tv denoiser")
-                except TypeError as e:
-                    print("Exception: ",repr(e))
+                # try:
+                #     if tvm == 'tv_chambolle':
+                #         theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)
+                #     elif tvm == 'ITV3D_FGP':
+                #         theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)
+                #     elif tvm == 'ITV2D_cham':
+                #         theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)                  
+                #     else:
+                #         raise TypeError("no such tv denoiser")
+                # except TypeError as e:
+                #     print("Exception: ",repr(e))
                   
                 # [.2] denoise_step2: ffdnet_denoising
-                theta = ffdnet_vdenoiser(theta, nsig, model)
-                # theta = ffdnet_vdenoiser(x-b, nsig, model)     
+                # theta = ffdnet_vdenoiser(theta, nsig, model)
+                theta = ffdnet_vdenoiser(x-b, nsig, model)     
                             
             elif denoiser.lower() == 'tv+fastdvdnet':
                 if nsig== 1 and it==1:
@@ -245,21 +245,21 @@ def admm_multistep_denoise(y, Phi_sum, A, At, _lambda=1, gamma=0.0,
                 # [.0] pre-denoise
                 # x = denoise_tv_chambolle(x, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)                
                 # [.1] denoise_step1: tv denoising
-                try:
-                    if tvm == 'tv_chambolle':
-                        theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)
-                    elif tvm == 'ITV3D_FGP':
-                        theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)
-                    elif tvm == 'ITV2D_cham':
-                        theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)                  
-                    else:
-                        raise TypeError("no such tv denoiser")
-                except TypeError as e:
-                    print("Exception: ",repr(e))
+                # try:
+                #     if tvm == 'tv_chambolle':
+                #         theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)
+                #     elif tvm == 'ITV3D_FGP':
+                #         theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)
+                #     elif tvm == 'ITV2D_cham':
+                #         theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)                  
+                #     else:
+                #         raise TypeError("no such tv denoiser")
+                # except TypeError as e:
+                #     print("Exception: ",repr(e))
                   
                 # [.2] denoise_step2: ffdnet_denoising
-                theta = fastdvdnet_denoiser(theta, nsig, model, gray=True)
-                # theta = fastdvdnet_denoiser(x-b, nsig, model, gray=True)                  
+                # theta = fastdvdnet_denoiser(theta, nsig, model, gray=True)
+                theta = fastdvdnet_denoiser(x-b, nsig, model, gray=True)                  
                     
             else:
                 raise ValueError('Unsupported denoiser {}!'.format(denoiser))

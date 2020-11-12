@@ -39,6 +39,7 @@ parser.add_argument("--orig_name", type=str)
 parser.add_argument("--scale", type=str)
 parser.add_argument("--Cr", type=int)
 parser.add_argument("--mask_name", type=str)
+parser.add_argument("--root_dir", type=str)
 parser.add_argument("--result_path", type=str)
 parser.add_argument("--iframe", type=int)
 parser.add_argument("--nframe", type=int)
@@ -56,7 +57,7 @@ parser.add_argument("--iter_max2", nargs='+', type=int) # list
 parser.add_argument("--sigma2", nargs='+', type=float)  # list
 parser.add_argument("--gamma", type=float)
 parser.add_argument("--gaussian_noise_level", type=float)
-parser.add_argument("--poisson_noise", type=bool)
+parser.add_argument("--poisson_noise", type=int)
 
 # parser.add_argument("--orig_name", type=str, default='football')
 # parser.add_argument("--scale", type=str, default='256')
@@ -84,6 +85,8 @@ orig_name = args.orig_name
 scale = args.scale
 Cr = args.Cr
 mask_name = args.mask_name
+print(args)
+root_dir = args.root_dir
 result_path = args.result_path
 iframe = args.iframe                 # from which frame of meas to recon            
 nframe = args.nframe       # how many frame of meas to recon
@@ -106,15 +109,15 @@ poisson_noise = args.poisson_noise
 # %%
 # [0] environment configuration
 ## [0.1] path and data name
-root_dir = 'E:/project/CACTI/experiment/simulation'
+# root_dir = 'E:/project/CACTI/experiment/simulation'
 orig_dir = root_dir + '/dataset/simu_data/gray/orig'
 mask_dir = root_dir + '/dataset/simu_data/gray/mask' # mask dataset
 
 resultsdir = root_dir + result_path # results dir
 
 origpath = orig_dir + '/' + orig_name + "_" + scale + '.mat' # path of the .mat orig file
-# maskpath = mask_dir + '/' + mask_name + "_" + scale +  "_" + str(Cr) + 'f.mat' # path of the .mat mask file
-maskpath = mask_dir + '/' + mask_name + "_" + scale +  "_" + str(Cr) + 'f_info.mat' # path of the .mat mask file
+maskpath = mask_dir + '/' + mask_name + "_" + scale +  "_" + str(Cr) + 'f.mat' # path of the .mat mask file
+print('mask_path: '+maskpath) 
 
 ## [0.2] flags
 
@@ -125,8 +128,7 @@ if get_matfile_version(_open_file(maskpath, appendmat=True)[0])[0] < 2: # MATLAB
     origfile = sio.loadmat(origpath) # for '-v7.2' and below .mat file (MATLAB)
     maskfile = sio.loadmat(maskpath)
     orig = np.array(origfile['orig'])
-    # mask = np.array(maskfile['mask']) % for 
-    mask = np.array(maskfile['non_norm_mask'])
+    mask = np.array(maskfile['mask'])
     mask = np.float32(mask)
     orig = np.float32(orig)
 else: # MATLAB .mat v7.3
@@ -136,8 +138,7 @@ else: # MATLAB .mat v7.3
         
     with h5py.File(maskpath, 'r') as maskfile: # for '-v7.3' .mat file (MATLAB)
         # print(list(file.keys()))
-        # mask = np.array(maskfile['mask'])
-        mask = np.array(maskfile['non_norm_mask'])
+        mask = np.array(maskfile['mask'])
         mask = np.float32(mask).transpose((2,1,0))    
 
 #  calc meas
@@ -147,11 +148,6 @@ meas = np.zeros([orig.shape[0], orig.shape[1], norig//nmask])
 for i in range(norig//nmask):
     tmp_orig = orig[:,:,i*nmask:(i+1)*nmask]
     meas[:,:,i] = np.sum(tmp_orig*mask, 2)
-print('* before add noise: orig {}  mask {} meas {}'.format(np.mean(orig), np.mean(mask), np.mean(meas)))
-
-# add nosie to meas
-gaussian_noise = np.random.randn(meas.shape[0], meas.shape[1], meas.shape[2])*gaussian_noise_level
-meas = meas + gaussian_noise
 
 # normalize data
 mask_max = np.max(mask) 
@@ -175,6 +171,7 @@ At = lambda y : At_(y, mask) # transpose of forward model
 if test_algo_flag == 'gaptv':
     projmeth = 'gap' # projection method
     _lambda = 1 # regularization factor, [original set]
+    # accelerate = False # enable accelerated version of GAP
     accelerate = True # enable accelerated version of GAP
     denoiser = 'tv' # total variation (TV)
     # iter_max = 100 # maximum number of iterations
@@ -203,7 +200,7 @@ if test_algo_flag == 'gaptv':
 
 # %%
 ### [2.1.2] ADMM-TV
-if ('all' in test_algo_flag) or ('admmtv' in test_algo_flag):
+if test_algo_flag == 'admmtv':
     projmeth = 'admm' # projection method
     _lambda = 1 # regularization factor, [original set]
     # gamma = 0.01 # parameter in ADMM projection (greater for more noisy data), [original set]
@@ -290,7 +287,7 @@ if test_algo_flag == 'gapffdnet':
     t_recon = tgapffdnet
     
 ### [2.2.2] ADMM-FFDNet (FFDNet-based frame-wise video denoising)
-if ('all' in test_algo_flag) or ('admmffdnet' in test_algo_flag):
+if test_algo_flag == 'admmffdnet':
     projmeth = 'admm' # projection method
     _lambda = 1 # regularization factor, [original set]
     # gamma = 0.05
@@ -395,7 +392,7 @@ if test_algo_flag == 'gapfastdvdnet':
     t_recon = tgapfastdvdnet    
     
 ### [2.3.2] ADMM-FastDVDnet
-if ('all' in test_algo_flag) or ('admmfastdvdnet' in test_algo_flag):
+if test_algo_flag == 'admmfastdvdnet':
     projmeth = 'admm' # projection method
     _lambda = 1 # regularization factor, [original set]
     # gamma = 0.05
@@ -509,7 +506,7 @@ if test_algo_flag=='gaptv+ffdnet':
     
     
 ### [2.4.2] ADMM-TV+FFDNET
-if ('all' in test_algo_flag) or ('admmtv+ffdnet' in test_algo_flag):
+if test_algo_flag == 'admmtv+ffdnet':
     projmeth = 'admm' # projection method
     _lambda = 1 # regularization factor, [original set]
     # gamma = 0.0
@@ -635,7 +632,7 @@ if test_algo_flag=='gaptv+fastdvdnet':
     t_recon = tgaptvfastdvdnet  
 
 ### [2.5.2] ADMM-TV+FASTDVDNET
-if ('all' in test_algo_flag) or ('admmtv+fastdvdnet' in test_algo_flag):
+if test_algo_flag == 'admmtv+fastdvdnet':
     projmeth = 'admm' # projection method
     _lambda = 1 # regularization factor, [original set]
     # gamma = 0.05
@@ -679,7 +676,7 @@ if ('all' in test_algo_flag) or ('admmtv+fastdvdnet' in test_algo_flag):
                                             _lambda=_lambda, gamma=gamma,
                                             denoiser=denoiser, iter_max1=iter_max1, iter_max2=iter_max2,
                                             tv_weight=tv_weight, tv_iter_max=tv_iter_max, 
-                                            model=model, sigma1=sigma1, sigma2=sigma2, tvm=tvm)
+                                            model=model, sigma1=sigma1, sigma2=sigma2, tvm='tv_chambolle')
 
     print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_admmtvfastdvdnet), mean(ssim_admmtvfastdvdnet), tadmmtvfastdvdnet)+'-'*20)
@@ -700,10 +697,10 @@ if log_result_flag:
     else:
         open_mode = 'w'
     with open(log_file,open_mode) as f:
-        f.writelines("gaussian_noise_level {:6.2f}, poisson_noise {:2}, {:15} PSNR {:6.2f} dB, SSIM {:6.4f}, time {:.4f}\n".format(gaussian_noise_level, poisson_noise, orig_name, mean(psnr_recon), mean(ssim_recon), t_recon))  # exp3_noise
+        f.writelines("{:15} {:15} PSNR {:2.3f} dB, SSIM {:.4f}, time {:.4f}\n".format(test_algo_flag, orig_name, mean(psnr_recon), mean(ssim_recon), t_recon)) # exp1     
         # f.writelines("tv_weight {:5.2f}, {:15} PSNR {:2.2f} dB, SSIM {:.4f}, time {:.4f}\n".format(tv_weight, orig_name, mean(psnr_gaptv), mean(ssim_gaptv) , tgaptv))      # tv_weight_finetune 
         # f.writelines("{:15} PSNR {:2.2f} dB, SSIM {:.4f}, time {:.4f}\n".format(orig_name, mean(psnr_gaptv), mean(ssim_gaptv), tgaptv))   # sigma_finetune  
-
+         
 # show res
 # if show_res_flag:
 #     plt.show()

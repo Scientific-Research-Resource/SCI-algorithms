@@ -49,13 +49,23 @@ maskpath =  sprintf('%s/%s.mat',mask_dir,maskname);
 
 
 if exist(origpath,'file') && exist(maskpath,'file')
+	% load
     load(origpath,'orig');  % orig
 	load(maskpath,'mask')   % mask
+	mask = single(mask);
+	orig = single(orig);
+		
+	% frame num
+	Cr = size(mask, 3);
+	norig = size(orig,3);
+	nmeas = floor(norig./Cr);
 	
 	% meas
-	mask = single(mask);
-	coded_frame = single(mask).*single(orig);
-	meas = sum(coded_frame, 3);	
+	meas = zeros([size(mask,1), size(mask,2), nmeas]);
+	for k = 1:nmeas
+		coded_frame = mask.*orig(:,:,1+(k-1)*Cr:k*Cr);
+		meas(:,:,k) = sum(coded_frame, 3);	
+	end
 	
 	% normalize
 	mask_max = max(mask,[],'a');
@@ -63,7 +73,7 @@ if exist(origpath,'file') && exist(maskpath,'file')
 	meas = meas./ mask_max;
 
 else
-    error('File %s does not exist, please check dataset directory!',origpath);
+    error('data file does not exist, please check dataset directory!');
 end
 
 nframe = size(meas, 3); % number of coded frames to be reconstructed

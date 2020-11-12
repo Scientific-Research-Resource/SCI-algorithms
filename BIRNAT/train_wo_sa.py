@@ -62,7 +62,8 @@ if last_train != 0:
         './model/' + pretrained_model + "/first_frame_net_model_epoch_{}.pth".format(last_train))
     rnn1 = torch.load('./model/' + pretrained_model + "/rnn1_model_epoch_{}.pth".format(last_train))
     rnn2 = torch.load('./model/' + pretrained_model + "/rnn2_model_epoch_{}.pth".format(last_train))
-
+    print('pre-trained model: \'{} - No. {} epoch\' loaded!'.format(pretrained_model, last_train))
+    
 loss = nn.MSELoss()
 loss.cuda()
 
@@ -275,7 +276,9 @@ def main(learning_rate):
     print('\n---- start training ----\n')
     logger.info('Code: train.py') 
     logger.info('mask: {}'.format(mask_path + '/' + mask_name)) 
-    
+    if last_train != 0:
+        logger.info('loading pre-trained model: \'{} - No. {} epoch\'...'.format(pretrained_model, last_train))
+            
     for epoch in range(last_train + 1, last_train + max_iter + 1):
         train(epoch, learning_rate, result_path, logger)
         if (epoch % checkpoint_step == 0 or epoch > 70):

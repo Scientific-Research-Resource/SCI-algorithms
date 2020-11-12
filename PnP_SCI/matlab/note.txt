@@ -1,0 +1,3 @@
+若报错 “E:\project\CACTI\SCI algorithm\PnP_SCI\matlab”：
+则需要编译配置 matconvnet-1.0-beta25；
+若已经编译过，则需要切到 matconvnet-1.0-beta25\matlab目录运行 vl_setupnn

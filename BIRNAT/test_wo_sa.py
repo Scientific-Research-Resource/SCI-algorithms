@@ -51,7 +51,8 @@ if last_train != 0:
         './model/' + pretrained_model + "/first_frame_net_model_epoch_{}.pth".format(last_train))
     rnn1 = torch.load('./model/' + pretrained_model + "/rnn1_model_epoch_{}.pth".format(last_train))
     rnn2 = torch.load('./model/' + pretrained_model + "/rnn2_model_epoch_{}.pth".format(last_train))
-
+    print('pre-trained model: \'{} - No. {} epoch\' loaded!'.format(pretrained_model, last_train))
+    
 loss = nn.MSELoss()
 loss.cuda()
 

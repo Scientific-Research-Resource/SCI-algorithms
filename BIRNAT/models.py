@@ -110,7 +110,7 @@ class cnn1(nn.Module):
         out = self.conv10(out)
         out = self.res_part3(out)
 
-        # out = self.att1(out)
+        out = self.att1(out)
 
         out = self.conv5(out)
         out = self.relu5(out)

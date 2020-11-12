@@ -136,7 +136,7 @@ if ('all' in test_algo_flag) or ('gaptv' in test_algo_flag):
                                             tv_weight=tv_weight, 
                                             tv_iter_max=tv_iter_max)
 
-    print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
+    print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gaptv), mean(ssim_gaptv), tgaptv)+'-'*20)
     show_n_save_res(vgaptv,tgaptv,psnr_gaptv,ssim_gaptv,psnrall_gaptv, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
@@ -165,7 +165,7 @@ if ('all' in test_algo_flag) or ('admmtv' in test_algo_flag):
                                             tv_weight=tv_weight, 
                                             tv_iter_max=tv_iter_max)
 
-    print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
+    print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_admmtv), mean(ssim_admmtv), tadmmtv)+'-'*20)
     show_n_save_res(vadmmtv,tadmmtv,psnr_admmtv,ssim_admmtv,psnrall_admmtv, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
@@ -217,7 +217,7 @@ if ('all' in test_algo_flag) or ('gapffdnet' in test_algo_flag):
                                             denoiser=denoiser, model=model, 
                                             iter_max=iter_max, sigma=sigma)
 
-    print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
+    print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gapffdnet), mean(ssim_gapffdnet), tgapffdnet)+'-'*20)
     show_n_save_res(vgapffdnet,tgapffdnet,psnr_gapffdnet,ssim_gapffdnet,psnrall_gapffdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
@@ -265,7 +265,7 @@ if ('all' in test_algo_flag) or ('admmffdnet' in test_algo_flag):
                                               denoiser=denoiser, iter_max=iter_max, model=model, 
                                               sigma=sigma)
 
-    print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
+    print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_admmffdnet), mean(ssim_admmffdnet), tadmmffdnet)+'-'*20)
     show_n_save_res(vadmmffdnet,tadmmffdnet,psnr_admmffdnet,ssim_admmffdnet,psnrall_admmffdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
@@ -315,7 +315,7 @@ if ('all' in test_algo_flag) or ('gapfastdvdnet' in test_algo_flag):
                                             denoiser=denoiser, model=model, 
                                             iter_max=iter_max, sigma=sigma)
 
-    print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
+    print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gapfastdvdnet), mean(ssim_gapfastdvdnet), tgapfastdvdnet)+'-'*20)
     show_n_save_res(vgapfastdvdnet,tgapfastdvdnet,psnr_gapfastdvdnet,ssim_gapfastdvdnet,psnrall_gapfastdvdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
@@ -361,7 +361,7 @@ if ('all' in test_algo_flag) or ('admmfastdvdnet' in test_algo_flag):
                                             denoiser=denoiser, model=model, 
                                             iter_max=iter_max, sigma=sigma)
 
-    print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
+    print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_admmfastdvdnet), mean(ssim_admmfastdvdnet), tadmmfastdvdnet)+'-'*20)
     show_n_save_res(vadmmfastdvdnet,tadmmfastdvdnet,psnr_admmfastdvdnet,ssim_admmfastdvdnet,psnrall_admmfastdvdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
@@ -421,7 +421,7 @@ if ('all' in test_algo_flag) or ('gaptv+ffdnet' in test_algo_flag):
                                             model=model, sigma1=sigma1, sigma2=sigma2, tvm=tvm)
                                             
 
-    print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
+    print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gaptvffdnet), mean(ssim_gaptvffdnet), tgaptvffdnet)+'-'*20)
     show_n_save_res(vgaptvffdnet,tgaptvffdnet,psnr_gaptvffdnet,ssim_gaptvffdnet,psnrall_gaptvffdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
@@ -479,7 +479,7 @@ if ('all' in test_algo_flag) or ('admmtv+ffdnet' in test_algo_flag):
                                             tv_weight=tv_weight, tv_iter_max=tv_iter_max, 
                                             model=model, sigma1=sigma1, sigma2=sigma2, tvm=tvm)
 
-    print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
+    print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_admmtvffdnet), mean(ssim_admmtvffdnet), tadmmtvffdnet)+'-'*20)
     show_n_save_res(vadmmtvffdnet,tadmmtvffdnet,psnr_admmtvffdnet,ssim_admmtvffdnet,psnrall_admmtvffdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
@@ -538,7 +538,7 @@ if ('all' in test_algo_flag) or ('gaptv+fastdvdnet' in test_algo_flag):
                                             tv_weight=tv_weight, tv_iter_max=tv_iter_max, 
                                             model=model, sigma1=sigma1, sigma2=sigma2, tvm=tvm)
 
-    print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
+    print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gaptvfastdvdnet), mean(ssim_gaptvfastdvdnet), tgaptvfastdvdnet)+'-'*20)
     show_n_save_res(vgaptvfastdvdnet,tgaptvfastdvdnet,psnr_gaptvfastdvdnet,ssim_gaptvfastdvdnet,psnrall_gaptvfastdvdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
@@ -592,7 +592,7 @@ if ('all' in test_algo_flag) or ('admmtv+fastdvdnet' in test_algo_flag):
                                             tv_weight=tv_weight, tv_iter_max=tv_iter_max, 
                                             model=model, sigma1=sigma1, sigma2=sigma2, tvm=tvm)
 
-    print('-'*20+'\n{}-{} PSNR {:2.2f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
+    print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_admmtvfastdvdnet), mean(ssim_admmtvfastdvdnet), tadmmtvfastdvdnet)+'-'*20)
     show_n_save_res(vadmmtvfastdvdnet,tadmmtvfastdvdnet,psnr_admmtvfastdvdnet,ssim_admmtvfastdvdnet,psnrall_admmtvfastdvdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 

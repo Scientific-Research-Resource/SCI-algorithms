@@ -30,12 +30,8 @@ addpath(genpath('./utils'));      % utilities
 % datasetdir = './dataset/simdata/benchmark'; % benchmark simulation dataset
 % datasetdir = './dataset/simdata/test_data';  % dataset for test
 orig_dir = 'E:/project/CACTI/SCI algorithm/PnP_SCI/matlab/dataset/simdata/benchmark/orig/bm_256_10f/';
-% mask_dir = 'E:/project/CACTI/SCI algorithm/[dataset]/#benchmark/mask/'; % zzh simulation dataset
-%  mask_dir = './dataset/simdata/cacti/cacti_256_10f_1';
-% mask_dir = 'E:/project/CACTI/simulation/dataset/mask/cacti_row_stripe_dmd_10_10f_256_10f/';
-% mask_dir = 'E:/project/CACTI/simulation/dataset/mask/cacti_row_stripe_dmd_256_10f_256_10f/';
-%  mask_dir = 'E:/project/CACTI/simulation/dataset/mask/cacti_manual_dmd_10_10f_256_10f_conv/';
-mask_dir = 'E:/project/CACTI/simulation/dataset/mask/cacti_manual_dmd_256_10f_256_10f/';
+% mask_dir = 'E:\project\CACTI\SCI algorithm\PnP_SCI\matlab\dataset\simdata\benchmark\mask\'; % zzh simulation dataset
+mask_dir = './dataset/simdata/casci_test_data/20201110';
   
 result_dir  = './results';                   % results
 
@@ -56,11 +52,7 @@ dataname = 'kobe';
 % maskname = 'combine_binary_mask_256_10f';
 % maskname = 'combine_binary_mask_256_10f_2_uniform';
 % maskname = 'cacti_mask_256_10f_1';
-% maskname = 'cacti_mask_center_circle_dmd_256_10f';
-% maskname = 'cacti_mask_row_stripe_dmd_10_10f_256_10f';
-% maskname = 'cacti_mask_row_stripe_dmd_256_10f_256_10f';
-% maskname = 'cacti_mask_manual_dmd_10_10f_256_10f_conv';
-maskname = 'cacti_mask_manual_dmd_256_10f_256_10f';
+maskname = 'casci_mask0_256_5f';
 
 
 origpath = sprintf('%s/%s.mat',orig_dir,dataname);
@@ -68,13 +60,23 @@ maskpath =  sprintf('%s/%s.mat',mask_dir,maskname);
 
 
 if exist(origpath,'file') && exist(maskpath,'file')
+	% load
     load(origpath,'orig');  % orig
 	load(maskpath,'mask')   % mask
+	mask = single(mask);
+	orig = single(orig);
+		
+	% frame num
+	Cr = size(mask, 3);
+	norig = size(orig,3);
+	nmeas = floor(norig./Cr);
 	
 	% meas
-	mask = single(mask);
-	coded_frame = single(mask).*single(orig);
-	meas = sum(coded_frame, 3);	
+	meas = zeros([size(mask,1), size(mask,2), nmeas]);
+	for k = 1:nmeas
+		coded_frame = mask.*orig(:,:,1+(k-1)*Cr:k*Cr);
+		meas(:,:,k) = sum(coded_frame, 3);	
+	end
 	
 	% normalize
 	mask_max = max(mask,[],'a');
