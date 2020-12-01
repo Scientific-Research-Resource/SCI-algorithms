@@ -6,6 +6,8 @@ iframe   = 1; % start frame number
 maskdirection  = 'plain'; % direction of the mask
 if isfield(para,'iframe');               iframe = para.iframe; end
 if isfield(para,'maskdirection'); maskdirection = para.maskdirection; end
+if isempty(orig); para.flag_iqa = false; end
+
 [nrow,ncol,nmask]  = size(mask);
 nframe = para.nframe;
 MAXB   = para.MAXB;
@@ -63,7 +65,7 @@ for kf = 1:nframe
         if isfield(para,'flag_iqa') && ~para.flag_iqa % ImQualAss disabled
             v = gapdenoise(y,para);
         else
-            [v,~] = gapdenoise(y,para);
+            [v,psnrall(kf,:)] = gapdenoise(y,para);
         end
     end
     switch maskdirection

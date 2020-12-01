@@ -9,6 +9,7 @@ maskdirection  = 'plain'; % direction of the mask
 if isfield(para,'iframe');     iframe = para.iframe; end
 if isfield(para,'projmeth'); projmeth = para.projmeth; end
 if isfield(para,'maskdirection'); maskdirection = para.maskdirection; end
+if isempty(orig); para.flag_iqa = false; end
 [nrow,ncol,nmask]  = size(mask);
 nframe = para.nframe;
 MAXB   = para.MAXB;
@@ -19,8 +20,10 @@ v_ = zeros([nrow ncol nmask*nframe],'like',meas);
 tic
 % coded-frame-wise denoising
 for kf = 1:nframe
+%     fprintf('%s-%s Reconstruction frame-block %d of %d ...\n',...
+%         upper(para.projmeth),upper(para.denoiser),kf,nframe);
     fprintf('%s-%s Reconstruction frame-block %d of %d ...\n',...
-        upper(para.projmeth),upper(para.denoiser),kf,nframe);
+        upper(projmeth),upper(para.denoiser),kf,nframe);	
     if ~isempty(orig)
         para.orig = orig(:,:,(kf-1+iframe-1)*nmask+(1:nmask))/MAXB;
     end
@@ -86,6 +89,7 @@ for kf = 1:nframe
                     v = admmdenoise(y,para);
                 else
                     [v,psnrall(kf,:)] = admmdenoise(y,para);
+					
                 end
             end
         otherwise
