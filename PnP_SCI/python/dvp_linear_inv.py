@@ -500,7 +500,7 @@ def admmdenoise_cacti(meas, mask, A, At, projmeth='admm', v0=None, orig=None,
 def gap_denoise(y, Phi_sum, A, At, _lambda=1, accelerate=True, 
                 denoiser='tv', iter_max=50, noise_estimate=False, sigma=None, 
                 tv_weight=0.1, tv_iter_max=5, multichannel=True, x0=None, 
-                X_orig=None, model=None, show_iqa=True):
+                X_orig=None, model=None, show_iqa=True, tvm='tv_chambolle'):
     '''
     Alternating direction method of multipliers (ADMM)[1]-based denoising 
     regularization for snapshot compressive imaging (SCI).
@@ -552,6 +552,9 @@ def gap_denoise(y, Phi_sum, A, At, _lambda=1, accelerate=True,
         Start point (initialized value) for the iteration process of the 
         reconstruction.
     model : pretrained model for image/video denoising.
+    tvm : string, optional, {'tv_chambolle', 'ATV_ClipA', 'ATV_ClipB','ATV_cham','ATV_FGP',
+        'ITV2D_cham','ITV2D_FGP','ITV3D_cham','ITV3D_FGP'}
+        tv denoiser type, default value = 'tv_chambolle' (zzh)
 
     Returns
     -------
@@ -606,8 +609,18 @@ def gap_denoise(y, Phi_sum, A, At, _lambda=1, accelerate=True,
                 x = x + _lambda*(At((y-yb)/Phi_sum)) # GAP
             # switch denoiser 
             if denoiser.lower() == 'tv': # total variation (TV) denoising
-                x = denoise_tv_chambolle(x, tv_weight, n_iter_max=tv_iter_max, 
-                                         multichannel=multichannel)
+                try:
+                    if tvm == 'tv_chambolle':
+                        x = denoise_tv_chambolle(x, tv_weight, n_iter_max=tv_iter_max, multichannel=multichannel)
+                    elif tvm == 'ITV3D_FGP':
+                        x = denoise_tv_FGP_ITV3D(x, tv_weight, n_iter_max=tv_iter_max)
+                    elif tvm == 'ITV2D_cham':
+                        x = denoise_tv_cham_ITV2D(x, tv_weight, n_iter_max=tv_iter_max)                        
+                    else:
+                        raise TypeError("no such tv denoiser")
+                except TypeError as e:
+                    print("Exception: ",repr(e))
+                    
             elif denoiser.lower() == 'wavelet': # wavelet denoising
                 if noise_estimate or nsig is None: # noise estimation enabled
                     x = denoise_wavelet(x, multichannel=multichannel)
@@ -650,6 +663,8 @@ def gap_denoise(y, Phi_sum, A, At, _lambda=1, accelerate=True,
             psnr_.append(compare_psnr(X_orig[:,:,imask], x[:,:,imask], data_range=1.))
             ssim_.append(compare_ssim(X_orig[:,:,imask], x[:,:,imask], data_range=1.))
     return x, psnr_, ssim_, psnr_all
+
+
 
 # def admm_denoise(y, Phi_sum, A, At, _lambda=1, gamma=0.01, 
 #                 denoiser='tv', iter_max=50, noise_estimate=False, sigma=None, 

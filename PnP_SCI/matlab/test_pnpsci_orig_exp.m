@@ -29,14 +29,15 @@ addpath(genpath('./utils'));      % utilities
 
 % datasetdir = './dataset/simdata/benchmark'; % benchmark simulation dataset
 % datasetdir = './dataset/simdata/test_data';  % dataset for test
-orig_dir = 'E:\project\CACTI\experiment\real_data\dataset\orig';
+% orig_dir = 'E:\project\CACTI\experiment\real_data\dataset\orig';
+orig_dir = 'E:\project\CACTI\experiment\real_data\dataset\orig\scene_ground_truth';
 % mask_dir = '.\dataset\simdata\benchmark\mask\'; % 
 % mask_dir = '.\dataset\simdata\test\';
 mask_dir = 'E:\project\CACTI\experiment\real_data\dataset\mask';
   
 result_dir  = './results';                   % results
 
-test_algo_flag = [4];		% choose algorithms: 0-all, 1-gaptv, 2-gap-ffdnet, 3-ista-tv, 4-gap-tv+ffdnet, [1,4] means test algorithms 1&4 
+test_algo_flag = [1];		% choose algorithms: 0-all, 1-gaptv, 2-gap-ffdnet, 3-ista-tv, 4-gap-tv+ffdnet, [1,4] means test algorithms 1&4 
 saving_data_flag = 1;	% save the recon result
 tv_init_flag = 0;		% use gap-tv recon as initial image for gap-ffdnet
 show_res_flag = 0;
@@ -48,7 +49,8 @@ show_res_flag = 0;
 % dataname = 'kobe'; 
 % dataname = 'runner'; 
 % dataname = 'traffic'; 
-dataname = 'football_1024';
+% dataname = 'football_1024';
+dataname = 'hand';
 
 
 % maskname = 'combine_binary_mask_256_10f';
@@ -61,7 +63,9 @@ dataname = 'football_1024';
 % maskname = 'cacti_mask_256_10f_1';
 % maskname = 'calib_mask_Cr10_2_6#8_20201115';
 % maskname = 'calib_mask_Cr10_3_circ_20201115_2';
-maskname = 'calib_mask_Cr10_3_circ_20201115_roi1032-528_sz3300_gt';
+% maskname = 'calib_mask_Cr10_3_circ_20201115_2_correct';
+% maskname = 'calib_mask_Cr10_3_circ_20201115_roi1032-528_sz3300_gt';
+maskname = 'calib_mask_Cr10_3_circ_20201115_roi1032-528_sz3300_gt_correct';
 
 origpath = sprintf('%s/%s.mat',orig_dir,dataname);
 maskpath =  sprintf('%s/%s.mat',mask_dir,maskname);
@@ -75,6 +79,14 @@ if exist(origpath,'file') && exist(maskpath,'file')
 % 	load(maskpath,'mask_indep3')   % mask
 % 	mask = single(mask_indep3);
 	orig = single(orig);
+	
+% 	% delete
+% 	for k = 1:10
+% 		orig2(:,:,k) = imresize(orig(:,:,k), [3100, 3300]);
+% 	end
+% 	orig=orig2;
+% 	% delete
+		
 		
 	% frame num
 	Cr = size(mask, 3);
@@ -236,7 +248,7 @@ if ismember(0,test_algo_flag) || ismember(4,test_algo_flag)
 	para.ffdnetvnorm_init = true; % use normalized video for the first 10 iterations
 	para.ffdnetvnorm = false; % normalize the video before FFDNet video denoising
 
-	para.tviter =100;   % 1st period gaptv iteration
+	para.tviter =5;   % 1st period gaptv iteration
 	para.intviter = 5;  % inner gaptv iteration
 	para.mu = 0.25;
 	para.iter =150;

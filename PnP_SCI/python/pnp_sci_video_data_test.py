@@ -29,71 +29,77 @@ from packages.fastdvdnet.models import FastDVDnet
 
 # %%
 # [0] environment configuration
+# datasetdir = './dataset/cacti' # dataset
+datasetdir = './dataset/benchmark/data/binary_mask_256_10f/bm_256_10f'
+# datasetdir = './dataset/benchmark/data/combine_binary_mask_256_10f/bm_256_10f'
+# datasetdir = '../gapDenoise/dataset/cacti' # dataset
+resultsdir = './results' # results
+
+
+# datname = 'kobe32'        # name of the dataset
+# datname = 'traffic48'     # name of the dataset
+# datname = 'runner40'      # name of the dataset
+# datname = 'drop40'        # name of the dataset
+# datname = 'crash32'       # name of the dataset
+# datname = 'aerial32'      # name of the dataset
+# datname = 'bicycle24'     # name of the dataset
+# datname = 'data_kobe'    # name of the dataset
+datname = 'data_traffic'    # name of the dataset
+
 ## flags and params
 save_res_flag = 0          # save results
 show_res_flag = 0           # show results
 test_algo_flag = ['all' ]		# choose algorithms: 'all', 'gaptv', 'admmtv', 'gapffdnet', 'admmffdnet', 'gapfastdvdnet', 'admmfastdvdnet'
-test_algo_flag = ['gaptv', 'gapfastdvdnet']
-
-meas_dir = 'E:/project/CACTI/experiment/real_data/dataset/meas'
-mask_dir = 'E:/project/CACTI/experiment/real_data/dataset/mask'
-resultsdir = './results' # results
-
-measname = 'football_1024_mask_Cr10_3_circ_20201115_2_simumeas'
-maskname = 'calib_mask_Cr10_3_circ_20201115_2'
+test_algo_flag = ['gaptv+fastdvdnet']
 
 
-measpath = meas_dir + '/' + measname + '.mat' # path of the .mat data file
-maskpath = mask_dir + '/' + maskname + '.mat' # path of the .mat data file
+# matfile = datasetdir + '/' + datname + '_cacti.mat' # path of the .mat data file
+matfile = datasetdir + '/' + datname + '.mat' # path of the .mat data file
+
+
+# noise
+gaussian_noise_level = 5
+poisson_noise = False
+
 
 # %%
 # [1] load data
 from scipy.io.matlab.mio import _open_file
 from scipy.io.matlab.miobase import get_matfile_version
 
-# load mask
-if get_matfile_version(_open_file(maskpath, appendmat=True)[0])[0] < 2: # MATLAB .mat v7.2 or lower versions
-    maskfile = sio.loadmat(maskpath)
-    mask = np.array(maskfile['mask'])
-    mask = np.float32(mask)
+if get_matfile_version(_open_file(matfile, appendmat=True)[0])[0] < 2: # MATLAB .mat v7.2 or lower versions
+    file = sio.loadmat(matfile) # for '-v7.2' and lower version of .mat file (MATLAB)
+    order = 'K' # [order] keep as the default order in Python/numpy
+    meas = np.float32(file['meas'], order=order)
+    mask = np.float32(file['mask'], order=order)
+    orig = np.float32(file['orig'], order=order)
 else: # MATLAB .mat v7.3
-    with h5py.File(maskpath, 'r') as maskfile: # for '-v7.3' .mat file (MATLAB)
-        # print(list(file.keys()))
-        mask = np.array(maskfile['mask'])
-        mask = np.float32(mask).transpose((2,1,0))    
+    file =  h5py.File(matfile, 'r')  # for '-v7.3' .mat file (MATLAB)
+    order = 'F' # [order] switch to MATLAB array order
+    meas = np.float32(file['meas'], order=order).transpose()
+    mask = np.float32(file['mask'], order=order).transpose()
+    orig = np.float32(file['orig'], order=order).transpose()
 
-# load meas
-if get_matfile_version(_open_file(measpath, appendmat=True)[0])[0] < 2: # MATLAB .mat v7.2 or lower versions
-    measfile = sio.loadmat(measpath) # for '-v7.2' and below .mat file (MATLAB)
-    meas = np.array(measfile['meas'])
-    meas = np.float32(meas)
-else: # MATLAB .mat v7.3
-    with h5py.File(measpath, 'r') as measfile: # for '-v7.3' .mat file (MATLAB)
-        meas = np.array(measfile['meas'])
-        meas = np.float32(meas).transpose((2,1,0))
+# print('meas, mask, orig:', meas.shape, mask.shape, orig.shape)
 
-# load orig
-# if get_matfile_version(_open_file(origpath, appendmat=True)[0])[0] < 2: # MATLAB .mat v7.2 or lower versions
-#     origfile = sio.loadmat(origpath) # for '-v7.2' and below .mat file (MATLAB)
-#     orig = np.array(origfile['orig'])
-#     orig = np.float32(orig)
-# else: # MATLAB .mat v7.3
-#     with h5py.File(origpath, 'r') as origfile: # for '-v7.3' .mat file (MATLAB)
-#         orig = np.array(origfile['orig'])
-#         orig = np.float32(orig).transpose((2,1,0))
-# no orig
-orig = None
-
+    
 # zzh: expand dim for a single 'meas'
 if meas.ndim<3:
     meas = np.expand_dims(meas,2)
     # print(meas.shape)
 # print('meas, mask, orig:', meas.shape, mask.shape, orig.shape)
+
+# add nosie
+# print('* before add noise: orig {}  mask {} meas {}'.format(np.mean(orig), np.mean(mask), np.mean(meas)))
+gaussian_noise = np.random.randn(meas.shape[0], meas.shape[1], meas.shape[2])*gaussian_noise_level
+meas = meas + gaussian_noise
+if poisson_noise:
+    meas = np.random.poisson(meas)
  
 # normalize data
 mask_max = np.max(mask) 
 mask = mask/mask_max
-meas = meas/mask_max         
+meas = meas/mask_max   
 
 iframe = 0
 nframe = 1
@@ -133,7 +139,7 @@ if ('all' in test_algo_flag) or ('gaptv' in test_algo_flag):
     print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gaptv), mean(ssim_gaptv), tgaptv)+'-'*20)
     show_n_save_res(vgaptv,tgaptv,psnr_gaptv,ssim_gaptv,psnrall_gaptv, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+measname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         tv_weight=tv_weight, iter_max = iter_max)
 
@@ -162,7 +168,7 @@ if ('all' in test_algo_flag) or ('admmtv' in test_algo_flag):
     print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_admmtv), mean(ssim_admmtv), tadmmtv)+'-'*20)
     show_n_save_res(vadmmtv,tadmmtv,psnr_admmtv,ssim_admmtv,psnrall_admmtv, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+measname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         tv_weight=tv_weight, iter_max = iter_max, gamma=gamma)
 
@@ -214,7 +220,7 @@ if ('all' in test_algo_flag) or ('gapffdnet' in test_algo_flag):
     print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gapffdnet), mean(ssim_gapffdnet), tgapffdnet)+'-'*20)
     show_n_save_res(vgapffdnet,tgapffdnet,psnr_gapffdnet,ssim_gapffdnet,psnrall_gapffdnet, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+measname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         iter_max = iter_max, sigma=sigma)
 
@@ -262,7 +268,7 @@ if ('all' in test_algo_flag) or ('admmffdnet' in test_algo_flag):
     print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_admmffdnet), mean(ssim_admmffdnet), tadmmffdnet)+'-'*20)
     show_n_save_res(vadmmffdnet,tadmmffdnet,psnr_admmffdnet,ssim_admmffdnet,psnrall_admmffdnet, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+measname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         iter_max = iter_max, sigma=sigma, gamma=gamma)
 
@@ -312,7 +318,7 @@ if ('all' in test_algo_flag) or ('gapfastdvdnet' in test_algo_flag):
     print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gapfastdvdnet), mean(ssim_gapfastdvdnet), tgapfastdvdnet)+'-'*20)
     show_n_save_res(vgapfastdvdnet,tgapfastdvdnet,psnr_gapfastdvdnet,ssim_gapfastdvdnet,psnrall_gapfastdvdnet, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+measname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         iter_max = iter_max, sigma=sigma)
     
@@ -358,7 +364,7 @@ if ('all' in test_algo_flag) or ('admmfastdvdnet' in test_algo_flag):
     print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_admmfastdvdnet), mean(ssim_admmfastdvdnet), tadmmfastdvdnet)+'-'*20)
     show_n_save_res(vadmmfastdvdnet,tadmmfastdvdnet,psnr_admmfastdvdnet,ssim_admmfastdvdnet,psnrall_admmfastdvdnet, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+measname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         iter_max = iter_max,sigma=sigma, gamma=gamma)
 
@@ -418,23 +424,22 @@ if ('all' in test_algo_flag) or ('gaptv+ffdnet' in test_algo_flag):
     print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gaptvffdnet), mean(ssim_gaptvffdnet), tgaptvffdnet)+'-'*20)
     show_n_save_res(vgaptvffdnet,tgaptvffdnet,psnr_gaptvffdnet,ssim_gaptvffdnet,psnrall_gaptvffdnet, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+measname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         tv_weight=tv_weight, iter_max1=iter_max1, iter_max2=iter_max2, sigma1=sigma1, sigma2=sigma2)
   
-### [2.5.1] GAP-TV+FFDNET
+### [2.4.2] ADMM-TV+FFDNET
 if ('all' in test_algo_flag) or ('admmtv+ffdnet' in test_algo_flag):
     projmeth = 'admm' # projection method
     _lambda = 1 # regularization factor, [original set]
-    gamma = 0.05
+    gamma = 0.0
     tvm = 'tv_chambolle'
     # accelerate = True # enable accelerated version of GAP
     denoiser = 'tv+ffdnet' # video non-local network 
-    noise_estimate = False # disable noise estimation for GAP
     sigma1    = None # pre-set noise standard deviation for 1st period denoise 
-    iter_max1 = 40 # maximum number of iterations for 1st period denoise   
-    sigma2    = [50/255, 20/255, 10/255, 6/255] # pre-set noise standard deviation for 2nd period denoise 
-    iter_max2 = [10, 10, 10, 10] # maximum number of iterations for 2nd period denoise    
+    iter_max1 = 25 # maximum number of iterations for 1st period denoise   
+    sigma2    = [50/255, 20/255, 10/255] # pre-set noise standard deviation for 2nd period denoise 
+    iter_max2 = [40, 20, 10] # maximum number of iterations for 2nd period denoise    
     # sigma2    = [50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
     # iter_max2 = [20, 20] # maximum number of iterations for 2nd period denoise   
     tv_iter_max = 5 # TV denoising maximum number of iterations each
@@ -476,7 +481,7 @@ if ('all' in test_algo_flag) or ('admmtv+ffdnet' in test_algo_flag):
     print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_admmtvffdnet), mean(ssim_admmtvffdnet), tadmmtvffdnet)+'-'*20)
     show_n_save_res(vadmmtvffdnet,tadmmtvffdnet,psnr_admmtvffdnet,ssim_admmtvffdnet,psnrall_admmtvffdnet, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+measname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         tv_weight=tv_weight, iter_max1=iter_max1, iter_max2=iter_max2, sigma1=sigma1, sigma2=sigma2, gamma=gamma)
 
@@ -498,6 +503,7 @@ if ('all' in test_algo_flag) or ('gaptv+fastdvdnet' in test_algo_flag):
     iter_max2 = [60, 100, 150] # maximum number of iterations for 2nd period denoise    
     # sigma2    = [50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
     # iter_max2 = [20, 20] # maximum number of iterations for 2nd period denoise   
+    tvm = 'tv_chambolle'
     tv_iter_max = 5 # TV denoising maximum number of iterations each
     tv_weight = 0.5 # TV denoising weight (larger for smoother but slower) [kobe:0.25]
     # sigma    = [12/255] # pre-set noise standard deviation
@@ -535,11 +541,13 @@ if ('all' in test_algo_flag) or ('gaptv+fastdvdnet' in test_algo_flag):
     print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_gaptvfastdvdnet), mean(ssim_gaptvfastdvdnet), tgaptvfastdvdnet)+'-'*20)
     show_n_save_res(vgaptvfastdvdnet,tgaptvfastdvdnet,psnr_gaptvfastdvdnet,ssim_gaptvfastdvdnet,psnrall_gaptvfastdvdnet, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+measname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         tv_weight=tv_weight, iter_max1=iter_max1, iter_max2=iter_max2, sigma1=sigma1, sigma2=sigma2)
  
  ### [2.5.2] ADMM-TV+FASTDVDNET
+
+### [2.5.2] ADMM-TV+FASTDVDNET
 if ('all' in test_algo_flag) or ('admmtv+fastdvdnet' in test_algo_flag):
     projmeth = 'admm' # projection method
     _lambda = 1 # regularization factor, [original set]
@@ -551,6 +559,7 @@ if ('all' in test_algo_flag) or ('admmtv+fastdvdnet' in test_algo_flag):
     sigma2    = [100/255, 50/255, 25/255, 12/255] # pre-set noise standard deviation for 2nd period denoise 
     iter_max2 = [20, 20, 20, 20] # maximum number of iterations for 2nd period denoise    
     # sigma2    = [50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
+    tvm = 'tv_chambolle'
     # iter_max2 = [20, 20] # maximum number of iterations for 2nd period denoise   
     tv_iter_max = 5 # TV denoising maximum number of iterations each
     tv_weight = 0.5 # TV denoising weight (larger for smoother but slower) [kobe:0.25]
@@ -589,7 +598,7 @@ if ('all' in test_algo_flag) or ('admmtv+fastdvdnet' in test_algo_flag):
     print('-'*20+'\n{}-{} PSNR {:2.3f} dB, SSIM {:.4f}, running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), mean(psnr_admmtvfastdvdnet), mean(ssim_admmtvfastdvdnet), tadmmtvfastdvdnet)+'-'*20)
     show_n_save_res(vadmmtvfastdvdnet,tadmmtvfastdvdnet,psnr_admmtvfastdvdnet,ssim_admmtvfastdvdnet,psnrall_admmtvfastdvdnet, orig, nmask, resultsdir, 
-                        projmeth+denoiser+'_'+measname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
+                        projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         tv_weight=tv_weight, iter_max1=iter_max1, iter_max2=iter_max2, sigma1=sigma1, sigma2=sigma2, gamma=gamma)
          

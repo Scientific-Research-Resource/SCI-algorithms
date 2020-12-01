@@ -27,74 +27,49 @@ addpath(genpath('./algorithms')); % algorithms
 addpath(genpath('./packages'));   % packages
 addpath(genpath('./utils'));      % utilities
 
-% datasetdir = './dataset/simdata/benchmark'; % benchmark simulation dataset
-% datasetdir = './dataset/simdata/test_data';  % dataset for test
-orig_dir = 'E:\project\CACTI\experiment\real_data\dataset\orig';
-% mask_dir = '.\dataset\simdata\benchmark\mask\'; % 
-% mask_dir = '.\dataset\simdata\test\';
-mask_dir = 'E:\project\CACTI\experiment\real_data\dataset\mask';
-  
-result_dir  = './results';                   % results
-
-test_algo_flag = [4];		% choose algorithms: 0-all, 1-gaptv, 2-gap-ffdnet, 3-ista-tv, 4-gap-tv+ffdnet, [1,4] means test algorithms 1&4 
+test_algo_flag = [1];		% choose algorithms: 0-all, 1-gaptv, 2-gap-ffdnet, 3-ista-tv, 4-gap-tv+ffdnet, [1,4] means test algorithms 1&4 
 saving_data_flag = 1;	% save the recon result
 tv_init_flag = 0;		% use gap-tv recon as initial image for gap-ffdnet
 show_res_flag = 0;
 
-% [1] load dataset
-% dataname = 'aerial'; % data name
-% dataname = 'crash'; 
-% dataname = 'drop'; 
-% dataname = 'kobe'; 
-% dataname = 'runner'; 
-% dataname = 'traffic'; 
-dataname = 'football_1024';
 
-
-% maskname = 'combine_binary_mask_256_10f';
-% maskname = 'combine_binary_mask_256_10f_2_uniform';
-
-% maskname = 'binary_mask_1024';
-% maskname = 'mask_256_bin4_shift';
-% maskname = 'mask_1024_shift';
+meas_dir = 'E:\project\CACTI\experiment\real_data\dataset\meas';
+mask_dir = 'E:\project\CACTI\experiment\real_data\dataset\mask';
+result_dir  = './results';                   % results
 
 % maskname = 'cacti_mask_256_10f_1';
 % maskname = 'calib_mask_Cr10_2_6#8_20201115';
 % maskname = 'calib_mask_Cr10_3_circ_20201115_2';
-maskname = 'calib_mask_Cr10_3_circ_20201115_roi1032-528_sz3300_gt';
+% maskname = 'calib_mask_Cr10_3_circ_20201115_roi1200-2150';
+% maskname = 'calib_mask_Cr10_3_circ_20201115_roi1480-2660_sz256';
 
-origpath = sprintf('%s/%s.mat',orig_dir,dataname);
+% dataname = 'scene_tholabs_dynamic_20201116_test_roi1200-2150';
+% dataname = 'scene_tholabs_dynamic_20201116_test_roi1200-2150';
+% dataname = 'scene_tholabs_static_20201116_test_roi2900-1300';
+% dataname = 'scene_tholabs_static_20201116_test_roi1480-2660_sz256';
+% dataname = 'scene_tholabs_dynamic_20201116_9';
+measname = 'scene_tholabs_static_20201116_test_roi1480-2660_sz256';
+
+maskname = 'calib_mask_Cr10_3_circ_20201115_roi1480-2660_sz256';
+
+measpath = sprintf('%s/%s.mat',meas_dir,measname);
 maskpath =  sprintf('%s/%s.mat',mask_dir,maskname);
 
+% [1] load dataset
 
-if exist(origpath,'file') && exist(maskpath,'file')
-	% load
-    load(origpath,'orig');  % orig
-	load(maskpath,'mask')   % mask
-	mask = single(mask);
-% 	load(maskpath,'mask_indep3')   % mask
-% 	mask = single(mask_indep3);
-	orig = single(orig);
-		
-	% frame num
-	Cr = size(mask, 3);
-	norig = size(orig,3);
-	nmeas = floor(norig./Cr);
-	
-	% meas
-	meas = zeros([size(mask,1), size(mask,2), nmeas]);
-	for k = 1:nmeas
-		coded_frame = mask.*orig(:,:,1+(k-1)*Cr:k*Cr);
-		meas(:,:,k) = sum(coded_frame, 3);	
-	end
-	
-	% normalize
+if exist(measpath,'file') && exist(maskpath,'file')
+    load(measpath,'meas'); % meas
+	load(maskpath,'mask'); % mask
+	% zzh- normalize
 	mask_max = max(mask,[],'a');
 	mask = mask./ mask_max;
+	
 	meas = meas./ mask_max;
+% 	meas = (meas-min(meas,[],'a'))./ mask_max;
+	meas = 100*(meas-min(meas,[],'a'))./(max(meas,[],'a')-min(meas,[],'a'));
 
 else
-    error('data file does not exist, please check dataset directory!');
+    error('File %s does not exist, please check dataset directory!');
 end
 
 % nframe = size(meas, 3); % number of coded frames to be reconstructed
@@ -115,7 +90,7 @@ para.Phisum(para.Phisum==0) = 1;
 
 % [2.0] common parameters
 mask = single(mask);
-orig = single(orig);
+% orig = single(orig);
 
 para.lambda   =    1; % correction coefficiency
 para.acc      =    1; % enable acceleration
@@ -135,7 +110,7 @@ if ismember(0,test_algo_flag) || ismember(1,test_algo_flag)
 	para.tviter   = 5; % number of iteration for TV denoising, test
 
 	[vgaptv,psnr_gaptv,ssim_gaptv,tgaptv,psnrall_gaptv] = ...
-		gapdenoise_cacti(mask,meas,orig,[],para);
+		gapdenoise_cacti(mask,meas,[],[],para);
 
 	fprintf('GAP-%s-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
 		upper(para.denoiser),upper(para.tvm),mean(psnr_gaptv),mean(ssim_gaptv),tgaptv);
@@ -165,10 +140,10 @@ if ismember(0,test_algo_flag) || ismember(2,test_algo_flag)
 	if tv_init_flag
 		% use gap-tv result as the initialized input
 		[vgapffdnet,psnr_gapffdnet,ssim_gapffdnet,tgapffdnet,psnrall_ffdnet] = ...
-			gapdenoise_cacti(mask,meas,orig,istaptv,para); 
+			gapdenoise_cacti(mask,meas,[],istaptv,para); 
 	else
 		[vgapffdnet,psnr_gapffdnet,ssim_gapffdnet,tgapffdnet,psnrall_ffdnet] = ...
-			gapdenoise_cacti(mask,meas,orig,[],para);
+			gapdenoise_cacti(mask,meas,[],[],para);
 	end
 	
 	fprintf('GAP-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
@@ -213,7 +188,7 @@ if ismember(0,test_algo_flag) || ismember(3,test_algo_flag)
 	
 	
 	[istatv,psnr_istatv,ssim_istatv,tistatv,psnrall_istatv] = ...
-		istadenoise_cacti(mask,meas,orig,[],para);
+		istadenoise_cacti(mask,meas,[],[],para);
 
 	fprintf('ISTA-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
 		upper(para.denoiser),mean(psnr_istatv),mean(ssim_istatv),tistatv);
@@ -236,7 +211,7 @@ if ismember(0,test_algo_flag) || ismember(4,test_algo_flag)
 	para.ffdnetvnorm_init = true; % use normalized video for the first 10 iterations
 	para.ffdnetvnorm = false; % normalize the video before FFDNet video denoising
 
-	para.tviter =100;   % 1st period gaptv iteration
+	para.tviter =5; % 100;   % 1st period gaptv iteration
 	para.intviter = 5;  % inner gaptv iteration
 	para.mu = 0.25;
 	para.iter =150;
@@ -248,7 +223,7 @@ if ismember(0,test_algo_flag) || ismember(4,test_algo_flag)
 
 	
 	[vgapjoint,psnr_gapjoint,ssim_gapjoint,tgapjoint,psnrall_joint] = ...
-		gap_joint_denoise_cacti(mask,meas,orig,[],para);
+		gap_joint_denoise_cacti(mask,meas,[],[],para);
 	
 	fprintf('GAP-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
 		upper(para.denoiser),mean(psnr_gapjoint),mean(ssim_gapjoint),tgapjoint);
@@ -265,10 +240,10 @@ if saving_data_flag
 
 	% save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat']);
 	% zzh
-	if ~exist([matdir '/pnpsci_' dataname '_' num2str(nframe*nmask) '.mat'], 'file')
-		save([matdir '/pnpsci_' dataname '_' num2str(nframe*nmask) '.mat']);
+	if ~exist([matdir '/pnpsci_' measname '_' num2str(nframe*nmask) '_' datestr(now,30)  '.mat'], 'file')
+		save([matdir '/pnpsci_' measname '_' num2str(nframe*nmask) '_' datestr(now,30)  '.mat']);
 	else
-		save([matdir '/pnpsci_' dataname '_' num2str(nframe*nmask) '.mat'], '-append');
+		save([matdir '/pnpsci_' measname '_' num2str(nframe*nmask) '_' datestr(now,30)   '.mat'], '-append');
 	end
 end
 
@@ -277,7 +252,14 @@ if show_res_flag
 	result = vgapjoint;
 	figure; 
 	for nm = 1:5
-		subplot(2,5,nm); imshow(result(:,:,nm)); title(psnr(result(:,:,nm), single(orig(:,:,nm))./255))
-		subplot(2,5,nm+5); imshow(result(:,:,nm+5)); title(psnr(result(:,:,nm+5), single(orig(:,:,nm+5))./255))
+		subplot(2,5,nm); imshow(result(:,:,nm)); title(num2str(nm))
+		subplot(2,5,nm+5); imshow(result(:,:,nm+5)); title(num2str(nm+5))
 	end
 end
+
+
+
+
+
+
+

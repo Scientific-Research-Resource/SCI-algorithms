@@ -456,7 +456,7 @@ if test_algo_flag=='gaptv+ffdnet':
     # sigma2    = [50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
     # iter_max2 = [20, 20] # maximum number of iterations for 2nd period denoise   
     tv_iter_max = 5 # TV denoising maximum number of iterations each
-    tv_weight = 0.25 # TV denoising weight (larger for smoother but slower)
+    # tv_weight = 0.25 # TV denoising weight (larger for smoother but slower)
     tvm = 'tv_chambolle'
     # sigma    = [12/255, 6/255] # pre-set noise standard deviation
     # iter_max = [10,10] # maximum number of iterations
@@ -586,7 +586,7 @@ if test_algo_flag=='gaptv+fastdvdnet':
     # sigma2    = [50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
     # iter_max2 = [20, 20] # maximum number of iterations for 2nd period denoise   
     tv_iter_max = 5 # TV denoising maximum number of iterations each
-    tv_weight = 0.25 # TV denoising weight for 1st and 2nd denoising (larger for smoother but slower) [kobe:0.25]
+    # tv_weight = 0.25 # TV denoising weight for 1st and 2nd denoising (larger for smoother but slower) [kobe:0.25]
     # sigma    = [12/255] # pre-set noise standard deviation
     # iter_max = [20] # maximum number of iterations
     useGPU = True # use GPU
