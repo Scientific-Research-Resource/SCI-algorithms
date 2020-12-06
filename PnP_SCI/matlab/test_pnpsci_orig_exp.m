@@ -27,30 +27,30 @@ addpath(genpath('./algorithms')); % algorithms
 addpath(genpath('./packages'));   % packages
 addpath(genpath('./utils'));      % utilities
 
-% datasetdir = './dataset/simdata/benchmark'; % benchmark simulation dataset
-% datasetdir = './dataset/simdata/test_data';  % dataset for test
-% orig_dir = 'E:\project\CACTI\experiment\real_data\dataset\orig';
-orig_dir = 'E:\project\CACTI\experiment\real_data\dataset\orig\scene_ground_truth';
-% mask_dir = '.\dataset\simdata\benchmark\mask\'; % 
-% mask_dir = '.\dataset\simdata\test\';
-mask_dir = 'E:\project\CACTI\experiment\real_data\dataset\mask';
-  
+
+orig_dir = 'E:\project\CACTI\experiment\simulation\dataset\simu_data\gray\orig';
+% orig_dir = 'E:\project\CACTI\experiment\real_data\dataset\orig\scene_ground_truth';
+
+% mask_dir = 'E:\project\CACTI\experiment\real_data\dataset\mask';
+mask_dir = 'E:\project\CACTI\experiment\simulation\dataset\simu_data\gray\mask';
+
+
 result_dir  = './results';                   % results
 
 test_algo_flag = [1];		% choose algorithms: 0-all, 1-gaptv, 2-gap-ffdnet, 3-ista-tv, 4-gap-tv+ffdnet, [1,4] means test algorithms 1&4 
-saving_data_flag = 1;	% save the recon result
+saving_data_flag = 0;	% save the recon result
 tv_init_flag = 0;		% use gap-tv recon as initial image for gap-ffdnet
 show_res_flag = 0;
 
 % [1] load dataset
 % dataname = 'aerial'; % data name
-% dataname = 'crash'; 
+% dataname = 'nmaskash'; 
 % dataname = 'drop'; 
 % dataname = 'kobe'; 
 % dataname = 'runner'; 
 % dataname = 'traffic'; 
-% dataname = 'football_1024';
-dataname = 'hand';
+dataname = 'football_256';
+% dataname = 'hand';
 
 
 % maskname = 'combine_binary_mask_256_10f';
@@ -61,45 +61,48 @@ dataname = 'hand';
 % maskname = 'mask_1024_shift';
 
 % maskname = 'cacti_mask_256_10f_1';
-% maskname = 'calib_mask_Cr10_2_6#8_20201115';
-% maskname = 'calib_mask_Cr10_3_circ_20201115_2';
-% maskname = 'calib_mask_Cr10_3_circ_20201115_2_correct';
-% maskname = 'calib_mask_Cr10_3_circ_20201115_roi1032-528_sz3300_gt';
-maskname = 'calib_mask_Cr10_3_circ_20201115_roi1032-528_sz3300_gt_correct';
+maskname = 'shift_binary_mask_256_10f_info';
+% maskname = 'calib_mask_circ__systest_20201122_roi1535-2440_sz1024_delumi';
 
 origpath = sprintf('%s/%s.mat',orig_dir,dataname);
 maskpath =  sprintf('%s/%s.mat',mask_dir,maskname);
 
+% frame num
+nframe =  1;  % 0 means all
+MAXB   = 255;           % maximum pixel value of the image (8-bit -> 255)
+
 
 if exist(origpath,'file') && exist(maskpath,'file')
 	% load
-    load(origpath,'orig');  % orig
-	load(maskpath,'mask')   % mask
+    load(origpath,'orig');  % orig	
+	
+	mask = load(maskpath); % mask
+	mask = mask.mask;
+
 	mask = single(mask);
-% 	load(maskpath,'mask_indep3')   % mask
-% 	mask = single(mask_indep3);
 	orig = single(orig);
 	
-% 	% delete
-% 	for k = 1:10
-% 		orig2(:,:,k) = imresize(orig(:,:,k), [3100, 3300]);
-% 	end
-% 	orig=orig2;
-% 	% delete
-		
-		
+	
 	% frame num
-	Cr = size(mask, 3);
+	nmask  = size(mask, 3); % number of masks (or compression ratio B)
 	norig = size(orig,3);
-	nmeas = floor(norig./Cr);
+	nmeas = floor(norig./nmask);
 	
 	% meas
-	meas = zeros([size(mask,1), size(mask,2), nmeas]);
-	for k = 1:nmeas
-		coded_frame = mask.*orig(:,:,1+(k-1)*Cr:k*Cr);
-		meas(:,:,k) = sum(coded_frame, 3);	
+	if nframe==0
+		nframe=nmeas;
+	end
+	meas = zeros([size(mask,1), size(mask,2), nframe]);
+	for k = 1:nframe
+		coded_frame = mask.*orig(:,:,1+(k-1)*nmask:k*nmask);
+		meas(:,:,k) = sum(coded_frame, 3);
 	end
 	
+% [zzh] test 8bit
+% 	max(meas(:))
+% 	meas = 10*single(uint8(meas./10)); %debug - 8bit
+% 	max(meas(:))
+
 	% normalize
 	mask_max = max(mask,[],'a');
 	mask = mask./ mask_max;
@@ -108,11 +111,6 @@ if exist(origpath,'file') && exist(maskpath,'file')
 else
     error('data file does not exist, please check dataset directory!');
 end
-
-% nframe = size(meas, 3); % number of coded frames to be reconstructed
-nframe =  1;
-nmask  = size(mask, 3); % number of masks (or compression ratio B)
-MAXB   = 255;           % maximum pixel value of the image (8-bit -> 255)
 
 para.nframe = nframe; 
 para.MAXB   = MAXB;
@@ -139,11 +137,11 @@ if ismember(0,test_algo_flag) || ismember(1,test_algo_flag)
 	para.tvm = 'ITV3D_FGP';  % tv denoiser
 % 	para.tvm = 'ATV_FGP';  % tv denoiser
 % 	para.tvm = 'ATV_ClipA';  % tv denoiser
-	para.maxiter  = 200; % maximum iteration
+	para.maxiter  = 100; % maximum iteration
 	% para.tvweight = 0.07*255/MAXB; % weight for TV denoising, original
 	% para.tviter   = 5; % number of iteration for TV denoising, original
 
-	para.tvweight = 0.05*255/MAXB; % weight for TV denoising, test
+	para.tvweight = 0.15*255/MAXB; % weight for TV denoising, test
 	para.tviter   = 5; % number of iteration for TV denoising, test
 
 	[vgaptv,psnr_gaptv,ssim_gaptv,tgaptv,psnrall_gaptv] = ...
