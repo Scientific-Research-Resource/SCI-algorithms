@@ -774,11 +774,18 @@ def admm_denoise(y, Phi_sum, A, At, _lambda=1, gamma=0.01,
     psnr_all = []
     k = 0
     for idx, nsig in enumerate(sigma): # iterate all noise levels
+        # tadmm = np.zeros(iter_max[idx]); #[zzh][timing]
+        # tffdnet = np.zeros(iter_max[idx]); #[zzh][timing]
         for it in range(iter_max[idx]):
             # Euclidean projection
+            # t1 = time.time() #[zzh][timing]
             yb = A(theta+b)
             x = (theta+b) + _lambda*(At((y-yb)/(Phi_sum+gamma))) # ADMM
+            # t2 = time.time() #[zzh][timing]
+            # tadmm[it] = t2-t1 #[zzh][timing]
+            
             # switch denoiser 
+            # t1 = time.time() #[zzh][timing]
             if denoiser.lower() == 'tv': # total variation (TV) denoising
                 theta = denoise_tv_chambolle(x-b, tv_weight, n_iter_max=tv_iter_max, 
                                          multichannel=multichannel)
@@ -798,6 +805,9 @@ def admm_denoise(y, Phi_sum, A, At, _lambda=1, gamma=0.01,
                 theta = fastdvdnet_denoiser(x-b, nsig, model, gray=True) # [zzh] new code from xinyuan(2/3)
             else:
                 raise ValueError('Unsupported denoiser {}!'.format(denoiser))
+
+            # t2 = time.time() #[zzh][timing]
+            # tffdnet[it] = t2-t1 #[zzh][timing]
             
             theta = np.clip(theta,0,1) # [zzh] new code from xinyuan(3/3)
             
@@ -821,7 +831,8 @@ def admm_denoise(y, Phi_sum, A, At, _lambda=1, gamma=0.01,
                               'PSNR {2: 2.2f} dB.'.format(denoiser.upper(), 
                                k+1, psnr_all[k]))
             k = k+1
-    
+        # print('admm time: ', np.mean(tadmm)) #[zzh][timing]
+        # print('denoise time: ', np.mean(tffdnet)) #[zzh][timing]
     psnr_ = []
     ssim_ = []
     nmask = x.shape[2]

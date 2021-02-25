@@ -37,7 +37,7 @@ mask_dir = 'E:\project\CACTI\experiment\simulation\dataset\simu_data\gray\mask';
 
 result_dir  = './results';                   % results
 
-test_algo_flag = [1];		% choose algorithms: 0-all, 1-gaptv, 2-gap-ffdnet, 3-ista-tv, 4-gap-tv+ffdnet, [1,4] means test algorithms 1&4 
+test_algo_flag = [2];		% choose algorithms: 0-all, 1-gaptv, 2-gap-ffdnet, 3-ista-tv, 4-gap-tv+ffdnet, 5-admm-tv, [1,4] means test algorithms 1&4 
 saving_data_flag = 0;	% save the recon result
 tv_init_flag = 0;		% use gap-tv recon as initial image for gap-ffdnet
 show_res_flag = 0;
@@ -49,7 +49,7 @@ show_res_flag = 0;
 % dataname = 'kobe'; 
 % dataname = 'runner'; 
 % dataname = 'traffic'; 
-dataname = 'football_256';
+dataname = 'football_1024';
 % dataname = 'hand';
 
 
@@ -61,7 +61,8 @@ dataname = 'football_256';
 % maskname = 'mask_1024_shift';
 
 % maskname = 'cacti_mask_256_10f_1';
-maskname = 'shift_binary_mask_256_10f_info';
+% maskname = 'shift_binary_mask_256_10f_info';
+maskname = 'multiplex_shift_binary_mask_1024_10f_info';
 % maskname = 'calib_mask_circ__systest_20201122_roi1535-2440_sz1024_delumi';
 
 origpath = sprintf('%s/%s.mat',orig_dir,dataname);
@@ -265,6 +266,26 @@ if ismember(0,test_algo_flag) || ismember(4,test_algo_flag)
 	disp('===== GAP-JOINT Finished! =====')
 end
 
+% [2.5] ADMM-TV
+if ismember(0,test_algo_flag) || ismember(5,test_algo_flag)
+	para.denoiser = 'tv'; % TV denoising
+	para.tvm = 'ITV3D_FGP';  % tv denoiser
+% 	para.tvm = 'ATV_FGP';  % tv denoiser
+% 	para.tvm = 'ATV_ClipA';  % tv denoiser
+	para.maxiter  = 100; % maximum iteration
+	% para.tvweight = 0.07*255/MAXB; % weight for TV denoising, original
+	% para.tviter   = 5; % number of iteration for TV denoising, original
+	param.gamma = 0.1; % gamma for admm (larger noise, larger gamma)
+	para.tvweight = 0.25*255/MAXB; % weight for TV denoising, test
+	para.tviter   = 5; % number of iteration for TV denoising, test
+
+	[vadmmtv,psnr_admmtv,ssim_admmtv,tadmmtv,psnrall_admmtv] = ...
+		admmdenoise_cacti(mask,meas,[],[],para);
+
+	fprintf('ADMM-%s-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
+		upper(para.denoiser),upper(para.tvm),mean(psnr_admmtv),mean(ssim_admmtv),tadmmtv);
+	disp('===== ADMM-TV Finished! =====')
+end
 
 % [3] save as the result .mat file 
 if saving_data_flag

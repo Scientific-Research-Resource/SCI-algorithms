@@ -27,30 +27,33 @@ addpath(genpath('./algorithms')); % algorithms
 addpath(genpath('./packages'));   % packages
 addpath(genpath('./utils'));      % utilities
 
-test_algo_flag = [1];		% choose algorithms: 0-all, 1-gaptv, 2-gap-ffdnet, 3-ista-tv, 4-gap-tv+ffdnet, [1,4] means test algorithms 1&4 
+test_algo_flag = [4];		% choose algorithms: 0-all, 1-gaptv, 2-gap-ffdnet, 3-ista-tv, 4-gap-tv+ffdnet, 5-admm-tv[1,4] means test algorithms 1&4 
 saving_data_flag = 1;	% save the recon result
 tv_init_flag = 0;		% use gap-tv recon as initial image for gap-ffdnet
 show_res_flag = 0;
 
+% meas_dir = 'E:\project\CACTI\experiment\real_data\dataset\meas';
+meas_dir = 'E:\project\CACTI\experiment\real_data\data\cacti_20210108\scene';
 
-meas_dir = 'E:\project\CACTI\experiment\real_data\dataset\meas';
-mask_dir = 'E:\project\CACTI\experiment\real_data\dataset\mask';
+% mask_dir = 'E:\project\CACTI\experiment\real_data\dataset\mask';
+mask_dir = 'E:\project\CACTI\experiment\real_data\data\cacti_20210108\#calib_mask';
+% mask_dir = 'E:\project\CACTI\experiment\simulation\dataset\simu_data\gray\mask';
+
 result_dir  = './results';                   % results
 
-% maskname = 'cacti_mask_256_10f_1';
-% maskname = 'calib_mask_Cr10_2_6#8_20201115';
-% maskname = 'calib_mask_Cr10_3_circ_20201115_2';
-% maskname = 'calib_mask_Cr10_3_circ_20201115_roi1200-2150';
-% maskname = 'calib_mask_Cr10_3_circ_20201115_roi1480-2660_sz256';
+measname = 'd_box21_20210108_roi475-421_sz1024';
+% measname = 'dynamic_box3_roi1535-2440_sz1024_crop';
+% measname = 'static_circ_20201203_roi1200-2340_sz1024';
+% measname = 'board_20201209_roi1350-2560_sz512';
+% measname = 'football_binary_mask_512_simumeas';
 
-% dataname = 'scene_tholabs_dynamic_20201116_test_roi1200-2150';
-% dataname = 'scene_tholabs_dynamic_20201116_test_roi1200-2150';
-% dataname = 'scene_tholabs_static_20201116_test_roi2900-1300';
-% dataname = 'scene_tholabs_static_20201116_test_roi1480-2660_sz256';
-% dataname = 'scene_tholabs_dynamic_20201116_9';
-measname = 'scene_tholabs_static_20201116_test_roi1480-2660_sz256';
-
-maskname = 'calib_mask_Cr10_3_circ_20201115_roi1480-2660_sz256';
+% maskname = 'binary_mask_512_10f';
+% maskname = 'calib_mask_circ__systest_20201122_roi1535-2440_sz1024_delumi';
+% maskname = 'calib_mask_circ_cap_20201201_roi2950-1820_sz1000_delumi';
+% maskname = 'calib_mask_circ__systest_20201122_roi2950-1820_sz1000_new';
+% maskname = 'calib_mask_circ_cap_20201203_roi1200-2340_sz1024.mat';
+% maskname = 'calib_mask_bin4_circ_cap_20201209_roi1350-2560_sz512_darkimg';
+maskname = 'calib_mask_bin4_cacti_cap_20210108_roi475-421_sz1024';
 
 measpath = sprintf('%s/%s.mat',meas_dir,measname);
 maskpath =  sprintf('%s/%s.mat',mask_dir,maskname);
@@ -58,15 +61,29 @@ maskpath =  sprintf('%s/%s.mat',mask_dir,maskname);
 % [1] load dataset
 
 if exist(measpath,'file') && exist(maskpath,'file')
-    load(measpath,'meas'); % meas
-	load(maskpath,'mask'); % mask
+	% load
+    meas = load(measpath); % meas
+	meas = meas.meas;
+% 	meas = meas.crop_meas;
+	
+	mask = load(maskpath); % mask
+	mask = mask.mask;
+% 	mask = mask.crop_mask;
+% 	mask = mask.delumi_crop_mask;
+	
+	mask = single(mask);
+	meas = single(meas);
+
 	% zzh- normalize
+	mask = mask./max(mask,[],'all');
+	
 	mask_max = max(mask,[],'a');
 	mask = mask./ mask_max;
 	
-	meas = meas./ mask_max;
+% 	meas = meas./ mask_max;
+	meas =size(mask,3)*meas./ mask_max;
 % 	meas = (meas-min(meas,[],'a'))./ mask_max;
-	meas = 100*(meas-min(meas,[],'a'))./(max(meas,[],'a')-min(meas,[],'a'));
+% 	meas = 100*(meas-min(meas,[],'a'))./(max(meas,[],'a')-min(meas,[],'a'));
 
 else
     error('File %s does not exist, please check dataset directory!');
@@ -75,7 +92,8 @@ end
 % nframe = size(meas, 3); % number of coded frames to be reconstructed
 nframe =  1;
 nmask  = size(mask, 3); % number of masks (or compression ratio B)
-MAXB   = 255;           % maximum pixel value of the image (8-bit -> 255)
+% MAXB   = 255;			% maximum pixel value of the image (8-bit -> 255)
+MAXB   = 65535;           
 
 para.nframe = nframe; 
 para.MAXB   = MAXB;
@@ -89,12 +107,9 @@ para.Phisum = sum(mask.^2,3);
 para.Phisum(para.Phisum==0) = 1;
 
 % [2.0] common parameters
-mask = single(mask);
-% orig = single(orig);
-
 para.lambda   =    1; % correction coefficiency
 para.acc      =    1; % enable acceleration
-para.flag_iqa = true; % enable image quality assessments in iterations
+para.flag_iqa = false; % enable image quality assessments in iterations
 
 % [2.1] GAP-TV
 if ismember(0,test_algo_flag) || ismember(1,test_algo_flag)
@@ -106,7 +121,7 @@ if ismember(0,test_algo_flag) || ismember(1,test_algo_flag)
 	% para.tvweight = 0.07*255/MAXB; % weight for TV denoising, original
 	% para.tviter   = 5; % number of iteration for TV denoising, original
 
-	para.tvweight = 0.05*255/MAXB; % weight for TV denoising, test
+	para.tvweight = 0.25*255/MAXB; % weight for TV denoising, test
 	para.tviter   = 5; % number of iteration for TV denoising, test
 
 	[vgaptv,psnr_gaptv,ssim_gaptv,tgaptv,psnrall_gaptv] = ...
@@ -130,10 +145,10 @@ if ismember(0,test_algo_flag) || ismember(2,test_algo_flag)
 	para.ffdnetvnorm_init = true; % use normalized video for the first 10 iterations
 	para.ffdnetvnorm = false; % normalize the video before FFDNet video denoising
 
-	% para.sigma   = [50 25 12  6]/MAXB; % default, for kobe
-	% para.maxiter = [10 10 10 10]; % default, for kobe
-	  para.sigma   = [35 15 12  6]/MAXB; %   for test_kobe_binary
-	  para.maxiter = [10 10 10 10];
+	para.sigma   = [50 25 12  6]/MAXB; % default, for kobe
+	para.maxiter = [10 10 10 10]; % default, for kobe
+% 	  para.sigma   = [35 15 12  6]/MAXB; %   for test_kobe_binary
+% 	  para.maxiter = [10 10 10 10];
 	% para.sigma   = [12 6]/MAXB; %   for test
 	% para.maxiter = [10 10 ];
 
@@ -211,10 +226,10 @@ if ismember(0,test_algo_flag) || ismember(4,test_algo_flag)
 	para.ffdnetvnorm_init = true; % use normalized video for the first 10 iterations
 	para.ffdnetvnorm = false; % normalize the video before FFDNet video denoising
 
-	para.tviter =5; % 100;   % 1st period gaptv iteration
+	para.tviter =40; % 100;   % 1st period gaptv iteration
 	para.intviter = 5;  % inner gaptv iteration
 	para.mu = 0.25;
-	para.iter =150;
+% 	para.iter =60;
 	para.tvweight = 0.15;
 	para.tvm = 'ITV3D_FGP';
 	 
@@ -228,6 +243,27 @@ if ismember(0,test_algo_flag) || ismember(4,test_algo_flag)
 	fprintf('GAP-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
 		upper(para.denoiser),mean(psnr_gapjoint),mean(ssim_gapjoint),tgapjoint);
 	disp('===== GAP-JOINT Finished! =====')
+end
+
+% [2.5] ADMM-TV
+if ismember(0,test_algo_flag) || ismember(5,test_algo_flag)
+	para.denoiser = 'tv'; % TV denoising
+	para.tvm = 'ITV3D_FGP';  % tv denoiser
+% 	para.tvm = 'ATV_FGP';  % tv denoiser
+% 	para.tvm = 'ATV_ClipA';  % tv denoiser
+	para.maxiter  = 100; % maximum iteration
+	% para.tvweight = 0.07*255/MAXB; % weight for TV denoising, original
+	% para.tviter   = 5; % number of iteration for TV denoising, original
+	param.gamma = 0.1; % gamma for admm (larger noise, larger gamma)
+	para.tvweight = 0.25*255/MAXB; % weight for TV denoising, test
+	para.tviter   = 5; % number of iteration for TV denoising, test
+
+	[vadmmtv,psnr_admmtv,ssim_admmtv,tadmmtv,psnrall_admmtv] = ...
+		admmdenoise_cacti(mask,meas,[],[],para);
+
+	fprintf('ADMM-%s-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
+		upper(para.denoiser),upper(para.tvm),mean(psnr_admmtv),mean(ssim_admmtv),tadmmtv);
+	disp('===== ADMM-TV Finished! =====')
 end
 
 
@@ -256,10 +292,4 @@ if show_res_flag
 		subplot(2,5,nm+5); imshow(result(:,:,nm+5)); title(num2str(nm+5))
 	end
 end
-
-
-
-
-
-
 
