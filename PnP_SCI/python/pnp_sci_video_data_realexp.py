@@ -35,8 +35,8 @@ from packages.fastdvdnet.models import FastDVDnet
 ## flags and params
 save_res_flag = 0          # save results
 show_res_flag = 1           # show results
-# test_algo_flag = ['all' ]		# choose algorithms: 'all', 'gaptv', 'admmtv', 'gapffdnet', 'admmffdnet', 'gapfastdvdnet', 'admmfastdvdnet'
-test_algo_flag = ['admmtv']
+# test_algo_flag = ['all' ]		# choose algorithms: 'all', 'gaptv', 'admmtv', 'gapffdnet', 'admmffdnet', 'gapfastdvdnet', 'admmfastdvdnet','gaptv+fastdvdnet'
+test_algo_flag = ['gaptv+fastdvdnet']
 
 
 
@@ -44,9 +44,9 @@ test_algo_flag = ['admmtv']
 datasetdir = r'E:\project\CACTI\experiment\real_data\data_cacti\#mask_bin2_20210127\scene' # dataset
 resultsdir = './results' # results
 
-# datname = 'data_kobe'        # name of the dataset
-datname = 'data_d_hand_1_20210127_roi690-180_sz1024'
-
+# # datname = 'data_kobe'        # name of the dataset
+# datname = 'data_d_hand_1_20210127_roi690-180_sz1024'
+datname = 'data_d_alpha2_1_20210127_roi640-350_sz1024'
 
 matfile = datasetdir + '/' + datname + '.mat' # path of the .mat data file
 
@@ -83,12 +83,19 @@ mask_max = np.max(mask)
 mask = mask/mask_max
 meas = meas/mask_max         
 
+# --------- param ------------
 iframe = 0
 nframe = 1
-# nframe = meas.shape[2]
 nmask = mask.shape[2]
+
 # MAXB = 255. # for 8bit
-MAXB = 65535. # for 16bit
+# MAXB = 65535. # for 16bit
+MAXB = 65535/nmask # real measurement's data range is Cr times less then simulated measment
+# print(MAXB)
+# --------- param ------------
+
+# nframe = meas.shape[2]
+
 
 # common parameters and pre-calculation for PnP
 # define forward model and its transpose
@@ -131,13 +138,13 @@ if ('all' in test_algo_flag) or ('admmtv' in test_algo_flag):
     _lambda = 1 # regularization factor, [original set]
     # gamma = 0.01 # parameter in ADMM projection (greater for more noisy data), [original set]
     # gamma = 0.05
-    gamma = 50
+    gamma = 2
     denoiser = 'tv' # total variation (TV)
-    iter_max = 80 # maximum number of iterations
+    iter_max = 100 # maximum number of iterations
     # tv_weight = 0.3 # TV denoising weight (larger for smoother but slower) [original set]
-    # tv_weight = 0.5 
-    tv_weight = 50
-    tv_iter_max = 5 # TV denoising maximum number of iterations each
+    tv_weight = 4
+    # tv_iter_max = 5 # TV denoising maximum number of iterations each
+    tv_iter_max = 10
 
     vadmmtv,tadmmtv,psnr_admmtv,ssim_admmtv,psnrall_admmtv = admmdenoise_cacti(meas, mask, A, At,
                                             projmeth=projmeth, v0=None, orig=orig,
@@ -211,9 +218,9 @@ if ('all' in test_algo_flag) or ('gapffdnet' in test_algo_flag):
 if ('all' in test_algo_flag) or ('admmffdnet' in test_algo_flag):
     projmeth = 'admm' # projection method
     _lambda = 1 # regularization factor, [original set]
-    gamma = 0.05
+    gamma = 2
     denoiser = 'ffdnet' # video non-local network 
-    sigma    = [50/255, 25/255, 12/255, 6/255] # pre-set noise standard deviation
+    sigma    = [100/255, 50/255, 25/255, 6/255] # pre-set noise standard deviation
     iter_max = [10, 10, 10, 10] # maximum number of iterations
     # sigma    = [12/255, 6/255] # pre-set noise standard deviation
     # iter_max = [10,10] # maximum number of iterations
@@ -309,15 +316,18 @@ if ('all' in test_algo_flag) or ('gapfastdvdnet' in test_algo_flag):
 if ('all' in test_algo_flag) or ('admmfastdvdnet' in test_algo_flag):
     projmeth = 'admm' # projection method
     _lambda = 1 # regularization factor, [original set]
-    gamma = 0.05
+    # _lambda = 0.7 # regularization factor, [original set]
+    gamma = 0.5
     denoiser = 'fastdvdnet' # video non-local network 
-    sigma    = [100/255, 50/255, 25/255, 12/255] # pre-set noise standard deviation
-    iter_max = [20, 20, 20, 20] # maximum number of iterations
+    # sigma    = [100/255, 50/255, 25/255, 12/255] # pre-set noise standard deviation
+    sigma    = [0.5, 0.2, 0.05, 0.01] # pre-set noise standard deviation
+    iter_max = [40, 30, 10, 10] # maximum number of iterations
     # sigma    = [12/255] # pre-set noise standard deviation
     # iter_max = [20] # maximum number of iterations
     useGPU = True # use GPU
 
     # pre-load the model for fastdvdnet image denoising
+    # NUM_IN_FR_EXT = 5 # temporal size of patch
     NUM_IN_FR_EXT = 5 # temporal size of patch
     model = FastDVDnet(num_input_frames=NUM_IN_FR_EXT,num_color_channels=1)
 
@@ -489,6 +499,7 @@ if ('all' in test_algo_flag) or ('gaptv+fastdvdnet' in test_algo_flag):
     # iter_max2 = [20, 20] # maximum number of iterations for 2nd period denoise   
     tv_iter_max = 5 # TV denoising maximum number of iterations each
     tv_weight = 0.5 # TV denoising weight (larger for smoother but slower) [kobe:0.25]
+    tvm = 'tv_chambolle'
     # sigma    = [12/255] # pre-set noise standard deviation
     # iter_max = [20] # maximum number of iterations
     useGPU = True # use GPU
@@ -542,6 +553,7 @@ if ('all' in test_algo_flag) or ('admmtv+fastdvdnet' in test_algo_flag):
     # sigma2    = [50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
     # iter_max2 = [20, 20] # maximum number of iterations for 2nd period denoise   
     tv_iter_max = 5 # TV denoising maximum number of iterations each
+    tvm = 'tv_chambolle'
     tv_weight = 0.5 # TV denoising weight (larger for smoother but slower) [kobe:0.25]
     # sigma    = [12/255] # pre-set noise standard deviation
     # iter_max = [20] # maximum number of iterations
