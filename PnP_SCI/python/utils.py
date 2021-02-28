@@ -51,41 +51,45 @@ def show_n_save_res(vdenoise,tdenoise,psnr_denoise,ssim_denoise,psnrall_denoise,
         
         # fig
         for kf in range(nframe):
-            orig_k = orig[:,:,(kf+iframe)*Cr:(kf+iframe+1)*Cr]/MAXB
-            vdenoise_k = vdenoise[:,:,kf*Cr:(kf+1)*Cr]
-            # plt.ion() # interactive mode
-            fig = plt.figure(figsize=fig_sz)
-            for nt in range(Cr):
-                plt.subplot(Cr//row_num, row_num, nt+1)
-                plt.imshow(orig_k[:,:,nt], cmap=plt.cm.gray, vmin=0, vmax=1)
-                plt.axis('off')
-                plt.title('Ground truth: Frame #{0:d}'.format((kf+iframe)*Cr+nt+1), fontsize=12)
-            plt.subplots_adjust(wspace=0.02, hspace=0.02, bottom=0, top=1, left=0, right=1)
-            plt.savefig('{}{}_kmeas{:d}_orig.png'.format(savedfigdir,save_name,kf+iframe)) 
+            if orig: #  ground truth is valid
+                orig_k = orig[:,:,(kf+iframe)*Cr:(kf+iframe+1)*Cr]/MAXB  
+                # plt.ion() # interactive mode
+                fig = plt.figure(figsize=fig_sz)
+                for nt in range(Cr):
+                    plt.subplot(Cr//row_num, row_num, nt+1)
+                    plt.imshow(orig_k[:,:,nt], cmap=plt.cm.gray, vmin=0, vmax=1)
+                    plt.axis('off')
+                    plt.title('Ground truth: Frame #{0:d}'.format((kf+iframe)*Cr+nt+1), fontsize=12)
+                plt.subplots_adjust(wspace=0.02, hspace=0.02, bottom=0, top=1, left=0, right=1)
+                plt.savefig('{}{}_kmeas{:d}_orig.png'.format(savedfigdir,save_name,kf+iframe)) 
 
+            vdenoise_k = vdenoise[:,:,kf*Cr:(kf+1)*Cr]
             fig = plt.figure(figsize=fig_sz)
-            PSNR_rec = np.zeros(Cr)
             for nt in range(Cr):
                 plt.subplot(Cr//row_num, row_num, nt+1)
                 plt.imshow(vdenoise_k[:,:,nt], cmap=plt.cm.gray, vmin=0, vmax=1)
                 plt.axis('off')
-                plt.title('Frame #{0:d} ({1:2.2f} dB)'.format((kf+iframe)*Cr+nt+1,psnr_denoise[nt]), fontsize=12)
-                
+                if orig:
+                    plt.title('Frame #{0:d} ({1:2.2f} dB)'.format((kf+iframe)*Cr+nt+1,psnr_denoise[nt]), fontsize=12)
+                else:
+                    plt.title('Frame #{0:d})'.format((kf+iframe)*Cr+nt+1), fontsize=12)
+            # PSNR_rec = np.zeros(Cr)    
             # print('Mean PSNR {:2.2f} dB.'.format(mean(psnr_denoise)))
             # plt.title('-{} mean PSNR {:2.2f} dB'.format(denoiser.upper(),np.mean(PSNR_rec)))
             plt.subplots_adjust(wspace=0.02, hspace=0.02, bottom=0, top=1, left=0, right=1)
             plt.savefig('{}{}_kmeas{:d}_vdenoise.png'.format(savedfigdir,save_name,kf+iframe)) 
 
+            if orig:
+                plt.figure()
+                plt.plot(psnrall_denoise[kf], 'r')
+                plt.savefig('{}{}_kmeas{:d}_psnr_all.png'.format(savedfigdir,save_name,kf+iframe)) 
+        if orig:
             plt.figure()
-            plt.plot(psnrall_denoise[kf], 'r')
-            plt.savefig('{}{}_kmeas{:d}_psnr_all.png'.format(savedfigdir,save_name,kf+iframe)) 
-        
-        plt.figure()
-        # plt.rcParams["font.family"] = 'monospace'
-        # plt.rcParams["font.size"] = "20"
-        plt.plot(psnr_denoise)
-        # plt.plot(psnr_denoise,color='black')
-        plt.savefig('{}{}_psnr_framewise.png'.format(savedfigdir,save_name)) 
+            # plt.rcParams["font.family"] = 'monospace'
+            # plt.rcParams["font.size"] = "20"
+            plt.plot(psnr_denoise)
+            # plt.plot(psnr_denoise,color='black')
+            plt.savefig('{}{}_psnr_framewise.png'.format(savedfigdir,save_name)) 
 
 
         # plt.ioff()

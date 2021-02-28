@@ -36,17 +36,19 @@ from packages.fastdvdnet.models import FastDVDnet
 save_res_flag = 0          # save results
 show_res_flag = 1           # show results
 # test_algo_flag = ['all' ]		# choose algorithms: 'all', 'gaptv', 'admmtv', 'gapffdnet', 'admmffdnet', 'gapfastdvdnet', 'admmfastdvdnet','gaptv+fastdvdnet'
-test_algo_flag = ['gaptv+fastdvdnet']
+test_algo_flag = ['admmtv']
 
 
 
 # datasetdir = r'E:\project\CACTI\SCI algorithm\[dataset]\#benchmark\simu_data\data\binary_mask_256_10f\bm_256_10f' # dataset
-datasetdir = r'E:\project\CACTI\experiment\real_data\data_cacti\#mask_bin2_20210127\scene' # dataset
+# datasetdir = r'E:\project\CACTI\experiment\real_data\data_cacti\#mask_bin2_20210127\scene' # dataset
+datasetdir = r'E:\project\CACTI\experiment\real_data\data_cacti\#_mask_bin2_20210226\scene' # dataset
 resultsdir = './results' # results
 
 # # datname = 'data_kobe'        # name of the dataset
 # datname = 'data_d_hand_1_20210127_roi690-180_sz1024'
-datname = 'data_d_alpha2_1_20210127_roi640-350_sz1024'
+# datname = 'data_d_alpha2_1_20210127_roi640-350_sz1024'
+datname = 'data_box21_20210226_roi550-240_sz1024'
 
 matfile = datasetdir + '/' + datname + '.mat' # path of the .mat data file
 
@@ -126,7 +128,7 @@ if ('all' in test_algo_flag) or ('gaptv' in test_algo_flag):
 
     print('-'*20+'\n{}-{} running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(),  tgaptv)+'-'*20)
-    show_n_save_res(vgaptv,tgaptv,np.zeros(nmask),np.zeros(nmask),np.zeros(nmask), np.zeros_like(mask), nmask, resultsdir, 
+    show_n_save_res(vgaptv,tgaptv,psnr_gaptv,ssim_gaptv,psnrall_gaptv, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         tv_weight=tv_weight, iter_max = iter_max)
@@ -138,11 +140,11 @@ if ('all' in test_algo_flag) or ('admmtv' in test_algo_flag):
     _lambda = 1 # regularization factor, [original set]
     # gamma = 0.01 # parameter in ADMM projection (greater for more noisy data), [original set]
     # gamma = 0.05
-    gamma = 2
+    gamma = 5
     denoiser = 'tv' # total variation (TV)
-    iter_max = 100 # maximum number of iterations
+    iter_max = 1 # maximum number of iterations
     # tv_weight = 0.3 # TV denoising weight (larger for smoother but slower) [original set]
-    tv_weight = 4
+    tv_weight = 8
     # tv_iter_max = 5 # TV denoising maximum number of iterations each
     tv_iter_max = 10
 
@@ -157,11 +159,11 @@ if ('all' in test_algo_flag) or ('admmtv' in test_algo_flag):
 
     print('-'*20+'\n{}-{} running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), tadmmtv)+'-'*20)
-    show_n_save_res(vadmmtv,tadmmtv,np.zeros(nmask),np.zeros(nmask),np.zeros(nmask), np.zeros_like(mask), nmask, resultsdir, 
+    show_n_save_res(vadmmtv,tadmmtv,psnr_admmtv,ssim_admmtv,psnrall_admmtv, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         tv_weight=tv_weight, iter_max = iter_max, gamma=gamma)
-
+        
 # %%
 ## [2.2] GAP/ADMM-FFDNet
 ### [2.2.1] GAP-FFDNet (FFDNet-based frame-wise video denoising)
@@ -209,7 +211,7 @@ if ('all' in test_algo_flag) or ('gapffdnet' in test_algo_flag):
 
     print('-'*20+'\n{}-{} running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), tgapffdnet)+'-'*20)
-    show_n_save_res(vgapffdnet,tgapffdnet, np.zeros(nmask),np.zeros(nmask),np.zeros(nmask), np.zeros_like(mask), nmask, resultsdir, 
+    show_n_save_res(vgapffdnet,tgapffdnet,psnr_gapffdnet,ssim_gapffdnet,psnrall_gapffdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         iter_max = iter_max, sigma=sigma)
@@ -257,7 +259,7 @@ if ('all' in test_algo_flag) or ('admmffdnet' in test_algo_flag):
 
     print('-'*20+'\n{}-{} running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), tadmmffdnet)+'-'*20)
-    show_n_save_res(vadmmffdnet,tadmmffdnet,np.zeros(nmask),np.zeros(nmask),np.zeros(nmask), np.zeros_like(mask), nmask, resultsdir, 
+    show_n_save_res(vadmmffdnet,tadmmffdnet,psnr_admmffdnet,ssim_admmffdnet,psnrall_admmffdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         iter_max = iter_max, sigma=sigma, gamma=gamma)
@@ -307,7 +309,7 @@ if ('all' in test_algo_flag) or ('gapfastdvdnet' in test_algo_flag):
 
     print('-'*20+'\n{}-{} running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), tgapfastdvdnet)+'-'*20)
-    show_n_save_res(vgapfastdvdnet,tgapfastdvdnet,np.zeros(nmask),np.zeros(nmask),np.zeros(nmask), np.zeros_like(mask), nmask, resultsdir, 
+    show_n_save_res(vgapfastdvdnet,tgapfastdvdnet,psnr_gapfastdvdnet,ssim_gapfastdvdnet,psnrall_gapfastdvdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         iter_max = iter_max, sigma=sigma)
@@ -356,7 +358,7 @@ if ('all' in test_algo_flag) or ('admmfastdvdnet' in test_algo_flag):
 
     print('-'*20+'\n{}-{} running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), tadmmfastdvdnet)+'-'*20)
-    show_n_save_res(vadmmfastdvdnet,tadmmfastdvdnet,np.zeros(nmask),np.zeros(nmask),np.zeros(nmask), np.zeros_like(mask), nmask, resultsdir, 
+    show_n_save_res(vadmmfastdvdnet,tadmmfastdvdnet,psnr_admmfastdvdnet,ssim_admmfastdvdnet,psnrall_admmfastdvdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         iter_max = iter_max,sigma=sigma, gamma=gamma)
@@ -416,7 +418,7 @@ if ('all' in test_algo_flag) or ('gaptv+ffdnet' in test_algo_flag):
 
     print('-'*20+'\n{}-{} running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), tgaptvffdnet)+'-'*20)
-    show_n_save_res(vgaptvffdnet,tgaptvffdnet,np.zeros(nmask),np.zeros(nmask),np.zeros(nmask), np.zeros_like(mask), nmask, resultsdir, 
+    show_n_save_res(vgaptvffdnet,tgaptvffdnet,psnr_gaptvffdnet,ssim_gaptvffdnet,psnrall_gaptvffdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         tv_weight=tv_weight, iter_max1=iter_max1, iter_max2=iter_max2, sigma1=sigma1, sigma2=sigma2)
@@ -474,7 +476,7 @@ if ('all' in test_algo_flag) or ('admmtv+ffdnet' in test_algo_flag):
 
     print('-'*20+'\n{}-{} running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), tadmmtvffdnet)+'-'*20)
-    show_n_save_res(vadmmtvffdnet,tadmmtvffdnet,np.zeros(nmask),np.zeros(nmask),np.zeros(nmask), np.zeros_like(mask), nmask, resultsdir, 
+    show_n_save_res(vadmmtvffdnet,tadmmtvffdnet,psnr_admmtvffdnet,ssim_admmtvffdnet,psnrall_admmtvffdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         tv_weight=tv_weight, iter_max1=iter_max1, iter_max2=iter_max2, sigma1=sigma1, sigma2=sigma2, gamma=gamma)
@@ -534,7 +536,7 @@ if ('all' in test_algo_flag) or ('gaptv+fastdvdnet' in test_algo_flag):
 
     print('-'*20+'\n{}-{} running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), tgaptvfastdvdnet)+'-'*20)
-    show_n_save_res(vgaptvfastdvdnet,tgaptvfastdvdnet,np.zeros(nmask),np.zeros(nmask),np.zeros(nmask), np.zeros_like(mask), nmask, resultsdir, 
+    show_n_save_res(vgaptvfastdvdnet,tgaptvfastdvdnet,psnr_gaptvfastdvdnet,ssim_gaptvfastdvdnet,psnrall_gaptvfastdvdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         tv_weight=tv_weight, iter_max1=iter_max1, iter_max2=iter_max2, sigma1=sigma1, sigma2=sigma2)
@@ -589,7 +591,7 @@ if ('all' in test_algo_flag) or ('admmtv+fastdvdnet' in test_algo_flag):
 
     print('-'*20+'\n{}-{} running time {:.1f} seconds.\n'.format(
         projmeth.upper(), denoiser.upper(), tadmmtvfastdvdnet)+'-'*20)
-    show_n_save_res(vadmmtvfastdvdnet,tadmmtvfastdvdnet,np.zeros(nmask),np.zeros(nmask),np.zeros(nmask), np.zeros_like(mask), nmask, resultsdir, 
+    show_n_save_res(vadmmtvfastdvdnet,tadmmtvfastdvdnet,psnr_admmtvfastdvdnet,ssim_admmtvfastdvdnet,psnrall_admmtvfastdvdnet, orig, nmask, resultsdir, 
                         projmeth+denoiser+'_'+datname, iframe=iframe,nframe=nframe, MAXB=MAXB, 
                         show_res_flag=show_res_flag, save_res_flag=save_res_flag,
                         tv_weight=tv_weight, iter_max1=iter_max1, iter_max2=iter_max2, sigma1=sigma1, sigma2=sigma2, gamma=gamma)
