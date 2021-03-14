@@ -31,38 +31,39 @@ addpath(genpath('./utils'));      % utilities
 % datasetdir = './dataset/simdata/test_data';  % dataset for test
 
 % datasetdir = './dataset/simdata/benchmark/data/binary_mask_256_10f/bm_256_10f'; 
-datasetdir = './dataset/simdata/benchmark/data/combine_binary_mask_256_10f/bm_256_10f'; 
-% datasetdir = './dataset/simdata/cacti/cacti_256_10f_1';
-resultdir  = './results';                   % results
+% datasetdir = 'E:\project\CACTI\experiment\real_data\data_cacti\#mask_bin4_Cr10_20210107\_dataset'; 
+% datasetdir = 'E:\project\CACTI\experiment\real_data\data_cacti\#mask_bin4_20210126\scene\d_alpha';
+% datasetdir = 'E:\project\CACTI\experiment\real_data\data_cacti\#mask_bin4_20210126\scene\d_hand';
+datasetdir = 'E:\project\CACTI\experiment\real_data\data\#mask_side_circ_20210312\scene';
 
-test_algo_flag = [1,4];		% choose algorithms: 0-all, 1-gaptv, 2-gap-ffdnet, 3-ista-tv, 4-gap-tv+ffdnet
-saving_data_flag = 0;	% save the recon result
+result_dir  = './results';                   % results
+
+test_algo_flag = ["admmtv","istatv","gaptv+ffdnet"];		% choose algorithms: 0-all, 1-gaptv, 2-gapffdnet, 3-istatv, 4-gaptv+ffdnet,5-admmtv
+saving_data_flag = 1;	% save the recon result
 tv_init_flag = 0;		% use gap-tv recon as initial image for gap-ffdnet
-show_res_flag = 0;
+show_res_flag = 1;
 
 % [1] load dataset
 % dataname = 'data_aerial'; % data name
-% dataname = 'data_crash'; 
-% dataname = 'data_drop'; 
-dataname = 'data_kobe'; 
-% dataname = 'data_runner'; 
-% dataname = 'data_traffic';
-
-% dataname = 'cacti_data_256_10f_1'; 
-
-% dataname = 'traffic_hadamard_8f';
-
-% dataname = 'data_train3_binary'; %  data name
-% dataname = 'traffic_8f'; %  data name
+% dataname = 'data_d_alpha2_20201209_roi820-615_sz512_dataBinned4'; 
+% dataname = 'data_d_hand1_20210126_roi970-350_sz512_dataBinned4';
+% dataname = 'data_d_hand1_20210126_roi690-180_sz1024_dataBinned2';
+dataname = 'data_opto (3)_20210312_roi1165-1645_sz400';  %_dataBinned2
 
 datapath = sprintf('%s/%s.mat',datasetdir,dataname);
 
 if exist(datapath,'file')
-    load(datapath,'meas','mask','orig'); % meas, mask, orig
-
+%     load(datapath,'meas','mask','orig'); % meas, mask, orig
+	data = load(datapath); % meas, mask
+	mask = data.mask;
+	meas = data.meas;	
+	
+	orig=[];
+	
 	% zzh- normalize 
 	mask_max = max(mask,[],'a');
 	mask = mask./ mask_max;
+% 	mask= single(imbinarize(mask));
 	meas = meas./ mask_max;
 
 else
@@ -71,9 +72,11 @@ end
 
 nframe = size(meas, 3); % number of coded frames to be reconstructed
 nmask  = size(mask, 3); % number of masks (or compression ratio B)
-MAXB   = 255;           % maximum pixel value of the image (8-bit -> 255)
+% MAXB   = 255;           % maximum pixel value of the image (8-bit -> 255)
+MAXB   = 65535;					% maximum pixel value of the image (16-bit -> 65535), for simulated data
+% MAXB   = 65535/nmask;           % maximum pixel value of the image (16-bit -> 65535), for rel data
 
-para.nframe = nframe; 
+para.nframe = nframe;	
 para.MAXB   = MAXB;
 
 % [2] apply PnP-SCI for reconstruction
@@ -93,7 +96,7 @@ para.acc      =    1; % enable acceleration
 para.flag_iqa = true; % enable image quality assessments in iterations
 
 % [2.1] GAP-TV
-if ismember(0,test_algo_flag) || ismember(1,test_algo_flag)
+if ismember("gaptv",test_algo_flag) || ismember("all",test_algo_flag)
 	para.denoiser = 'tv'; % TV denoising
 % 	para.tvm = 'ITV3D_FGP';  % tv denoiser
 	para.tvm = 'ATV_ClipA';  % tv denoiser
@@ -113,7 +116,7 @@ if ismember(0,test_algo_flag) || ismember(1,test_algo_flag)
 end
 
 % [2.2] GAP-FFDNet
-if ismember(0,test_algo_flag) || ismember(2,test_algo_flag)
+if ismember("gapffdnet",test_algo_flag) || ismember("all",test_algo_flag)
 	para.denoiser = 'ffdnet'; % FFDNet denoising
 	load(fullfile('models','FFDNet_gray.mat'),'net');
 
@@ -135,7 +138,7 @@ if ismember(0,test_algo_flag) || ismember(2,test_algo_flag)
 	if tv_init_flag
 		% use gap-tv result as the initialized input
 		[vgapffdnet,psnr_gapffdnet,ssim_gapffdnet,tgapffdnet,psnrall_ffdnet] = ...
-			gapdenoise_cacti(mask,meas,orig,istaptv,para); 
+			gapdenoise_cacti(mask,meas,orig,[],para); 
 	else
 		[vgapffdnet,psnr_gapffdnet,ssim_gapffdnet,tgapffdnet,psnrall_ffdnet] = ...
 			gapdenoise_cacti(mask,meas,orig,[],para);
@@ -148,7 +151,7 @@ end
 
 
 % [2.3] ISTA-TV
-if ismember(0,test_algo_flag) || ismember(3,test_algo_flag)
+if ismember("istatv",test_algo_flag) || ismember("all",test_algo_flag)
 	% denoiser
  	para.denoiser = 'tv'; % TV denoising
 % 	para.denoiser = 'ffdnet';
@@ -182,7 +185,7 @@ if ismember(0,test_algo_flag) || ismember(3,test_algo_flag)
 	end
 	
 	
-	[istatv,psnr_istatv,ssim_istatv,tistatv,psnrall_istatv] = ...
+	[vistatv,psnr_istatv,ssim_istatv,tistatv,psnrall_istatv] = ...
 		istadenoise_cacti(mask,meas,orig,[],para);
 
 	fprintf('ISTA-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
@@ -191,7 +194,7 @@ if ismember(0,test_algo_flag) || ismember(3,test_algo_flag)
 end
 
 % [2.4] GAP-JOINT
-if ismember(0,test_algo_flag) || ismember(4,test_algo_flag)
+if ismember("gaptv+ffdnet",test_algo_flag) || ismember("all",test_algo_flag)
 	
 	para.denoiser = 'tv+ffdnet'; % FFDNet denoising
 	para.tvm = 'ITV3D_FGP';  % tv denoiser
@@ -225,6 +228,27 @@ if ismember(0,test_algo_flag) || ismember(4,test_algo_flag)
 	disp('===== GAP-JOINT Finished! =====')
 end
 
+% [2.5] ADMM-TV
+if ismember("admmtv",test_algo_flag) || ismember("all",test_algo_flag)
+	para.denoiser = 'tv'; % TV denoising
+	para.tvm = 'ITV3D_FGP';  % tv denoiser
+% 	para.tvm = 'ATV_FGP';  % tv denoiser
+% 	para.tvm = 'ATV_ClipA';  % tv denoiser
+	para.maxiter  = 200; % maximum iteration
+	% para.tvweight = 0.07*255/MAXB; % weight for TV denoising, original
+	% para.tviter   = 5; % number of iteration for TV denoising, original
+ 	% param.gamma = 0.2; % gamma for admm (larger noise, larger gamma), original
+	param.gamma = 200; % gamma for admm (larger noise, larger gamma)
+	para.tvweight = 200; % weight for TV denoising, test
+	para.tviter   = 10; % number of iteration for TV denoising, test
+
+	[vadmmtv,psnr_admmtv,ssim_admmtv,tadmmtv,psnrall_admmtv] = ...
+		admmdenoise_cacti(mask,meas,orig,[],para);
+
+	fprintf('ADMM-%s-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
+		upper(para.denoiser),upper(para.tvm),mean(psnr_admmtv),mean(ssim_admmtv),tadmmtv);
+	disp('===== ADMM-TV Finished! =====')
+end
 
 % [3] save as the result .mat file 
 if saving_data_flag
@@ -235,19 +259,41 @@ if saving_data_flag
 
 	% save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat']);
 	% zzh
-	if ~exist([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat'], 'file')
-		save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat']);
+	if ~exist([matdir '/pnpsci_' dataname '_'  num2str(nframe*nmask) '.mat'], 'file')
+		save([matdir '/pnpsci_' dataname '_' num2str(nframe*nmask) '.mat']);
 	else
-		save([matdir '/pnpsci_' dataname num2str(nframe*nmask) '.mat'], '-append');
+		save([matdir '/pnpsci_' dataname '_' num2str(nframe*nmask) '.mat'], '-append');
 	end
 end
 
 % [4] show  result
 if show_res_flag
-	result = vgapjoint;
+	plot_row=2; plot_col=5;
+	switch test_algo_flag
+		case "gaptv"
+			result = vgaptv;
+		case "gapffdnet"
+			result = vgapffdnet;
+		case "istatv"
+			result = vistatv;
+		case "gaptv+ffdnet"
+			result = vgapjoint;
+		case "admmtv"
+			result = vadmmtv;
+		case "all"
+			disp("MORE THAN ONE ALGORITHM CHOSEN - please manually check the results")
+			return			
+	end
+% 	result = vgapjoint;
 	figure; 
-	for nm = 1:5
-		subplot(2,5,nm); imshow(result(:,:,nm)); title(psnr(result(:,:,nm), single(orig(:,:,nm))./255))
-		subplot(2,5,nm+5); imshow(result(:,:,nm+5)); title(psnr(result(:,:,nm+5), single(orig(:,:,nm+5))./255))
+	for tt=1:size(result,3)
+		 %theta_gap_tv_rgb0(:,:,:,tt) = im;
+		subplot(plot_row, plot_col,tt); imagesc(result(:,:,tt)); colormap gray; title(['Frame: ' num2str(tt)])
+	end
+
+	figure;
+	for tt=1:size(result,3)
+		im = result(:,:,tt);
+		imshow(im./max(im(:))); title(tt); pause(0.2); 
 	end
 end

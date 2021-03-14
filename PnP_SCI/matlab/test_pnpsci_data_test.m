@@ -35,7 +35,7 @@ datasetdir = './dataset/simdata/benchmark/data/combine_binary_mask_256_10f/bm_25
 % datasetdir = './dataset/simdata/cacti/cacti_256_10f_1';
 resultdir  = './results';                   % results
 
-test_algo_flag = [1,4];		% choose algorithms: 0-all, 1-gaptv, 2-gap-ffdnet, 3-ista-tv, 4-gap-tv+ffdnet
+test_algo_flag = ["all"];		% choose algorithms: 0-all, 1-gaptv, 2-gapffdnet, 3-istatv, 4-gaptv+ffdnet,5-admmtv
 saving_data_flag = 0;	% save the recon result
 tv_init_flag = 0;		% use gap-tv recon as initial image for gap-ffdnet
 show_res_flag = 0;
@@ -93,7 +93,7 @@ para.acc      =    1; % enable acceleration
 para.flag_iqa = true; % enable image quality assessments in iterations
 
 % [2.1] GAP-TV
-if ismember(0,test_algo_flag) || ismember(1,test_algo_flag)
+if ismember("gaptv",test_algo_flag) || ismember("all",test_algo_flag)
 	para.denoiser = 'tv'; % TV denoising
 % 	para.tvm = 'ITV3D_FGP';  % tv denoiser
 	para.tvm = 'ATV_ClipA';  % tv denoiser
@@ -113,7 +113,7 @@ if ismember(0,test_algo_flag) || ismember(1,test_algo_flag)
 end
 
 % [2.2] GAP-FFDNet
-if ismember(0,test_algo_flag) || ismember(2,test_algo_flag)
+if ismember("gapffdnet",test_algo_flag) || ismember("all",test_algo_flag)
 	para.denoiser = 'ffdnet'; % FFDNet denoising
 	load(fullfile('models','FFDNet_gray.mat'),'net');
 
@@ -135,7 +135,7 @@ if ismember(0,test_algo_flag) || ismember(2,test_algo_flag)
 	if tv_init_flag
 		% use gap-tv result as the initialized input
 		[vgapffdnet,psnr_gapffdnet,ssim_gapffdnet,tgapffdnet,psnrall_ffdnet] = ...
-			gapdenoise_cacti(mask,meas,orig,istaptv,para); 
+			gapdenoise_cacti(mask,meas,orig,[],para); 
 	else
 		[vgapffdnet,psnr_gapffdnet,ssim_gapffdnet,tgapffdnet,psnrall_ffdnet] = ...
 			gapdenoise_cacti(mask,meas,orig,[],para);
@@ -148,7 +148,7 @@ end
 
 
 % [2.3] ISTA-TV
-if ismember(0,test_algo_flag) || ismember(3,test_algo_flag)
+if ismember("istatv",test_algo_flag) || ismember("all",test_algo_flag)
 	% denoiser
  	para.denoiser = 'tv'; % TV denoising
 % 	para.denoiser = 'ffdnet';
@@ -182,7 +182,7 @@ if ismember(0,test_algo_flag) || ismember(3,test_algo_flag)
 	end
 	
 	
-	[istatv,psnr_istatv,ssim_istatv,tistatv,psnrall_istatv] = ...
+	[vistatv,psnr_istatv,ssim_istatv,tistatv,psnrall_istatv] = ...
 		istadenoise_cacti(mask,meas,orig,[],para);
 
 	fprintf('ISTA-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
@@ -191,7 +191,7 @@ if ismember(0,test_algo_flag) || ismember(3,test_algo_flag)
 end
 
 % [2.4] GAP-JOINT
-if ismember(0,test_algo_flag) || ismember(4,test_algo_flag)
+if ismember("gaptv+ffdnet",test_algo_flag) || ismember("all",test_algo_flag)
 	
 	para.denoiser = 'tv+ffdnet'; % FFDNet denoising
 	para.tvm = 'ITV3D_FGP';  % tv denoiser
@@ -225,6 +225,27 @@ if ismember(0,test_algo_flag) || ismember(4,test_algo_flag)
 	disp('===== GAP-JOINT Finished! =====')
 end
 
+% [2.5] ADMM-TV
+if ismember("admmtv",test_algo_flag) || ismember("all",test_algo_flag)
+	para.denoiser = 'tv'; % TV denoising
+	para.tvm = 'ITV3D_FGP';  % tv denoiser
+% 	para.tvm = 'ATV_FGP';  % tv denoiser
+% 	para.tvm = 'ATV_ClipA';  % tv denoiser
+	para.maxiter  = 200; % maximum iteration
+	% para.tvweight = 0.07*255/MAXB; % weight for TV denoising, original
+	% para.tviter   = 5; % number of iteration for TV denoising, original
+ 	% param.gamma = 0.2; % gamma for admm (larger noise, larger gamma), original
+	param.gamma = 200; % gamma for admm (larger noise, larger gamma)
+	para.tvweight = 200; % weight for TV denoising, test
+	para.tviter   = 10; % number of iteration for TV denoising, test
+
+	[vadmmtv,psnr_admmtv,ssim_admmtv,tadmmtv,psnrall_admmtv] = ...
+		admmdenoise_cacti(mask,meas,orig,[],para);
+
+	fprintf('ADMM-%s-%s mean PSNR %2.2f dB, mean SSIM %.4f, total time % 4.1f s.\n',...
+		upper(para.denoiser),upper(para.tvm),mean(psnr_admmtv),mean(ssim_admmtv),tadmmtv);
+	disp('===== ADMM-TV Finished! =====')
+end
 
 % [3] save as the result .mat file 
 if saving_data_flag
@@ -244,10 +265,32 @@ end
 
 % [4] show  result
 if show_res_flag
-	result = vgapjoint;
+	plot_row=2; plot_col=5;
+	switch test_algo_flag
+		case "gaptv"
+			result = vgaptv;
+		case "gapffdnet"
+			result = vgapffdnet;
+		case "istatv"
+			result = vistatv;
+		case "gaptv+ffdnet"
+			result = vgapjoint;
+		case "admmtv"
+			result = vadmmtv;
+		case "all"
+			disp("MORE THAN ONE ALGORITHM CHOSEN - please manually check the results")
+			return			
+	end
+% 	result = vgapjoint;
 	figure; 
-	for nm = 1:5
-		subplot(2,5,nm); imshow(result(:,:,nm)); title(psnr(result(:,:,nm), single(orig(:,:,nm))./255))
-		subplot(2,5,nm+5); imshow(result(:,:,nm+5)); title(psnr(result(:,:,nm+5), single(orig(:,:,nm+5))./255))
+	for tt=1:size(result,3)
+		 %theta_gap_tv_rgb0(:,:,:,tt) = im;
+		subplot(plot_row, plot_col,tt); imagesc(result(:,:,tt)); colormap gray; title(['Frame: ' num2str(tt)])
+	end
+
+	figure;
+	for tt=1:size(result,3)
+		im = result(:,:,tt);
+		imshow(im./max(im(:))); title(tt); pause(0.2); 
 	end
 end

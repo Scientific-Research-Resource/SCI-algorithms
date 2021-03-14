@@ -9,6 +9,7 @@ iframe   = 1; % start frame number
 maskdirection  = 'plain'; % direction of the mask
 if isfield(para,'iframe');               iframe = para.iframe; end
 if isfield(para,'maskdirection'); maskdirection = para.maskdirection; end
+if isempty(orig); para.flag_iqa = false; end
 [nrow,ncol,nmask]  = size(mask);
 nframe = para.nframe;
 MAXB   = para.MAXB;
