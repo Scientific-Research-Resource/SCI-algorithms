@@ -32,6 +32,7 @@ from packages.fastdvdnet.models import FastDVDnet
 ## flags and params
 save_res_flag = 0          # save results
 show_res_flag = 0           # show results
+save_param_flag = 0        # save params
 test_algo_flag = ['all' ]		# choose algorithms: 'all', 'gaptv', 'admmtv', 'gapffdnet', 'admmffdnet', 'gapfastdvdnet', 'admmfastdvdnet'
 test_algo_flag = ['gaptv', 'gapfastdvdnet']
 
@@ -596,3 +597,19 @@ if ('all' in test_algo_flag) or ('admmtv+fastdvdnet' in test_algo_flag):
 # show res
 # if show_res_flag:
 #     plt.show()
+
+if save_param_flag:
+    # params path
+    param_path = resultsdir+'/savedfig/param_finetune.txt'
+    if os.path.exists(param_path):
+        writemode = 'a+'
+    else:
+        writemode = 'w'
+    with open(param_path, writemode) as f:
+        # customized contents
+        f.write(projmeth+denoiser+'_'+datname+datetime.now().strftime('@T%Y%m%d-%H-%M')+':\n')
+        f.write('\titer_max1 = ' + str(iter_max1) + '\n')
+        f.write('\tsigma2 = ' + str([255*x for x in sigma2]) + '/255\n')
+        f.write('\titer_max2 = ' + str(iter_max2) + '\n')
+        f.write('\ttv_iter_max = ' + str(tv_iter_max) + '\n')
+        f.write('\ttv_weight = ' + str(tv_weight) + '\n')
