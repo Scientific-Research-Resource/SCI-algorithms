@@ -305,7 +305,8 @@ end
 
 % [4] show  result
 if show_res_flag
-	plot_row=2; plot_col=5;
+	plot_col=5;
+	plot_row=ceil(size(result,3)/plot_col);
 	switch test_algo_flag
 		case "gaptv"
 			result = vgaptv;
@@ -325,7 +326,7 @@ if show_res_flag
 	figure; 
 	for tt=1:size(result,3)
 		 %theta_gap_tv_rgb0(:,:,:,tt) = im;
-		subplot(plot_row, plot_col,tt); imagesc(result(:,:,tt)); colormap gray; title(['Frame: ' num2str(tt)])
+		subplot(plot_row, plot_col,tt); imshow(result(:,:,tt),[]); colormap gray; title(['Frame: ' num2str(tt)])
 	end
 
 	figure;
