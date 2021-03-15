@@ -613,11 +613,18 @@ if ('all' in test_algo_flag) or ('admmtv+fastdvdnet' in test_algo_flag):
 # save params
 if save_param_flag:
     # params path
-    param_path = resultsdir+'/savedfig/param_finetune.txt'
+    param_dir = resultsdir+'/savedfig/'
+    param_name = 'param_finetune.txt'
+    
+    if not os.path.exists(param_dir):
+            os.makedirs(param_dir) 
+            
+    param_path = param_dir + param_name
     if os.path.exists(param_path):
         writemode = 'a+'
     else:
         writemode = 'w'
+    
     with open(param_path, writemode) as f:
         # customized contents
         f.write(projmeth+denoiser+'_'+datname+datetime.now().strftime('@T%Y%m%d-%H-%M')+':\n')
