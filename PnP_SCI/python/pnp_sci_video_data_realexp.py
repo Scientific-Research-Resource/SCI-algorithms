@@ -32,6 +32,8 @@ from packages.fastdvdnet.models import FastDVDnet
 
 # %%
 # [0] environment configuration
+# GPU assign
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 ## flags and params
 save_res_flag = 0          # save results

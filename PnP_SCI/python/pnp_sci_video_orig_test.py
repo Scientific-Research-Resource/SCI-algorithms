@@ -32,6 +32,9 @@ from packages.fastdvdnet.models import FastDVDnet
 
 # %%
 # [0] environment configuration
+# GPU assign
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+
 ## [0.1] path and data name
 orig_dir = './dataset/benchmark/orig/bm_256_10f'
 mask_dir = './dataset/benchmark/mask' # mask dataset
