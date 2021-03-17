@@ -15,7 +15,7 @@ function [v, psnrall] = admmdenoise( y , opt )
 %   [3] S. Boyd, N. Parikh, E. Chu, B. Peleato, and J. Eckstein, 
 %       Distributed Optimization and Statistical Learning via the 
 %       Alternating Direction Method of Multipliers, Foundations and 
-%       Trends® in Machine Learning, vol. 3, no. 1, pp. 1-122, 2011.
+%       Trends? in Machine Learning, vol. 3, no. 1, pp. 1-122, 2011.
 % Code credit
 %   Xin Yuan, Bell Labs, xyuan@bell-labs.com, initial version Jul 2, 2015.
 %   Yang Liu, Tsinghua University, y-liu16@mails.tsinghua.edu.cn, last
@@ -76,7 +76,11 @@ v = v0; % initialization
 theta = v0; % auxiliary variable 
 psnrall = []; % return empty with no ground truth
 k = 1; % current number of iteration
-for isig = 1:length(maxiter) % extension for a series of noise levels
+
+tic; % timing
+disp('--> admmdenoise') 
+
+for isig = 1:length(maxiter) % extension for a series of noise levels   
     nsigma = sigma(isig); 
     opt.sigma = nsigma;
     for iter = 1:maxiter(isig)
@@ -126,6 +130,11 @@ for isig = 1:length(maxiter) % extension for a series of noise levels
             end
         end
         k = k+1;
+		
+		if mod(iter, round(maxiter/10))==0
+			time_now = toc;
+			fprintf('---> finish %d/%d time cost %.2f min\n',iter, maxiter,time_now/60)
+		end 		
     end % GAP loop [maxiter]
 end % sigma loop [length(maxiter)]
 

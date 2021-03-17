@@ -19,7 +19,6 @@ psnrall = [];
 v_ = zeros([nrow ncol nmask*nframe],'like',meas);
 tic
 % coded-frame-wise denoising
-time_start = tic;
 for kf = 1:nframe
 %     fprintf('%s-%s Reconstruction frame-block %d of %d ...\n',...
 %         upper(para.projmeth),upper(para.denoiser),kf,nframe);
@@ -115,7 +114,7 @@ for kf = 1:nframe
             error('Unsupported mask direction %s!',lower(maskdirection));
 	end
 	time_now = toc;
-	fprintf('--> finish: %d/%d frames	total time: %.2f', kf, nframe, (time_now-time_start)/60)
+	fprintf('----> finish: %d/%d frames	total time: %5.2f\n', kf, nframe, time_now/60)
 end
 t_ = toc;
 % image quality assessments
