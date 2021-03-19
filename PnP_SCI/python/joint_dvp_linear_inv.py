@@ -39,6 +39,8 @@ def joint_admmdenoise_cacti(meas, mask, A, At, projmeth='admm', v0=None, orig=No
               %(projmeth.upper(), denoiser.upper(), kf+1, nframe))
         if orig is not None:
             orig_k = orig[:,:,(kf+iframe)*nmask:(kf+iframe+1)*nmask]/MAXB
+        else:
+            orig_k = None
         meas_k = meas[:,:,kf+iframe]/MAXB
         if v0 is None:
             v0_k = None
@@ -400,6 +402,8 @@ def gap_multistep_denoise(y, Phi_sum, A, At, _lambda=1, accelerate=True,
     x = x0 # initialization
     psnr_all = []
     k = 0
+    time_start = time.time() # timing
+    print('---> gap_multistep_denoise')
     for idx, nsig in enumerate(sigma): # iterate all noise levels
         for it in range(iter_max[idx]):
             yb = A(x)
@@ -475,7 +479,8 @@ def gap_multistep_denoise(y, Phi_sum, A, At, _lambda=1, accelerate=True,
                             'PSNR {2:2.2f} dB.'.format(denoiser.upper(), 
                             k+1, psnr_all[k]))
             k = k+1
-    
+        time_now = time.time()
+        print('----> finish {}/{} time cost {:.2f} min'.format(idx+1, len(sigma),(time_now-time_start)/60))    
     psnr_ = []
     ssim_ = []
     nmask = x.shape[2]
@@ -752,6 +757,8 @@ def gap_denoise(y, Phi_sum, A, At, _lambda=1, accelerate=True,
     x = x0 # initialization
     psnr_all = []
     k = 0
+    time_start = time.time() # timing
+    print('---> gap_denoise')
     for idx, nsig in enumerate(sigma): # iterate all noise levels
         for it in range(iter_max[idx]):
             yb = A(x)
@@ -807,7 +814,8 @@ def gap_denoise(y, Phi_sum, A, At, _lambda=1, accelerate=True,
                             'PSNR {2:2.2f} dB.'.format(denoiser.upper(), 
                             k+1, psnr_all[k]))
             k = k+1
-    
+        time_now = time.time()
+        print('----> finish {}/{} time cost {:.2f} min'.format(idx+1, len(sigma),(time_now-time_start)/60))
     psnr_ = []
     ssim_ = []
     nmask = x.shape[2]
