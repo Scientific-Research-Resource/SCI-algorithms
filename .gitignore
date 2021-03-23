@@ -32,8 +32,8 @@ tmp/
 
 
 #PnP-SCI
-!ffdnet/models/*
-!fastdvdnet/*
+!ffdnet/models/*.pth
+!fastdvdnet/*.pth
 !matconvnet-1.0-beta25/**/*
 !packages/**/*
 !**/benchmark/*
