@@ -19,7 +19,7 @@ import scipy.io as sio
 # import matplotlib.pyplot as plt
 from statistics import mean
 
-from dvp_linear_inv import admmdenoise_cacti
+from pnp_sci_algo import admmdenoise_cacti
 
 from utils import (A_, At_)
 

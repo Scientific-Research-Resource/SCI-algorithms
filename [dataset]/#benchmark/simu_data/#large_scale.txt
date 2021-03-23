@@ -1,0 +1,6 @@
+# data：
+Link：
+	BaiduDrive：https://pan.baidu.com/s/1ItZbvV76PZPv0_xEifgJsg 
+	Code：1111 
+Info: 1920 × 1080 × 24 to 3840 × 1644 × 48
+Cite: Yuan, Xin, Yang Liu, Jinli Suo, and Qionghai Dai. “Plug-and-Play Algorithms for Large-Scale Snapshot Compressive Imaging.” In IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2020.

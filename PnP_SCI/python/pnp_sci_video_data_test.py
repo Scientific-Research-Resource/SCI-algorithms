@@ -12,6 +12,7 @@
 # %%
 import os
 import time
+from datetime import datetime
 import math
 import h5py
 import numpy as np
@@ -19,8 +20,8 @@ import scipy.io as sio
 import matplotlib.pyplot as plt
 from statistics import mean
 
-from dvp_linear_inv import admmdenoise_cacti
-from joint_dvp_linear_inv import joint_admmdenoise_cacti
+from pnp_sci_algo import admmdenoise_cacti
+from joint_pnp_sci_algo import joint_admmdenoise_cacti
 
 from utils import (A_, At_, show_n_save_res)
 import torch
@@ -33,7 +34,7 @@ from packages.fastdvdnet.models import FastDVDnet
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 # datasetdir = './dataset/cacti' # dataset
-datasetdir = './dataset/benchmark/data/binary_mask_256_10f/bm_256_10f'
+datasetdir = './dataset/data'
 # datasetdir = './dataset/benchmark/data/combine_binary_mask_256_10f/bm_256_10f'
 # datasetdir = '../gapDenoise/dataset/cacti' # dataset
 resultsdir = './results' # results
@@ -47,14 +48,15 @@ resultsdir = './results' # results
 # datname = 'aerial32'      # name of the dataset
 # datname = 'bicycle24'     # name of the dataset
 # datname = 'data_kobe'    # name of the dataset
-datname = 'data_traffic'    # name of the dataset
+datname = 'data_traffic_256_10f'    # name of the dataset
 
 ## flags and params
-save_res_flag = 0          # save results
-show_res_flag = 0           # show results
-save_param_flag =  0        # save params
-test_algo_flag = ['all' ]		# choose algorithms: 'all', 'gaptv', 'admmtv', 'gapffdnet', 'admmffdnet', 'gapfastdvdnet', 'admmfastdvdnet'
-test_algo_flag = ['gaptv+fastdvdnet']
+save_res_flag = 1          # save results
+show_res_flag = 1           # show results
+save_param_flag =  1        # save params
+# choose algorithms: 'all', 'gaptv', 'admmtv', 'gapffdnet', 'admmffdnet', 'gapfastdvdnet', 'admmfastdvdnet','gaptv+fastdvdnet', 'admmtv+fastdvdnet'
+# test_algo_flag = ['all' ]		
+test_algo_flag = ['admmtv+fastdvdnet']
 
 
 # matfile = datasetdir + '/' + datname + '_cacti.mat' # path of the .mat data file
@@ -62,7 +64,7 @@ matfile = datasetdir + '/' + datname + '.mat' # path of the .mat data file
 
 
 # noise
-gaussian_noise_level = 5
+gaussian_noise_level = 0
 poisson_noise = False
 
 
@@ -155,9 +157,9 @@ if ('all' in test_algo_flag) or ('admmtv' in test_algo_flag):
     # gamma = 0.01 # parameter in ADMM projection (greater for more noisy data), [original set]
     gamma = 0.05
     denoiser = 'tv' # total variation (TV)
-    iter_max = 80 # maximum number of iterations
+    iter_max = 100 # maximum number of iterations
     # tv_weight = 0.3 # TV denoising weight (larger for smoother but slower) [original set]
-    tv_weight = 0.5 
+    tv_weight = 0.25 
     tv_iter_max = 5 # TV denoising maximum number of iterations each
 
     vadmmtv,tadmmtv,psnr_admmtv,ssim_admmtv,psnrall_admmtv = admmdenoise_cacti(meas, mask, A, At,
@@ -436,7 +438,7 @@ if ('all' in test_algo_flag) or ('gaptv+ffdnet' in test_algo_flag):
 if ('all' in test_algo_flag) or ('admmtv+ffdnet' in test_algo_flag):
     projmeth = 'admm' # projection method
     _lambda = 1 # regularization factor, [original set]
-    gamma = 0.0
+    gamma = 0.05
     tvm = 'tv_chambolle'
     # accelerate = True # enable accelerated version of GAP
     denoiser = 'tv+ffdnet' # video non-local network 
@@ -502,12 +504,13 @@ if ('all' in test_algo_flag) or ('gaptv+fastdvdnet' in test_algo_flag):
     denoiser = 'tv+fastdvdnet' # video non-local network 
     noise_estimate = False # disable noise estimation for GAP
     sigma1    = [] # pre-set noise standard deviation for 1st period denoise 
-    iter_max1 = 100 # maximum number of iterations for 1st period denoise   
-    sigma2    = [100/255, 50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
-    iter_max2 = [60, 100, 150] # maximum number of iterations for 2nd period denoise    
+    iter_max1 = 40 # maximum number of iterations for 1st period denoise   
+    sigma2    = [100/255, 50/255, 25/255, 12/255] # pre-set noise standard deviation for 2nd period denoise 
+    iter_max2 = [20, 20, 20, 20] # maximum number of iterations for 2nd period denoise    
     # sigma2    = [50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
     # iter_max2 = [20, 20] # maximum number of iterations for 2nd period denoise   
     tvm = 'tv_chambolle'
+    # tvm = 'tv_bregman'
     tv_iter_max = 5 # TV denoising maximum number of iterations each
     tv_weight = 0.5 # TV denoising weight (larger for smoother but slower) [kobe:0.25]
     # sigma    = [12/255] # pre-set noise standard deviation
@@ -564,6 +567,7 @@ if ('all' in test_algo_flag) or ('admmtv+fastdvdnet' in test_algo_flag):
     iter_max2 = [20, 20, 20, 20] # maximum number of iterations for 2nd period denoise    
     # sigma2    = [50/255, 25/255] # pre-set noise standard deviation for 2nd period denoise 
     tvm = 'tv_chambolle'
+    # tvm = 'tv_bregman'
     # iter_max2 = [20, 20] # maximum number of iterations for 2nd period denoise   
     tv_iter_max = 5 # TV denoising maximum number of iterations each
     tv_weight = 0.5 # TV denoising weight (larger for smoother but slower) [kobe:0.25]

@@ -1,13 +1,13 @@
 ---
 # === Configure Main function === #
-category: data_simu/training_truth/data_augment_256_10f/
-category_valid: data_simu/valid_truth/valid_256_10f/
-category_test: data_simu/testing_truth/test_256_10f/     
+category: data_simu/training_truth/
+category_valid: data_simu/valid_truth/
+category_test: data_simu/testing_truth/
 category_mask: data_simu/mask
 data_name: scene
 # mask_name: mask_256
 # mask_name: combine_mask_512_10f
-mask_name: gray_mask_256_10f
+mask_name: binary_mask_256_10f
 model_name: Decoder
 result_dir: Result
 result_model: Model-Config

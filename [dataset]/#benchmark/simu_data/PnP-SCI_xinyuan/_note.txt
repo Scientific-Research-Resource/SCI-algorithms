@@ -1,0 +1,2 @@
+Info：256*256 Cr = 8
+Cite: Yuan, Xin, Yang Liu, Jinli Suo, and Qionghai Dai. “Plug-and-Play Algorithms for Large-Scale Snapshot Compressive Imaging.” In IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2020.

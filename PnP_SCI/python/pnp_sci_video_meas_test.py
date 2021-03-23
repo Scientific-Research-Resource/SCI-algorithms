@@ -19,8 +19,8 @@ import scipy.io as sio
 import matplotlib.pyplot as plt
 from statistics import mean
 
-from dvp_linear_inv import admmdenoise_cacti
-from joint_dvp_linear_inv import joint_admmdenoise_cacti
+from pnp_sci_algo import admmdenoise_cacti
+from joint_pnp_sci_algo import joint_admmdenoise_cacti
 
 from utils import (A_, At_, show_n_save_res)
 import torch

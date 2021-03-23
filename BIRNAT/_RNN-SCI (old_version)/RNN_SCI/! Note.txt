@@ -1,1 +1,0 @@
-RNN_SCI_is_a_simple_version_of_BRINAT(without adversarial train and attention module), but it's more user-friendly because it's modified by zhihong zhang

@@ -114,7 +114,31 @@ def fastdvdnet_seqdenoise(seq, noise_std, windsize, model):
 		# cicular padding for edge frames in the video sequence
 		idx = (torch.tensor(range(frameidx, frameidx+windsize)) - hw) % N # circular padding
 		noisy_seq = seq[idx].reshape((1, -1, H, W)) # reshape from [W, C, H, W] to [1, W*C, H, W]
+		
+		# make sure the width W and height H multiples of 4
+		#   pad the width W and height H to multiples of 4
+		M = 4 # multipier
+		wpad, hpad = W%M, H%M
+		if wpad:
+			wpad = M-wpad
+		if hpad:
+			hpad = M-hpad
+		pad = (0, wpad, 0, hpad) 
+		noisy_seq = F.pad(noisy_seq, pad, mode='reflect')
+		noise_map = F.pad(noise_map, pad, mode='reflect')
+		
 		# apply the denoising model to the input datat
-		seq_denoised[frameidx] = model(noisy_seq, noise_map)
+		frame_denoised = model(noisy_seq, noise_map)
+
+		# unpad the results
+		if wpad:
+			frame_denoised = frame_denoised[:, :, :, :-wpad]
+		if hpad:
+			frame_denoised = frame_denoised[:, :, :-hpad, :]
+		
+		seq_denoised[frameidx] = frame_denoised
+
+		# # apply the denoising model to the input datat
+		# seq_denoised[frameidx] = model(noisy_seq, noise_map)
 
 	return seq_denoised

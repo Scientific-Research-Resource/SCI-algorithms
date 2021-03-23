@@ -126,7 +126,9 @@ def ffdnet_vdenoiser(vnoisy, sigma, model=None, useGPU=True):
 
 
 	# apply FFDNet denoising for each frame
-	(nrow, ncol, nmask) = vnoisy.shape
+	vshape = vnoisy.shape
+	vnoisy = vnoisy.reshape(*vshape[0:2],-1)
+	nmask = vnoisy.shape[-1]
 	outv = np.zeros(vnoisy.shape)
 	for imask in range(nmask):
 		# imnoisy = vnoisy[:,:,imask]*255 # to match the scale of the input [0,255]
@@ -171,8 +173,56 @@ def ffdnet_vdenoiser(vnoisy, sigma, model=None, useGPU=True):
 		# without clip/clamp
 		outim = imnoisy - im_noise_estim
 		outv[:,:,imask] = (outim.data.cpu().numpy()[0, 0, :])
-
+	
+	outv = outv.reshape(vshape)
 	return outv
+
+
+# convert single (HxWxC) to 4-dimensional torch tensor
+def single2tensor4(img):
+    return torch.from_numpy(np.ascontiguousarray(img)).permute(2, 0, 1).float().unsqueeze(0)
+
+
+# convert torch tensor to single
+def tensor2single(img):
+    img = img.data.squeeze().float().cpu().numpy()
+    if img.ndim == 3:
+        img = np.transpose(img, (1, 2, 0))
+
+    return img
+
+def ffdnet_rgb_denoise(x, sigma,model):
+    
+    #model_path = os.path.join(model_pool, model_name+'.pth')
+
+    # ----------------------------------------
+  
+    #need_H = True if H_path is not None else False
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+ 
+
+    # ----------------------------------------
+    # load model
+    # ----------------------------------------
+
+    #from packages.ffdnet.models.network_ffdnet import FFDNet as net
+    
+    
+    (nrow, ncol, ncolor,nmask) = x.shape
+    outv = np.zeros(x.shape)
+    
+    for imask in range(nmask):
+    #img_L = util.uint2single(x)
+        x_L = x[:,:,:,imask]
+        img_L = single2tensor4(x_L)
+        img_L = img_L.to(device)
+    
+        sigma1 = torch.full((1,1,1,1), sigma).type_as(img_L)
+        img_E = model(img_L, sigma1)
+        x_d = tensor2single(img_E)
+#        x_d = x_d/255
+        outv[:,:,:,imask] = x_d #(x_d.data.cpu().numpy()[0, 0, 0,:])
+    return outv
 
 def test_ffdnet(**args):
 	r"""Denoises an input image with FFDNet

@@ -18,7 +18,7 @@ We use [conda](https://www.anaconda.com/distribution/) to manage the virtual env
 `conda env create -f environment.yml`
 2. Run a demo test with the benchmark grayscale `kobe` data via  
 `python pnp_sci_video_kobe.py`
-3. [Optional] Explore more with the Python Notebook `pnp_sci_video.ipynb` and the main algorithm code `dvp_linear_inv.py`.
+3. [Optional] Explore more with the Python Notebook `pnp_sci_video.ipynb` and the main algorithm code `pnp_sci_algo.py`.
 4. [Optional] For the color data, please refer to the script `deep_vprior_sci_traffic` and the Python Notebook `deep_vprior_sci.ipynb`.
 
 ## Acknowledgements

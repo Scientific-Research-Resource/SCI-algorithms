@@ -173,7 +173,7 @@ def fastdvdnet_denoiser(vnoisy, sigma, model=None, useGPU=True, gray=False):
 	model.eval()
 
 	with torch.no_grad():
-		# vnoisy = vnoisy.transpose((2,3,0,1)) # [do it in torch] from H x W x F x C to F x C x H x W 
+		# vnoisy = vnoisy.transpose((2,3,0,1)) # [do it in torch] from H x W x F x C to F x C x H x W
 		vnoisy = torch.from_numpy(vnoisy).type('torch.FloatTensor').to(device)
 		noisestd = torch.FloatTensor([sigma]).to(device)
 
