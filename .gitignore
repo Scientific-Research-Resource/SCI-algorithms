@@ -14,8 +14,6 @@
 bak/
 _bak/
 ?bak?/
-/DL-CACTI/
-?discussion?/
 results/
 
 _trash/
@@ -32,8 +30,8 @@ tmp/
 
 
 #PnP-SCI
-!ffdnet/models/*.pth
-!fastdvdnet/*.pth
+!ffdnet/models/*
+!fastdvdnet/*
 !matconvnet-1.0-beta25/**/*
 !packages/**/*
 !**/benchmark/*
