@@ -26,10 +26,3 @@ tmp/
 
 # keep
 !.gitkeep
-
-
-
-#PnP-SCI
-!matconvnet-1.0-beta25/**/*
-!packages/**/*
-!**/benchmark/*
