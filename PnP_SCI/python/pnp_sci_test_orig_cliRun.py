@@ -62,7 +62,7 @@ if engine_flag == 'cli_test':
                 root_dir = 'E:/project/CACTI/experiment/simulation'
                 result_path = '/results/tmp'
                 # result_path = '/results/exp1_multiscale/PnP-tv-fastdvdnet/'+scale
-                cli_run('pnp_sci_video_orig_cli.py', orig_name, scale, Cr, mask_name, 'gaptv+fastdvdnet',
+                cli_run('pnp_sci_test_orig_cli.py', orig_name, scale, Cr, mask_name, 'gaptv+fastdvdnet',
                 root_dir=root_dir, result_path = result_path, iframe = iframe, nframe = img_num//Cr, MAXB = MAXB,
                 show_res_flag = show_res_flag, save_res_flag =  save_res_flag , log_result_flag=log_result_flag,
                 tv_weight = opti_tv_weight_table_exp2[scale+'_Cr'+str(Cr)], 
