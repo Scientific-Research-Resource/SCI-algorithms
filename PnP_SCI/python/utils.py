@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from statistics import mean
 import scipy.io as sio
 import os
-
+import cv2
 
 def A_(x, Phi):
     '''
@@ -102,7 +102,8 @@ def show_n_save_res(vdenoise,tdenoise,psnr_denoise,ssim_denoise,psnrall_denoise,
         print('Results saved to: {}{}_kmeas{:d}_{:d}.mat\n'.format(savedmatdir,save_name,iframe,iframe+nframe-1))
         if orig is not None:
             sio.savemat('{}{}_kmeas{:d}_{:d}.mat'.format(savedmatdir,save_name,iframe,iframe+nframe-1),
-                        {'vdenoise':vdenoise, 
+                        {'vdenoise':vdenoise,
+                         'orig':orig, 
                         'psnr_denoise':psnr_denoise,
                         'ssim_denoise':ssim_denoise,
                         'psnrall_denoise':psnrall_denoise,
@@ -122,6 +123,26 @@ def show_n_save_res(vdenoise,tdenoise,psnr_denoise,ssim_denoise,psnrall_denoise,
                         'Cr':Cr,
                         **kwargs                 
                         })
+
+# save results to images
+def save_rgb_img(img, save_dir, prefix='img', save_format='.jpg', rescale_ch=False):
+    img_num = img.shape[-1]
+        
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+        
+    if rescale_ch:
+        # rescale each channel separately
+        for ch in range(3):
+            img[:,:,ch,:] = rescale(img[:,:,ch,:])
+            
+    for k in range(img_num):
+        tmp_img = np.uint8(img[:,:,:,k]*255)
+        tmp_img = tmp_img[...,::-1] # RGB 2 BGR for cv2
+        save_path = os.path.join(save_dir,prefix+str(k)+save_format)
+        cv2.imwrite(save_path, tmp_img)
+        
+    print('images saved to: ', save_dir)
 
 
 # CLI script
@@ -157,3 +178,7 @@ def cli_run(script_name, orig_name, scale, Cr, mask_name, test_algo_flag,
         
     print(command_str)
     os.system(command_str)
+    
+def rescale(data):
+    _range = np.max(data) - np.min(data)
+    return (data - np.min(data)) / _range
