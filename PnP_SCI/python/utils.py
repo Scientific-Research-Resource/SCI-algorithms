@@ -139,7 +139,7 @@ def save_rgb_img(img, save_dir, prefix='img', save_format='.jpg', rescale_ch=Fal
     for k in range(img_num):
         tmp_img = np.uint8(img[:,:,:,k]*255)
         tmp_img = tmp_img[...,::-1] # RGB 2 BGR for cv2
-        save_path = os.path.join(save_dir,prefix+str(k)+save_format)
+        save_path = os.path.join(save_dir,prefix+'%04d'%k+save_format)
         cv2.imwrite(save_path, tmp_img)
         
     print('images saved to: ', save_dir)
