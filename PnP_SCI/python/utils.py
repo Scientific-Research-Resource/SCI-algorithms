@@ -43,7 +43,7 @@ def show_n_save_res(vdenoise,tdenoise,psnr_denoise,ssim_denoise,psnrall_denoise,
     # show res
     if show_res_flag:
         # setting
-        row_num = Cr//2
+        col_num = Cr//2
         fig_sz = (12, 6.5)
         savedfigdir = resultsdir + '/savedfig/'
         if not os.path.exists(savedfigdir):
@@ -56,7 +56,7 @@ def show_n_save_res(vdenoise,tdenoise,psnr_denoise,ssim_denoise,psnrall_denoise,
                 # plt.ion() # interactive mode
                 fig = plt.figure(figsize=fig_sz)
                 for nt in range(Cr):
-                    plt.subplot(Cr//row_num, row_num, nt+1)
+                    plt.subplot(Cr//col_num, col_num, nt+1)
                     plt.imshow(orig_k[:,:,nt], cmap=plt.cm.gray, vmin=0, vmax=1)
                     plt.axis('off')
                     plt.title('Ground truth: Frame #{0:d}'.format((kf+iframe)*Cr+nt+1), fontsize=12)
@@ -66,7 +66,7 @@ def show_n_save_res(vdenoise,tdenoise,psnr_denoise,ssim_denoise,psnrall_denoise,
             vdenoise_k = vdenoise[:,:,kf*Cr:(kf+1)*Cr]
             fig = plt.figure(figsize=fig_sz)
             for nt in range(Cr):
-                plt.subplot(Cr//row_num, row_num, nt+1)
+                plt.subplot(Cr//col_num, col_num, nt+1)
                 plt.imshow(vdenoise_k[:,:,nt], cmap=plt.cm.gray, vmin=0, vmax=1)
                 plt.axis('off')
                 if orig is not None:
