@@ -1,0 +1,18 @@
+# zzh
+*.ckpt.*
+checkpoint
+dataset/*
+result/*
+?bak/
+_bak/
+bak/
+_tmp*
+.vscode
+
+!dataset_path.json
+!.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
