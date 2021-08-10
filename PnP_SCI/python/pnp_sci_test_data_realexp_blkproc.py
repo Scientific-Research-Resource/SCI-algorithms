@@ -402,7 +402,7 @@ else:
             accelerate = True # enable accelerated version of GAP
             denoiser = 'tv+ffdnet' # video non-local network 
             noise_estimate = False # disable noise estimation for GAP
-            sigma1    = [] # pre-set noise standard deviation for 1st period denoise 
+            sigma1    = [0] # pre-set noise standard deviation for 1st period denoise 
             iter_max1 = 100 # maximum number of iterations for 1st period denoise   
             sigma2    = [50/255, 20/255, 10/255, 6/255] # pre-set noise standard deviation for 2nd period denoise 
             iter_max2 = [20, 40, 100, 50] # maximum number of iterations for 2nd period denoise    
@@ -453,7 +453,7 @@ else:
             #                     show_res_flag=show_res_flag, save_res_flag=save_res_flag,
             #                     tv_weight=tv_weight, iter_max1=iter_max1, iter_max2=iter_max2, sigma1=sigma1, sigma2=sigma2)
         
-        ### [2.5.1] GAP-TV+FFDNET
+        ### [2.4.2] ADMM-TV+FFDNET
         if ('all' in test_algo_flag) or ('admmtv+ffdnet' in test_algo_flag):
             projmeth = 'admm' # projection method
             _lambda = 1 # regularization factor, [original set]
@@ -463,7 +463,7 @@ else:
             # accelerate = True # enable accelerated version of GAP
             denoiser = 'tv+ffdnet' # video non-local network 
             noise_estimate = False # disable noise estimation for GAP
-            sigma1    = [] # pre-set noise standard deviation for 1st period denoise 
+            sigma1    = [0] # pre-set noise standard deviation for 1st period denoise 
             iter_max1 = 60 # maximum number of iterations for 1st period denoise  
             sigma2    = [100/255, 50/255, 20/255, 10/255] # pre-set noise standard deviation for 2nd period denoise , [original set]
             iter_max2 = [20, 20, 10, 10] # maximum number of iterations for 2nd period denoise   
@@ -527,7 +527,7 @@ else:
             accelerate = True # enable accelerated version of GAP
             denoiser = 'tv+fastdvdnet' # video non-local network 
             noise_estimate = False # disable noise estimation for GAP
-            sigma1    = [] # pre-set noise standard deviation for 1st period denoise 
+            sigma1    = [0] # pre-set noise standard deviation for 1st period denoise 
             iter_max1 = 50 # maximum number of iterations for 1st period denoise   
             sigma2    = [150/MAXB, 80/MAXB, 50/MAXB, 30/MAXB] # pre-set noise standard deviation for 2nd period denoise 
             iter_max2 = [60, 60, 60, 60] # maximum number of iterations for 2nd period denoise                 
@@ -582,7 +582,7 @@ else:
             # gamma = 0.1
             # accelerate = True # enable accelerated version of GAP
             denoiser = 'tv+fastdvdnet' # video non-local network 
-            sigma1    = [] # pre-set noise standard deviation for 1st period denoise 
+            sigma1    = [0] # pre-set noise standard deviation for 1st period denoise 
             iter_max1 = 40 # maximum number of iterations for 1st period denoise   
             sigma2    = [100/255, 50/255, 25/255, 12/255] # pre-set noise standard deviation for 2nd period denoise 
             iter_max2 = [20, 20, 20, 20] # maximum number of iterations for 2nd period denoise    
