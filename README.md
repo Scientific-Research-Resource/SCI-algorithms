@@ -1,7 +1,7 @@
 # SCI-algorithms
 An Archive of Reconstruction Algorithms for Snapshot Compressive Imaging
 
-
+\* Maintained by [Zhihong Zhang](https://github.com/dawnlh)
 
 ### Archived
 
