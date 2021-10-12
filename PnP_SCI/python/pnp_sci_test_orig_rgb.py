@@ -46,15 +46,15 @@ mask_dir = './dataset/mask' # mask dataset
 
 resultsdir = './results' # results dir
 
-orig_name = 'parking'                # name of 'orig'
+orig_name = 'parking'                # name of 'orig' 
 # orig_name = 'chasing'    
 # orig_name = 'red_gray' 
 
 mask_name = 'binary_mask_540-960_rgb_10f'    # name of 'mask'
 
 
-origpath = orig_dir + '/' + orig_name + '.mat' # path of the .mat orig file
-maskpath = mask_dir + '/' + mask_name + '.mat' # path of the .mat mask file
+origpath = orig_dir + '/' + orig_name + '.mat' # path of the .mat orig file， shape - [H,W,C,N]
+maskpath = mask_dir + '/' + mask_name + '.mat' # path of the .mat mask file， shape -  [H,W,C,N]
 
 
 ## [0.2] flags and params
