@@ -1,7 +1,6 @@
 # zzh
 *.ckpt.*
 checkpoint
-dataset/*
 result/*
 ?bak/
 _bak/
