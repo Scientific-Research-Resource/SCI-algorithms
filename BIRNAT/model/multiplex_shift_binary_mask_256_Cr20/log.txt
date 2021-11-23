@@ -1,0 +1,118 @@
+2020-11-01 14:43:44,977 - INFO: Code: train.py
+2020-11-01 14:43:44,977 - INFO: mask: ../dataset/exp_mask/multiplex_shift_binary_mask_256_20f.mat
+2020-11-01 20:29:00,085 - INFO: only forward rnn result (psnr/ssim): 20.7400/0.7696   backward rnn result: 22.0424/0.7873
+2020-11-01 20:29:00,087 - INFO: ===> Epoch 1 Complete: Avg. Loss: 0.01602585 time: 20715.11
+2020-11-01 20:29:00,115 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_1.pth
+2020-11-02 02:12:55,400 - INFO: only forward rnn result (psnr/ssim): 21.4789/0.7771   backward rnn result: 22.4565/0.7983
+2020-11-02 02:12:55,402 - INFO: ===> Epoch 2 Complete: Avg. Loss: 0.01109823 time: 41350.42
+2020-11-02 02:12:55,426 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_2.pth
+2020-11-02 07:49:21,874 - INFO: only forward rnn result (psnr/ssim): 22.2925/0.7834   backward rnn result: 23.1001/0.8090
+2020-11-02 07:49:21,875 - INFO: ===> Epoch 3 Complete: Avg. Loss: 0.00890716 time: 61536.90
+2020-11-02 07:49:21,899 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_3.pth
+2020-11-02 07:49:21,911 - INFO: current learning rate: 5.6999999999999996e-05
+
+2020-11-02 13:44:59,444 - INFO: only forward rnn result (psnr/ssim): 22.9846/0.7945   backward rnn result: 23.9457/0.8193
+2020-11-02 13:44:59,445 - INFO: ===> Epoch 4 Complete: Avg. Loss: 0.00767208 time: 82874.47
+2020-11-02 13:44:59,470 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_4.pth
+2020-11-02 19:35:20,066 - INFO: only forward rnn result (psnr/ssim): 23.0270/0.7931   backward rnn result: 24.2861/0.8247
+2020-11-02 19:35:20,069 - INFO: ===> Epoch 5 Complete: Avg. Loss: 0.00702499 time: 103895.09
+2020-11-02 19:35:20,094 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_5.pth
+2020-11-03 01:11:34,347 - INFO: only forward rnn result (psnr/ssim): 23.7933/0.8033   backward rnn result: 24.7820/0.8317
+2020-11-03 01:11:34,348 - INFO: ===> Epoch 6 Complete: Avg. Loss: 0.00644182 time: 124069.37
+2020-11-03 01:11:34,391 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_6.pth
+2020-11-03 01:11:34,402 - INFO: current learning rate: 5.4149999999999995e-05
+
+2020-11-03 07:24:48,414 - INFO: only forward rnn result (psnr/ssim): 23.4539/0.8025   backward rnn result: 24.3241/0.8294
+2020-11-03 07:24:48,416 - INFO: ===> Epoch 7 Complete: Avg. Loss: 0.00596430 time: 146463.44
+2020-11-03 07:24:48,440 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_7.pth
+2020-11-03 13:41:30,036 - INFO: only forward rnn result (psnr/ssim): 24.3878/0.8125   backward rnn result: 25.2329/0.8368
+2020-11-03 13:41:30,038 - INFO: ===> Epoch 8 Complete: Avg. Loss: 0.00562899 time: 169065.06
+2020-11-03 13:41:30,063 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_8.pth
+2020-11-03 19:58:23,361 - INFO: only forward rnn result (psnr/ssim): 24.3817/0.8142   backward rnn result: 25.3340/0.8401
+2020-11-03 19:58:23,363 - INFO: ===> Epoch 9 Complete: Avg. Loss: 0.00533139 time: 191678.39
+2020-11-03 19:58:23,388 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_9.pth
+2020-11-03 19:58:23,399 - INFO: current learning rate: 5.1442499999999994e-05
+
+2020-11-04 02:15:16,574 - INFO: only forward rnn result (psnr/ssim): 24.6038/0.8179   backward rnn result: 25.6743/0.8462
+2020-11-04 02:15:16,576 - INFO: ===> Epoch 10 Complete: Avg. Loss: 0.00504961 time: 214291.60
+2020-11-04 02:15:16,601 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_10.pth
+2020-11-04 08:31:49,175 - INFO: only forward rnn result (psnr/ssim): 24.7998/0.8209   backward rnn result: 25.1940/0.8416
+2020-11-04 08:31:49,177 - INFO: ===> Epoch 11 Complete: Avg. Loss: 0.00483336 time: 236884.20
+2020-11-04 08:31:49,201 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_11.pth
+2020-11-04 14:48:45,270 - INFO: only forward rnn result (psnr/ssim): 24.9727/0.8237   backward rnn result: 26.0071/0.8509
+2020-11-04 14:48:45,272 - INFO: ===> Epoch 12 Complete: Avg. Loss: 0.00465709 time: 259500.29
+2020-11-04 14:48:45,296 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_12.pth
+2020-11-04 14:48:45,308 - INFO: current learning rate: 4.887037499999999e-05
+
+2020-11-04 21:05:49,736 - INFO: only forward rnn result (psnr/ssim): 24.9445/0.8258   backward rnn result: 26.0129/0.8530
+2020-11-04 21:05:49,738 - INFO: ===> Epoch 13 Complete: Avg. Loss: 0.00445903 time: 282124.76
+2020-11-04 21:05:49,783 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_13.pth
+2020-11-05 03:22:45,654 - INFO: only forward rnn result (psnr/ssim): 25.2508/0.8286   backward rnn result: 26.3003/0.8558
+2020-11-05 03:22:45,655 - INFO: ===> Epoch 14 Complete: Avg. Loss: 0.00431690 time: 304740.68
+2020-11-05 03:22:45,679 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_14.pth
+2020-11-05 09:40:37,392 - INFO: only forward rnn result (psnr/ssim): 25.4569/0.8327   backward rnn result: 26.5210/0.8603
+2020-11-05 09:40:37,394 - INFO: ===> Epoch 15 Complete: Avg. Loss: 0.00416887 time: 327412.42
+2020-11-05 09:40:37,419 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_15.pth
+2020-11-05 09:40:37,430 - INFO: current learning rate: 4.6426856249999986e-05
+
+2020-11-05 15:57:30,785 - INFO: only forward rnn result (psnr/ssim): 25.5242/0.8354   backward rnn result: 26.5745/0.8624
+2020-11-05 15:57:30,786 - INFO: ===> Epoch 16 Complete: Avg. Loss: 0.00400746 time: 350025.81
+2020-11-05 15:57:30,811 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_16.pth
+2020-11-05 22:14:56,019 - INFO: only forward rnn result (psnr/ssim): 25.7242/0.8386   backward rnn result: 26.8639/0.8652
+2020-11-05 22:14:56,021 - INFO: ===> Epoch 17 Complete: Avg. Loss: 0.00388222 time: 372671.04
+2020-11-05 22:14:56,045 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_17.pth
+2020-11-06 04:31:48,309 - INFO: only forward rnn result (psnr/ssim): 25.8263/0.8402   backward rnn result: 26.9664/0.8678
+2020-11-06 04:31:48,311 - INFO: ===> Epoch 18 Complete: Avg. Loss: 0.00377162 time: 395283.33
+2020-11-06 04:31:48,335 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_18.pth
+2020-11-06 04:31:48,346 - INFO: current learning rate: 4.410551343749999e-05
+
+2020-11-06 10:48:38,851 - INFO: only forward rnn result (psnr/ssim): 25.7192/0.8405   backward rnn result: 26.9744/0.8679
+2020-11-06 10:48:38,852 - INFO: ===> Epoch 19 Complete: Avg. Loss: 0.00364754 time: 417893.88
+2020-11-06 10:48:38,877 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_19.pth
+2020-11-06 16:44:07,002 - INFO: only forward rnn result (psnr/ssim): 26.0294/0.8447   backward rnn result: 27.2597/0.8733
+2020-11-06 16:44:07,004 - INFO: ===> Epoch 20 Complete: Avg. Loss: 0.00355483 time: 439222.03
+2020-11-06 16:44:07,028 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_20.pth
+2020-11-06 22:21:15,761 - INFO: only forward rnn result (psnr/ssim): 25.9849/0.8452   backward rnn result: 27.1752/0.8747
+2020-11-06 22:21:15,763 - INFO: ===> Epoch 21 Complete: Avg. Loss: 0.00346877 time: 459450.79
+2020-11-06 22:21:15,786 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_21.pth
+2020-11-06 22:21:15,798 - INFO: current learning rate: 4.190023776562499e-05
+
+2020-11-07 03:58:15,326 - INFO: only forward rnn result (psnr/ssim): 26.2372/0.8497   backward rnn result: 27.4556/0.8785
+2020-11-07 03:58:15,327 - INFO: ===> Epoch 22 Complete: Avg. Loss: 0.00338396 time: 479670.35
+2020-11-07 03:58:15,371 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_22.pth
+2020-11-07 09:35:39,880 - INFO: only forward rnn result (psnr/ssim): 26.1618/0.8490   backward rnn result: 27.3179/0.8782
+2020-11-07 09:35:39,881 - INFO: ===> Epoch 23 Complete: Avg. Loss: 0.00330862 time: 499914.90
+2020-11-07 09:35:39,905 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_23.pth
+2020-11-07 15:13:58,436 - INFO: only forward rnn result (psnr/ssim): 26.2770/0.8517   backward rnn result: 27.5268/0.8811
+2020-11-07 15:13:58,445 - INFO: ===> Epoch 24 Complete: Avg. Loss: 0.00324522 time: 520213.47
+2020-11-07 15:13:58,481 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_24.pth
+2020-11-07 15:13:58,492 - INFO: current learning rate: 3.9805225877343735e-05
+
+2020-11-07 20:57:54,105 - INFO: only forward rnn result (psnr/ssim): 26.3528/0.8534   backward rnn result: 27.5548/0.8824
+2020-11-07 20:57:54,107 - INFO: ===> Epoch 25 Complete: Avg. Loss: 0.00317342 time: 540849.13
+2020-11-07 20:57:54,131 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_25.pth
+2020-11-08 02:34:39,060 - INFO: only forward rnn result (psnr/ssim): 26.6107/0.8570   backward rnn result: 27.8792/0.8860
+2020-11-08 02:34:39,061 - INFO: ===> Epoch 26 Complete: Avg. Loss: 0.00313018 time: 561054.08
+2020-11-08 02:34:39,085 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_26.pth
+2020-11-08 08:12:17,905 - INFO: only forward rnn result (psnr/ssim): 26.4996/0.8553   backward rnn result: 27.8736/0.8846
+2020-11-08 08:12:17,906 - INFO: ===> Epoch 27 Complete: Avg. Loss: 0.00308195 time: 581312.93
+2020-11-08 08:12:17,930 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_27.pth
+2020-11-08 08:12:17,941 - INFO: current learning rate: 3.781496458347654e-05
+
+2020-11-08 13:50:33,526 - INFO: only forward rnn result (psnr/ssim): 26.6382/0.8590   backward rnn result: 27.9423/0.8879
+2020-11-08 13:50:33,527 - INFO: ===> Epoch 28 Complete: Avg. Loss: 0.00301548 time: 601608.55
+2020-11-08 13:50:33,552 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_28.pth
+2020-11-08 19:28:33,526 - INFO: only forward rnn result (psnr/ssim): 26.6969/0.8593   backward rnn result: 27.8206/0.8866
+2020-11-08 19:28:33,527 - INFO: ===> Epoch 29 Complete: Avg. Loss: 0.00298468 time: 621888.55
+2020-11-08 19:28:33,576 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_29.pth
+2020-11-09 01:05:50,948 - INFO: only forward rnn result (psnr/ssim): 26.7842/0.8609   backward rnn result: 28.1079/0.8899
+2020-11-09 01:05:50,950 - INFO: ===> Epoch 30 Complete: Avg. Loss: 0.00293792 time: 642125.97
+2020-11-09 01:05:50,975 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_30.pth
+2020-11-09 01:05:50,986 - INFO: current learning rate: 3.5924216354302716e-05
+
+2020-11-09 06:43:03,725 - INFO: only forward rnn result (psnr/ssim): 26.7611/0.8607   backward rnn result: 28.0283/0.8907
+2020-11-09 06:43:03,727 - INFO: ===> Epoch 31 Complete: Avg. Loss: 0.00289759 time: 662358.75
+2020-11-09 06:43:03,751 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_31.pth
+2020-11-09 12:19:59,504 - INFO: only forward rnn result (psnr/ssim): 26.7083/0.8631   backward rnn result: 28.1413/0.8913
+2020-11-09 12:19:59,506 - INFO: ===> Epoch 32 Complete: Avg. Loss: 0.00286256 time: 682574.53
+2020-11-09 12:19:59,530 - INFO: Checkpoint saved to ./model/2020_11_01_14_43_44/first_frame_net_model_epoch_32.pth

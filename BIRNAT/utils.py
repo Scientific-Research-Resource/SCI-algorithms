@@ -34,6 +34,30 @@ def generate_masks(mask_path, mask_name = 'mask.mat'): # zzh
     return mask, mask_s
 
 
+def generate_random_masks(mask_size): # zzh
+    # mask = scio.loadmat(mask_path + '/' + mask_name)
+    # mask = mask['mask']
+    # mask = np.transpose(mask, [2, 0, 1])
+    mask = np.random.randint(0,2, size=mask_size).astype(float)
+
+    mask_s = np.sum(mask, axis=0)
+
+    # replace 0 to avoid nan value
+    if (mask - mask.astype(np.int32)).any():
+        # for float mask
+        index = np.where(mask_s == 0)
+        mask_s[index] = 0.1 # zzh: this value is chosen empirically
+        # print('float mask') #[debug]
+    else:
+        # for binary mask
+        index = np.where(mask_s == 0)
+        mask_s[index] = 1
+        mask_s = mask_s.astype(np.uint8) 
+        # print('binary mask') #[debug]
+        
+    # print('\nmask: {}'.format(mask_path + '/' + mask_name)) #[debug]
+    
+
 def time2file_name(time):
     year = time[0:4]
     month = time[5:7]

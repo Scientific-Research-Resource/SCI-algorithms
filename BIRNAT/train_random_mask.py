@@ -1,9 +1,9 @@
-# training model without self attention or adversarial training
-from dataLoadess import OrigTrainDataset
+# training model without attention or adversial training
+from dataLoadess import OrigTrainDataset,OrigRandomMaskTrainDataset
 from torch.utils.data import DataLoader
 # from models import forward_rnn, cnn1, backrnn             # with attention
-from models_wo_sa import forward_rnn, cnn1, backrnn      # without attention
-from utils import generate_masks, time2file_name
+from models_wo_atten import forward_rnn, cnn1, backrnn      # without attention
+from utils import generate_masks,generate_random_masks, time2file_name
 import torch.optim as optim
 import torch.nn as nn
 import torch
@@ -18,25 +18,26 @@ from skimage.metrics import structural_similarity as ssim
 
 
 ### environ
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 if not torch.cuda.is_available():
     raise Exception('NO GPU!')
 
 ### setting
 ## path
-train_data_path = "/data/zzh/project/E2E_CNN/data_simu/training_truth/data_augment_256_20f"  # traning data from DAVIS2017
+train_data_path = "/data/zzh/dataset/SCI/training_truth/data_augment_256_10f"  # traning data from DAVIS2017
 # train_data_path = '/data/zzh/project/RNN_SCI/Data/data_simu/testing_truth/bm_256_10f/' # for test
-mask_path = "/data/zzh/project/RNN_SCI/Data/data_simu/exp_mask"
-test_path = '/data/zzh/project/RNN_SCI/Data/data_simu/testing_truth/bm_256_20f/'   # simulation benchmark data for comparison
+mask_path = "/data/zzh/project/MD_SCI/BIRNAT/test/mask/mask"
+test_path = '/data/zzh/dataset/SCI/benchmark/benchmark_simu_ly_256'   # simulation benchmark data for comparison
 # test_path = "/data/zzh/project/RNN_SCI/Data/data_simu/testing_truth/exp_256"  # experiment simulation benchmark data for comparison
 
 
 ## param
-pretrained_model = ''
-mask_name = 'multiplex_shift_binary_mask_256_20f.mat'
-Cr =20
+pretrained_model = 'binary_mask_256_Cr8_official'
+mask_name = 'binary_mask_256_8f.mat'
+Cr =8
+# mask_size = (256,256,Cr)
 block_size = 256
-last_train = 0
+last_train = 100
 max_iter = 100
 batch_size = 1
 learning_rate = 0.0003
@@ -47,7 +48,9 @@ checkpoint_step = 1 # epoch interval for save checkpoints
 
 ## data set
 mask, mask_s = generate_masks(mask_path, mask_name)
-dataset = OrigTrainDataset(train_data_path, mask_path+'/'+mask_name)
+# mask, mask_s = generate_random_masks(mask_size)
+# dataset = OrigTrainDataset(train_data_path)
+dataset = OrigRandomMaskTrainDataset(train_data_path)
 
 train_data_loader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=True)
 
@@ -64,7 +67,7 @@ if last_train != 0:
     rnn1 = torch.load('./model/' + pretrained_model + "/rnn1_model_epoch_{}.pth".format(last_train))
     rnn2 = torch.load('./model/' + pretrained_model + "/rnn2_model_epoch_{}.pth".format(last_train))
     print('pre-trained model: \'{} - No. {} epoch\' loaded!'.format(pretrained_model, last_train))
-    
+
 loss = nn.MSELoss()
 loss.cuda()
 
@@ -86,8 +89,10 @@ def test(test_path, epoch, result_path, logger):
 
         if "orig" in pic:
             pic = pic['orig']
+            sign = 1
         elif "patch_save" in pic:
             pic = pic['patch_save']
+            sign = 0
         pic = pic / 255
 
         # calc meas
@@ -159,14 +164,15 @@ def test(test_path, epoch, result_path, logger):
             ssim_backward[i] = ssim_2
 
             # test performance
-            if epoch % 5 == 0 or (epoch > 50 and epoch % 2 == 0):
-                a = test_list[i]
-                name1 = result_path + '/forward_' + a[0:len(a) - 4] + '{}_{:.4f}_{:.4f}'.format(epoch, psnr_1, ssim_1) + '.mat'
-                name2 = result_path + '/backward_' + a[0:len(a) - 4] + '{}_{:.4f}_{:.4f}'.format(epoch, psnr_2, ssim_2) + '.mat'
-                out_pic1 = out_pic1.cpu()
-                out_pic2 = out_pic2.cpu()
-                scio.savemat(name1, {'pic': out_pic1.numpy()})
-                scio.savemat(name2, {'pic': out_pic2.numpy()})
+            if sign == 1:
+                if epoch % 5 == 0 or (epoch > 50 and epoch % 2 == 0):
+                    a = test_list[i]
+                    name1 = result_path + '/forward_' + a[0:len(a) - 4] + '{}_{:.4f}_{:.4f}'.format(epoch, psnr_1, ssim_1) + '.mat'
+                    name2 = result_path + '/backward_' + a[0:len(a) - 4] + '{}_{:.4f}_{:.4f}'.format(epoch, psnr_2, ssim_2) + '.mat'
+                    out_pic1 = out_pic1.cpu()
+                    out_pic2 = out_pic2.cpu()
+                    scio.savemat(name1, {'pic': out_pic1.numpy()})
+                    scio.savemat(name2, {'pic': out_pic2.numpy()})
     logger.info("only forward rnn result (psnr/ssim): {:.4f}/{:.4f}   backward rnn result: {:.4f}/{:.4f}"\
         .format(torch.mean(psnr_forward), torch.mean(ssim_forward), torch.mean(psnr_backward), torch.mean(ssim_backward)))
 
@@ -272,11 +278,11 @@ def main(learning_rate):
     
     # train
     print('\n---- start training ----\n')
-    logger.info('Code: train.py') 
-    logger.info('mask: {}'.format(mask_path + '/' + mask_name)) 
+    logger.info('Code: train_random_mask.py') 
+    logger.info('train mask: random; test mask: {}'.format(mask_path + '/' + mask_name))
     if last_train != 0:
         logger.info('loading pre-trained model: \'{} - No. {} epoch\'...'.format(pretrained_model, last_train))
-            
+
     for epoch in range(last_train + 1, last_train + max_iter + 1):
         train(epoch, learning_rate, result_path, logger)
         if (epoch % checkpoint_step == 0 or epoch > 70):

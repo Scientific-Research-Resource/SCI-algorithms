@@ -1,4 +1,5 @@
-from models_wo_sa import forward_rnn, cnn1, backrnn      # without attention
+# testing model without self-attention
+from models_wo_sa import forward_rnn, cnn1, backrnn      # without self attention
 from utils import generate_masks, time2file_name
 import torch.nn as nn
 import torch

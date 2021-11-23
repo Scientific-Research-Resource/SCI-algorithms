@@ -1,3 +1,4 @@
+# testing model with self-attention
 from models import forward_rnn, cnn1, backrnn 
 from utils import generate_masks, time2file_name
 import torch.nn as nn

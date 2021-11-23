@@ -79,7 +79,73 @@ class OrigTrainDataset(Dataset):
 
         return len(self.orig_train_path)
 
+## load 'orig', randomly generate 'mask' for each orig and create 'meas' to form a dataset
+class OrigRandomMaskTrainDataset(Dataset):
 
+    def __init__(self, orig_train_path, Cr=8):
+        super(OrigRandomMaskTrainDataset, self).__init__()
+        # get data paths
+        self.orig_train_path = []
+        if os.path.exists(orig_train_path):
+            orig_train_list = os.listdir(orig_train_path)
+            self.orig_train_path = [orig_train_path + '/' + orig_train_list[i] for i in range(len(orig_train_list))]
+        else:
+            raise FileNotFoundError('orig_train_path doesn\'t exist!')
+        
+
+    def __getitem__(self, index):
+
+        orig_train_path = self.orig_train_path[index]
+        
+        # load orig
+        gt = scio.loadmat(orig_train_path)
+        
+        
+        if "patch_save" in gt:
+            gt = torch.from_numpy(gt['patch_save'] / 255)
+        elif 'orig' in gt:
+            gt = torch.from_numpy(gt['orig'] / 255)
+        elif "p1" in gt:
+            gt = torch.from_numpy(gt['p1'] / 255)
+        elif "p2" in gt:
+            gt = torch.from_numpy(gt['p2'] / 255)
+        elif "p3" in gt:
+            gt = torch.from_numpy(gt['p3'] / 255)
+
+        gt = gt.float()[...,:Cr]
+        
+        # generate mask
+        mask = np.random.randint(0,2, gt.shape)
+        mask = torch.from_numpy(mask)
+        mask = mask.float()
+        
+               
+        # rescale to 0-1
+        mask_maxv = torch.max(mask)
+        if mask_maxv > 1:
+            mask = torch.div(mask, mask_maxv)
+        
+        # [debug] dtype info and imshow
+        # print('gt dtype:{}, meas dtype:{}'.format(gt.dtype, mask.dtype))
+        # plt.imshow(gt[:,:,1].numpy())
+        # plt.show()
+
+        # calculate meas
+        meas = torch.sum(torch.mul(mask, gt),2)
+        # meas = torch.from_numpy(meas['meas'] / 255)
+
+        # permute
+        gt = gt.permute(2, 0, 1)
+
+        # [debug] shape info
+        # print('gt shape:{}, meas shape:{}'.format(gt.shape, meas.shape))
+
+        return gt, meas
+
+    def __len__(self):
+
+        return len(self.orig_train_path)
+        
 ## load all 'orig' & 'mask' and create 'meas' to form a dataset in the memory
 class AllOrigTrainDataset(Dataset):
 
