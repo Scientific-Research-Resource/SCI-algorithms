@@ -86,6 +86,7 @@ class OrigRandomMaskTrainDataset(Dataset):
         super(OrigRandomMaskTrainDataset, self).__init__()
         # get data paths
         self.orig_train_path = []
+        self.Cr = Cr
         if os.path.exists(orig_train_path):
             orig_train_list = os.listdir(orig_train_path)
             self.orig_train_path = [orig_train_path + '/' + orig_train_list[i] for i in range(len(orig_train_list))]
@@ -112,7 +113,7 @@ class OrigRandomMaskTrainDataset(Dataset):
         elif "p3" in gt:
             gt = torch.from_numpy(gt['p3'] / 255)
 
-        gt = gt.float()[...,:Cr]
+        gt = gt.float()[...,:self.Cr]
         
         # generate mask
         mask = np.random.randint(0,2, gt.shape)

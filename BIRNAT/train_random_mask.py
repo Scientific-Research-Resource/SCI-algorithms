@@ -15,7 +15,8 @@ import logging
 import numpy as np
 from torch.autograd import Variable
 from skimage.metrics import structural_similarity as ssim
-
+from os.path import join as opj
+import cv2
 
 ### environ
 os.environ["CUDA_VISIBLE_DEVICES"] = "2"
@@ -89,10 +90,8 @@ def test(test_path, epoch, result_path, logger):
 
         if "orig" in pic:
             pic = pic['orig']
-            sign = 1
-        elif "patch_save" in pic:
-            pic = pic['patch_save']
-            sign = 0
+        else:
+            raise KeyError("KEY 'orig' is not in the variable")
         pic = pic / 255
 
         # calc meas
@@ -164,15 +163,19 @@ def test(test_path, epoch, result_path, logger):
             ssim_backward[i] = ssim_2
 
             # test performance
-            if sign == 1:
-                if epoch % 5 == 0 or (epoch > 50 and epoch % 2 == 0):
-                    a = test_list[i]
-                    name1 = result_path + '/forward_' + a[0:len(a) - 4] + '{}_{:.4f}_{:.4f}'.format(epoch, psnr_1, ssim_1) + '.mat'
-                    name2 = result_path + '/backward_' + a[0:len(a) - 4] + '{}_{:.4f}_{:.4f}'.format(epoch, psnr_2, ssim_2) + '.mat'
-                    out_pic1 = out_pic1.cpu()
-                    out_pic2 = out_pic2.cpu()
-                    scio.savemat(name1, {'pic': out_pic1.numpy()})
-                    scio.savemat(name2, {'pic': out_pic2.numpy()})
+            if epoch % 5 == 0 or (epoch > 50 and epoch % 2 == 0):
+                # save test result
+                a = test_list[i]
+                name1 = result_path + '/forward_' + a[0:len(a) - 4] + '{}_{:.4f}_{:.4f}'.format(epoch, psnr_1, ssim_1) + '.mat'
+                name2 = result_path + '/backward_' + a[0:len(a) - 4] + '{}_{:.4f}_{:.4f}'.format(epoch, psnr_2, ssim_2) + '.mat'
+                out_pic1 = out_pic1.cpu()
+                out_pic2 = out_pic2.cpu()
+                scio.savemat(name1, {'pic': out_pic1.numpy()})
+                scio.savemat(name2, {'pic': out_pic2.numpy()})
+                
+                name_png = opj(result_path, 'backward_' + a[0:len(a) - 4] + '_idx{:02d}_{:02d}_{:.4f}'.format(meas.shape[0] * Cr//2, epoch, psnr_2) + '.png')
+                cv2.imwrite(name_png, np.concatenate((out_pic2.cpu().numpy()[0,0,:,:]*255.0,
+                                pic_gt.cpu().numpy()[0,0,:,:]*255.0),1), [cv2.IMWRITE_PNG_COMPRESSION, 0])
     logger.info("only forward rnn result (psnr/ssim): {:.4f}/{:.4f}   backward rnn result: {:.4f}/{:.4f}"\
         .format(torch.mean(psnr_forward), torch.mean(ssim_forward), torch.mean(psnr_backward), torch.mean(ssim_backward)))
 
