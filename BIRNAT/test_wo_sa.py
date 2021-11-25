@@ -1,6 +1,6 @@
 # testing model without self-attention
 from models_wo_sa import forward_rnn, cnn1, backrnn      # without self attention
-from utils import generate_masks, time2file_name
+from utils import generate_masks, time2file_name,save_test_result
 import torch.nn as nn
 import torch
 import scipy.io as scio
@@ -156,17 +156,8 @@ def test(test_path, epoch, result_path):
             ssim_backward[i] = ssim_2
             
             # save test result
-            a = test_list[i]
-            name1 = result_path + '/forward_' + a[0:len(a) - 4] + '{}_{:.4f}_{:.4f}'.format(epoch, psnr_1, ssim_1) + '.mat'
-            name2 = result_path + '/backward_' + a[0:len(a) - 4] + '{}_{:.4f}_{:.4f}'.format(epoch, psnr_2, ssim_2) + '.mat'
-            out_pic1 = out_pic1.cpu()
-            out_pic2 = out_pic2.cpu()
-            scio.savemat(name1, {'pic': out_pic1.numpy()})
-            scio.savemat(name2, {'pic': out_pic2.numpy()})
+            save_test_result(result_path,test_list[i],epoch,out_pic2,pic_gt,psnr_2, ssim_2,block_size)    
             
-            name_png = opj(result_path, 'backward_' + a[0:len(a) - 4] + '_idx{:02d}_{:02d}_{:.4f}'.format(meas.shape[0] * Cr//2, epoch, psnr_2) + '.png')
-            cv2.imwrite(name_png, np.concatenate((out_pic2.cpu().numpy()[0,0,:,:]*255.0,
-                            pic_gt.cpu().numpy()[0,0,:,:]*255.0),1), [cv2.IMWRITE_PNG_COMPRESSION, 0])
     print("only forward rnn result (psnr/ssim/time): {:.4f}/{:.4f}/{:.2f}  backward rnn result: {:.4f}/{:.4f}/{:.2f}"\
         .format(torch.mean(psnr_forward), torch.mean(ssim_forward), torch.mean(time_forward), torch.mean(psnr_backward), torch.mean(ssim_backward), torch.mean(time_backward)))
 

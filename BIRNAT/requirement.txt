@@ -1,0 +1,4 @@
+pytorch
+scipy
+scikit-image
+opencv-python
