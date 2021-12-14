@@ -1,4 +1,4 @@
-%% data preprocess for real CACTI data (calibrate all masks in one time)
+%% data preprocess for real CACTI data (calibrate all masks in one time with LCoS)
 % Support: 
 %	positive-only / positive-negetive mode
 %	patch processing (border extended with black for non exact division)
@@ -6,11 +6,11 @@
 clc, clear;
 
 %% [0] params
-root = 'E:\project\SCI_captioning\experiment\realexp\test\SCICAP_outdoor_Cr8_20211213';
+root = 'E:\project\SCI_captioning\experiment\realexp\test\SCICAP_outdoor_Cr8&16_20211214';
 img_sz = [2048,2560];
 cs_rate = 16;
 save_patch = 0; % save patches
-only_positive_mask = 1; % save patches
+only_positive_mask = 0; % save patches
 
 % patch param (when only_positive_mask = 0)
 x_min = 1;
@@ -20,16 +20,16 @@ y_max = img_sz(1);
 overlap = 50;
 ps = 256;
 
-black_start = framePgroup-3; % idx in group 0
-white_start = framePgroup-1; % idx in group 0
-
-mask_dir_files = listdir(fullfile(root,mask_dir));
-
 %% [1.0] params for mask proc
 mask_dir = 'masks';
+mask_save_dir = 'process/full/mask/';
 group_num = 20;
 framePgroup = 36;  % 20 - Cr8pn; 36-Cr16pn
 % framePgroup = 20;  % 20 - Cr8pn; 36-Cr16pn
+
+mask_dir_files = listdir(fullfile(root,mask_dir));
+black_start = framePgroup-3; % idx in group 0
+white_start = framePgroup-1; % idx in group 0
 
 %% [1.1] process mask background and illumination
 % white/black mask
@@ -69,6 +69,7 @@ for m = 1:cs_rate
     end
     mask_mean = mask_sum / count;
     mask_ori(:,:,m) = mask_mean;
+	disp(['finish load positive mask' num2str(m)]);
 end
 
 % negative masks
@@ -79,7 +80,7 @@ if only_positive_mask==0
 		for n = 1:group_num
 			count = count + 1;
 			mask_id = mask_start + n*framePgroup;
-			mask_t = imread(mask_dir_files(black_id(mask_id)));
+			mask_t = imread(fullfile(root,mask_dir,mask_dir_files(mask_id)));
 			if n == 1
 			   mask_sum = zeros(size(mask_t));
 			end
@@ -87,6 +88,7 @@ if only_positive_mask==0
 		end
 		mask_mean = mask_sum / count;
 		mask_ori(:,:,m+cs_rate) = mask_mean;
+		disp(['finish load negative mask' num2str(m)]);
 	end
 end
 
@@ -96,7 +98,7 @@ else
 	mask_num = cs_rate*2;
 end
 
-for n = 1:1:mask_num
+for n = 1:mask_num
     mask_debkg(:,:,n) = double(mask_ori(:,:,n)) - double(black_mask_mean);
     mask_deillum_t = double(mask_debkg(:,:,n) ./ white_debkg);
     mask_deillum(:,:,n) = mask_deillum_t;
@@ -110,9 +112,18 @@ if save_patch==0
 % save full mask
 	% mask = mask_deillum;
 	mask = mask_deillum(:,:,1:mask_num);
-	mask_full_save_dir = fullfile(root,'process/full/mask/'); 
+	mask_full_save_dir = fullfile(root,mask_save_dir); 
 	mkdir(mask_full_save_dir)
-	save([mask_full_save_dir 'mask_full.mat'],'mask') 
+	if only_positive_mask==1
+		save([mask_full_save_dir 'mask_full.mat'],'mask') 
+	else
+		mask_all = mask;
+		mask = mask_all(:,:,1:cs_rate); % positive mask
+		save([mask_full_save_dir 'mask_p.mat'],'mask') 
+		mask = mask_all(:,:, cs_rate+1:cs_rate*2); % negative mask
+		save([mask_full_save_dir 'mask_n.mat'],'mask') 
+		
+	end
 else
 % save patch mask
 	x_max = x_min + ceil((x_max - x_min + 1 - overlap) / (ps - overlap)) * (ps - overlap) + overlap - 1;
@@ -134,38 +145,41 @@ else
 			count = count + 1;
 			mask = mask_deillum_full(y:y+ps-1, x:x+ps-1, :);
 			disp(['saving patch - ', num2str(count)])
-			mask_save_path = fullfile(save_dir_mask,sprintf('mask%s.mat',num2str(count,'%03d')));
+			mask_p_save_path = fullfile(save_dir_mask,sprintf('mask_p%s.mat',num2str(count,'%03d')));
+			mask_n_save_path = fullfile(save_dir_mask,sprintf('mask_n%s.mat',num2str(count,'%03d')));
 			if only_positive_mask==1
-				
-				save(mask_save_path,'mask')
+				save(mask_p_save_path,'mask')
 			else
-				mask_p = mask(:,:, 1:cs_rate);
-				mask_n = mask(:,:, cs_rate+1:cs_rate*2);
-				save(mask_save_path,'mask_p','mask_n')
+				mask_all = mask;
+				mask = mask_all(:,:, 1:cs_rate); % positive mask
+				save(mask_p_save_path,'mask')
+				mask = mask_all(:,:, cs_rate+1:cs_rate*2); % negative mask
+				save(mask_n_save_path,'mask')
 			end
 			
 			imshow(mask(:,:,1)), title(sprintf('mask_1st patch-%d',count));
 			pause(0.1)
 		end
 	end
-	disp('Mask Done')
 end
+disp('==== mask processing done! ====')
+
 
 %% [2.0] params for meas proc
-meas_dir = 'person_cr8';
+meas_dir = 'road1_cr8';
+meas_save_dir = 'process/full/meas_cr8/';
 % idxs = ["x.tif"]; % [] for all
 meas_names = []; % [] for all
-
-%% [2.1] process meas background
-black_meas_mean = double(ones(img_sz)) * 2000;
 
 %% [2.2] process captured meas 
 if isempty(meas_names)
 	meas_names = listdir(fullfile(root,'meas/',meas_dir));
 end
 
+black_meas_mean = double(zeros(img_sz)); % scene background (not important)
+
 % process whole meas
-meas_full_save_dir = fullfile(root,'process/full/meas/'); 
+meas_full_save_dir = fullfile(root,meas_save_dir); 
 mkdir(meas_full_save_dir)
 
 for meas_name = meas_names
@@ -209,6 +223,7 @@ for meas_name = meas_names
 	end
 	disp(['Finished - ', meas_dir, '/',meas_name])
 end
+disp('==== meas processing done! ====')
 
 %%%%%%%%%%%%%%%%%%%%%%%% appendix %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% append -  ROI
@@ -217,14 +232,13 @@ end
 % load('meas_full.mat')
 
 % param setting
-root = 'E:\project\SCI_captioning\experiment\realexp\test\SCICAP_outdoor_Cr8_20211213';
-save_data_name = 'RecordedImage_GO-5000M-USB__039';
-roi = [1860 1010]; % [x,y]
+meas_full_save_dir = 'E:\project\SCI_captioning\experiment\realexp\test\SCICAP_outdoor_Cr8&16_20211214\process\full\';
+save_data_name = 'grass_run2_cr8_RecordedImage_GO-5000M-USB__142';
+roi = [1104 364]; % [x,y]
 sz = [512 512]; % [w,h]
 
 % processing
 save_name = sprintf('roi_test_%s_roi%d-%d_sz%d.mat',save_data_name,roi(1),roi(2),sz(1));
-meas_full_save_dir = fullfile(root,'process/full/data/'); 
 mkdir(meas_full_save_dir)
 
 mask = mask(roi(2):roi(2)+sz(2)-1,roi(1):roi(1)+sz(1)-1,:);
